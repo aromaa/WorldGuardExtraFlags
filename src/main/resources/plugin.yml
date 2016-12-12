@@ -1,0 +1,10 @@
+name: WorldGuardExtraFlags
+version: 2.11.0
+description: Add more flags to worldguard to help manage your server easily!
+author: isokissa3
+authors: [isokissa3]
+website: https://goldtreevers.net
+depend: [ WorldGuard ]
+softdepend: [ MythicMobs, FastAsyncWorldEdit, Essentials ]
+
+main: net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin
