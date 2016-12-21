@@ -13,9 +13,12 @@ public class EssentialsListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onGodStatusChangeEvent(GodStatusChangeEvent event)
 	{
-		if (WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().get(event.getController().getBase()).getHandler(GodmodeFlag.class).shouldBlockEvent(event.getController().getBase(), event.getController().getBase().getWorld()))
+		if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(event.getController().getBase(), event.getController().getBase().getWorld()))
 		{
-			event.setCancelled(true);
+			if (WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().get(event.getController().getBase()).getHandler(GodmodeFlag.class).getIsGodmodEnbled() != null)
+			{
+				event.setCancelled(true);
+			}
 		}
 	}
 }

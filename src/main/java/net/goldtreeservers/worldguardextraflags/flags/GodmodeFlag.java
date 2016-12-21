@@ -52,19 +52,18 @@ public class GodmodeFlag extends FlagValueChangeHandler<State>
 	
 	public void updateGodmode(Player player, State newValue, World world)
 	{
-		if (!this.getSession().getManager().hasBypass(player, world) && newValue != null)
+		this.isGodmodeEnabled = newValue == null ? null : newValue == State.ALLOW ? true : false;
+		
+		if (!this.getSession().getManager().hasBypass(player, world) && this.isGodmodeEnabled != null)
 		{
-			if (this.isGodmodeEnabled == null || this.isGodmodeEnabled != (newValue == State.ALLOW ? true : false))
+			if (WorldGuardExtraFlagsPlugin.isEssentialsEnabled())
 			{
-				if (WorldGuardExtraFlagsPlugin.isEssentialsEnabled())
+				if (this.originalEssentialsGodmode == null)
 				{
-					if (this.originalEssentialsGodmode == null)
-					{
-						this.originalEssentialsGodmode = WorldGuardExtraFlagsPlugin.getEssentialsPlugin().getUser(player).isGodModeEnabledRaw();
-					}
-					
-					WorldGuardExtraFlagsPlugin.getEssentialsPlugin().getUser(player).setGodModeEnabled(newValue == State.ALLOW ? true : false);
+					this.originalEssentialsGodmode = WorldGuardExtraFlagsPlugin.getEssentialsPlugin().getUser(player).isGodModeEnabledRaw();
 				}
+				
+				WorldGuardExtraFlagsPlugin.getEssentialsPlugin().getUser(player).setGodModeEnabled(this.isGodmodeEnabled);
 			}
 		}
 		else
@@ -99,8 +98,8 @@ public class GodmodeFlag extends FlagValueChangeHandler<State>
 		return true;
 	}
 	
-	public boolean shouldBlockEvent(Player player, World world)
+	public Boolean getIsGodmodEnbled()
 	{
-		return !this.getSession().getManager().hasBypass(player, world) && this.originalEssentialsGodmode != null;
+		return this.isGodmodeEnabled;
 	}
 }

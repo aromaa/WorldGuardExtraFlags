@@ -82,10 +82,13 @@ public class GlideFlag extends FlagValueChangeHandler<State>
     @Override
     public boolean testMoveTo(Player player, Location from, Location to, ApplicableRegionSet toSet, MoveType moveType)
     {
-    	if (this.currentValue != null && player.isGliding() != this.currentValue)
-    	{
-    		player.setGliding(this.currentValue);
-    	}
+		if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
+		{
+	    	if (this.currentValue != null && player.isGliding() != this.currentValue)
+	    	{
+	    		player.setGliding(this.currentValue);
+	    	}
+		}
     	
 		return true;
     }
