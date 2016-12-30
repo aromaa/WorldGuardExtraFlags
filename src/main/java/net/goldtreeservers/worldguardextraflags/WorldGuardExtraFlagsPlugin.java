@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags;
 
+import org.bukkit.Material;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -17,7 +19,6 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StringFlag;
 
 import net.goldtreeservers.worldguardextraflags.flags.BlockedEffectsFlag;
-import net.goldtreeservers.worldguardextraflags.flags.CaseForcedStringFlag;
 import net.goldtreeservers.worldguardextraflags.flags.CommandOnEntryFlag;
 import net.goldtreeservers.worldguardextraflags.flags.CommandOnExitFlag;
 import net.goldtreeservers.worldguardextraflags.flags.ConsoleCommandOnEntryFlag;
@@ -27,6 +28,7 @@ import net.goldtreeservers.worldguardextraflags.flags.FlyFlag;
 import net.goldtreeservers.worldguardextraflags.flags.GiveEffectsFlag;
 import net.goldtreeservers.worldguardextraflags.flags.GlideFlag;
 import net.goldtreeservers.worldguardextraflags.flags.GodmodeFlag;
+import net.goldtreeservers.worldguardextraflags.flags.MaterialFlag;
 import net.goldtreeservers.worldguardextraflags.flags.PlaySoundsFlag;
 import net.goldtreeservers.worldguardextraflags.flags.PotionEffectFlag;
 import net.goldtreeservers.worldguardextraflags.flags.PotionEffectTypeFlag;
@@ -36,6 +38,7 @@ import net.goldtreeservers.worldguardextraflags.flags.TeleportOnExitFlag;
 import net.goldtreeservers.worldguardextraflags.flags.WalkSpeedFlag;
 import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
+import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
 import net.goldtreeservers.worldguardextraflags.listeners.EssentialsListener;
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
@@ -74,21 +77,26 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	public final static StateFlag mythicMobsEggs = new StateFlag("mythicmobs-eggs", true);
 	public final static StateFlag frostwalker = new StateFlag("frostwalker", true);
 	public final static StateFlag netherPortals = new StateFlag("nether-portals", true);
-	public final static SetFlag<String> allowBlockPlace = new SetFlag<String>("allow-block-place", new CaseForcedStringFlag(null, true));
-	public final static SetFlag<String> denyBlockPlace = new SetFlag<String>("deny-block-place", new CaseForcedStringFlag(null, true));
-	public final static SetFlag<String> allowBlockBreak = new SetFlag<String>("allow-block-break", new CaseForcedStringFlag(null, true));
-	public final static SetFlag<String> denyBlockBreak = new SetFlag<String>("deny-block-break", new CaseForcedStringFlag(null, true));
+	public final static SetFlag<Material> allowBlockPlace = new SetFlag<Material>("allow-block-place", new MaterialFlag(null));
+	public final static SetFlag<Material> denyBlockPlace = new SetFlag<Material>("deny-block-place", new MaterialFlag(null));
+	public final static SetFlag<Material> allowBlockBreak = new SetFlag<Material>("allow-block-break", new MaterialFlag(null));
+	public final static SetFlag<Material> denyBlockBreak = new SetFlag<Material>("deny-block-break", new MaterialFlag(null));
 	public final static StateFlag glide = new StateFlag("glide", false);
 	
 	public WorldGuardExtraFlagsPlugin()
 	{
 		WorldGuardExtraFlagsPlugin.plugin = this;
 		
-		String a = getServer().getClass().getPackage().getName();
-		String version = a.substring(a.lastIndexOf('.') + 1);
-		if (version.equalsIgnoreCase("v1_10_R1") || version.equalsIgnoreCase("v1_9_R1"))
+		try
 		{
-			WorldGuardExtraFlagsPlugin.supportFrostwalker = true;
+			if (Material.FROSTED_ICE != null) //LOL, Just making it look nice xD
+			{
+				WorldGuardExtraFlagsPlugin.supportFrostwalker = true;
+			}
+		}
+		catch (NoSuchFieldError ignored)
+		{
+			
 		}
 	}
 	
@@ -146,6 +154,18 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		this.getServer().getPluginManager().registerEvents(new BlockListener(), this);
 		this.getServer().getPluginManager().registerEvents(new EntityListener(), this);
+		
+		try
+		{
+			if (EntityToggleGlideEvent.class != null) //LOL, Just making it look nice xD
+			{
+				this.getServer().getPluginManager().registerEvents(new EntityListenerOnePointNine(), this);
+			}
+		}
+		catch(NoClassDefFoundError ignored)
+		{
+			
+		}
 
 		Plugin essentialsPlugin = this.getServer().getPluginManager().getPlugin("Essentials");
 		if (essentialsPlugin != null)

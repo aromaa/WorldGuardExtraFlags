@@ -63,15 +63,15 @@ public class BlockListener implements Listener
 					{
 						ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 						
-						Set<String> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockPlace);
-						if (state != null && state.contains(block.getType().toString().toUpperCase()))
+						Set<Material> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockPlace);
+						if (state != null && state.contains(block.getType()))
 						{
 							event.setResult(Result.ALLOW);
 						}
 						else
 						{
-							Set<String> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockPlace);
-							if (state2 != null && state2.contains(block.getType().toString().toUpperCase()))
+							Set<Material> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockPlace);
+							if (state2 != null && state2.contains(block.getType()))
 							{
 								event.setResult(Result.DENY);
 								return;
@@ -105,15 +105,15 @@ public class BlockListener implements Listener
 					{
 						ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 	
-						Set<String> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockBreak);
-						if (state != null && state.contains(block.getType().toString().toUpperCase()))
+						Set<Material> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockBreak);
+						if (state != null && state.contains(block.getType()))
 						{
 							event.setResult(Result.ALLOW);
 						}
 						else
 						{
-							Set<String> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockBreak);
-							if (state2 != null && state2.contains(block.getType().toString().toUpperCase()))
+							Set<Material> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockBreak);
+							if (state2 != null && state2.contains(block.getType()))
 							{
 								event.setResult(Result.DENY);
 								return;
