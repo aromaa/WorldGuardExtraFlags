@@ -89,6 +89,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	public final static SetFlag<Material> denyBlockBreak = new SetFlag<Material>("deny-block-break", new MaterialFlag(null));
 	public final static StateFlag glide = new StateFlag("glide", false);
 	public final static StateFlag chunkUnload = new StateFlag("chunk-unload", true);
+	public final static StateFlag itemDurability = new StateFlag("item-durability", true);
 	
 	public WorldGuardExtraFlagsPlugin()
 	{
@@ -140,6 +141,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.denyBlockBreak);
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.glide);
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.chunkUnload);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.itemDurability);
 	}
 	
 	@Override

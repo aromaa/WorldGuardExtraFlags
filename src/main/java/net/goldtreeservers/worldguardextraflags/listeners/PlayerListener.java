@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -228,5 +229,16 @@ public class PlayerListener implements Listener
 				}
 			}
 		}.runTask(WorldGuardExtraFlagsPlugin.getPlugin());
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onPlayerItemDamageEvent(PlayerItemDamageEvent event)
+	{
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(event.getPlayer().getLocation());
+		State state = regions.queryState(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(event.getPlayer()), WorldGuardExtraFlagsPlugin.itemDurability);
+		if (state == State.DENY)
+		{
+			event.setCancelled(true);
+		}
 	}
 }
