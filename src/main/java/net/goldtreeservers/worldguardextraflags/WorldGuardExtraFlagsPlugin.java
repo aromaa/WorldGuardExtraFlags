@@ -1,6 +1,8 @@
 package net.goldtreeservers.worldguardextraflags;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.Essentials;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.BooleanFlag;
@@ -17,6 +20,8 @@ import com.sk89q.worldguard.protection.flags.LocationFlag;
 import com.sk89q.worldguard.protection.flags.SetFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StringFlag;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.goldtreeservers.worldguardextraflags.flags.BlockedEffectsFlag;
 import net.goldtreeservers.worldguardextraflags.flags.CommandOnEntryFlag;
@@ -42,6 +47,7 @@ import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePoint
 import net.goldtreeservers.worldguardextraflags.listeners.EssentialsListener;
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
+import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
 import net.goldtreeservers.worldguardextraflags.utils.PluginUtils;
 import net.goldtreeservers.worldguardextraflags.utils.SoundData;
 
@@ -82,6 +88,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	public final static SetFlag<Material> allowBlockBreak = new SetFlag<Material>("allow-block-break", new MaterialFlag(null));
 	public final static SetFlag<Material> denyBlockBreak = new SetFlag<Material>("deny-block-break", new MaterialFlag(null));
 	public final static StateFlag glide = new StateFlag("glide", false);
+	public final static StateFlag chunkUnload = new StateFlag("chunk-unload", true);
 	
 	public WorldGuardExtraFlagsPlugin()
 	{
@@ -132,6 +139,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.allowBlockBreak);
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.denyBlockBreak);
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.glide);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.chunkUnload);
 	}
 	
 	@Override
@@ -154,6 +162,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		this.getServer().getPluginManager().registerEvents(new BlockListener(), this);
 		this.getServer().getPluginManager().registerEvents(new EntityListener(), this);
+		this.getServer().getPluginManager().registerEvents(new WorldListener(), this);
 		
 		try
 		{
@@ -188,6 +197,11 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		if (WorldGuardExtraFlagsPlugin.essentialsEnabled)
 		{
 			this.getServer().getPluginManager().registerEvents(new EssentialsListener(), this);
+		}
+		
+		for(World world : this.getServer().getWorlds())
+		{
+			WorldGuardExtraFlagsPlugin.doUnloadChunkFlagWorldCheck(world);
 		}
 	}
 	
@@ -229,5 +243,27 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	public static Essentials getEssentialsPlugin()
 	{
 		return WorldGuardExtraFlagsPlugin.essentialsPlugin;
+	}
+	
+	public static void doUnloadChunkFlagWorldCheck(World world)
+	{
+		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionManager(world).getRegions().values())
+		{
+			if (region.getFlag(WorldGuardExtraFlagsPlugin.chunkUnload) == State.DENY)
+			{
+				System.out.println("Loading chunks for region " + region.getId() + " located in " + world.getName());
+				
+				Location min = BukkitUtil.toLocation(world, region.getMinimumPoint());
+				Location max = BukkitUtil.toLocation(world, region.getMaximumPoint());
+
+				for(int x = min.getChunk().getX(); x <= max.getChunk().getX(); x++)
+				{
+					for(int z = min.getChunk().getZ(); z <= max.getChunk().getZ(); z++)
+					{
+						world.getChunkAt(x, z).load(true);
+					}
+				}
+			}
+		}
 	}
 }
