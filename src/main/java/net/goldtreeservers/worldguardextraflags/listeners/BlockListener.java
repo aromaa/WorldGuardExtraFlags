@@ -91,38 +91,36 @@ public class BlockListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	public void onBlockBreakEvent(BreakBlockEvent event)
 	{
-		if (event.getResult() == Result.DEFAULT)
+		Result originalResult = event.getResult();
+		Object cause = event.getCause().getRootCause();
+		
+		if (cause instanceof Player)
 		{
-			Object cause = event.getCause().getRootCause();
-			
-			if (cause instanceof Player)
-			{
-				Player player = (Player)cause;
+			Player player = (Player)cause;
 
-				if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
+			if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
+			{
+				for(Block block : event.getBlocks())
 				{
-					for(Block block : event.getBlocks())
+					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+
+					Set<Material> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockBreak);
+					if (state != null && state.contains(block.getType()))
 					{
-						ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
-	
-						Set<Material> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockBreak);
-						if (state != null && state.contains(block.getType()))
+						event.setResult(Result.ALLOW);
+					}
+					else
+					{
+						Set<Material> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockBreak);
+						if (state2 != null && state2.contains(block.getType()))
 						{
-							event.setResult(Result.ALLOW);
+							event.setResult(Result.DENY);
+							return;
 						}
 						else
 						{
-							Set<Material> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockBreak);
-							if (state2 != null && state2.contains(block.getType()))
-							{
-								event.setResult(Result.DENY);
-								return;
-							}
-							else
-							{
-								event.setResult(Result.DEFAULT);
-								return;
-							}
+							event.setResult(originalResult);
+							return;
 						}
 					}
 				}
