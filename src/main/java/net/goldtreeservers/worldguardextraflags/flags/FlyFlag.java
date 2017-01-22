@@ -35,28 +35,31 @@ public class FlyFlag extends FlagValueChangeHandler<State>
 	
 	private void updateFly(Player player, State newValue, World world)
 	{
-		this.currentValue = newValue == null ? null : newValue == State.ALLOW ? true : false;
-		
-        if (!this.getSession().getManager().hasBypass(player, world) && this.currentValue != null)
-        {
-        	if (player.getAllowFlight() != this.currentValue)
-        	{
-            	if (this.originalFly == null)
-            	{
-            		this.originalFly = player.getAllowFlight();
-            	}
-            	
-            	player.setAllowFlight(this.currentValue);
-        	}
-        }
-        else
-        {
-        	if (this.originalFly != null)
-        	{
-        		player.setAllowFlight(this.originalFly);
-        		this.originalFly = null;
-        	}
-        }
+		if (!this.getSession().getManager().hasBypass(player, world))
+		{
+			this.currentValue = newValue == null ? null : newValue == State.ALLOW ? true : false;
+			
+	        if (this.currentValue != null)
+	        {
+	        	if (player.getAllowFlight() != this.currentValue)
+	        	{
+	            	if (this.originalFly == null)
+	            	{
+	            		this.originalFly = player.getAllowFlight();
+	            	}
+	            	
+	            	player.setAllowFlight(this.currentValue);
+	        	}
+	        }
+	        else
+	        {
+	        	if (this.originalFly != null)
+	        	{
+	        		player.setAllowFlight(this.originalFly);
+	        		this.originalFly = null;
+	        	}
+	        }
+		}
 	}
 	
     @Override

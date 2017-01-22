@@ -35,28 +35,31 @@ public class GlideFlag extends FlagValueChangeHandler<State>
 
 	private void updateGlide(Player player, State newValue, World world)
 	{
-		this.currentValue = newValue == null ? null : newValue == State.ALLOW ? true : false;
-		
-        if (!this.getSession().getManager().hasBypass(player, world) && this.currentValue != null)
-        {
-        	if (player.isGliding() != this.currentValue)
-        	{
-            	if (this.originalGlide == null)
-            	{
-            		this.originalGlide = player.isGliding();
-            	}
-            	
-            	player.setGliding(this.currentValue);
-        	}
-        }
-        else
-        {
-        	if (this.originalGlide != null)
-        	{
-        		player.setGliding(this.originalGlide);
-        		this.originalGlide = null;
-        	}
-        }
+		if (!this.getSession().getManager().hasBypass(player, world))
+		{
+			this.currentValue = newValue == null ? null : newValue == State.ALLOW ? true : false;
+			
+	        if (this.currentValue != null)
+	        {
+	        	if (player.isGliding() != this.currentValue)
+	        	{
+	            	if (this.originalGlide == null)
+	            	{
+	            		this.originalGlide = player.isGliding();
+	            	}
+	            	
+	            	player.setGliding(this.currentValue);
+	        	}
+	        }
+	        else
+	        {
+	        	if (this.originalGlide != null)
+	        	{
+	        		player.setGliding(this.originalGlide);
+	        		this.originalGlide = null;
+	        	}
+	        }
+		}
 	}
 	
 	@Override
@@ -82,13 +85,10 @@ public class GlideFlag extends FlagValueChangeHandler<State>
     @Override
     public boolean testMoveTo(Player player, Location from, Location to, ApplicableRegionSet toSet, MoveType moveType)
     {
-		if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
-		{
-	    	if (this.currentValue != null && player.isGliding() != this.currentValue)
-	    	{
-	    		player.setGliding(this.currentValue);
-	    	}
-		}
+    	if (this.currentValue != null && player.isGliding() != this.currentValue)
+    	{
+    		player.setGliding(this.currentValue);
+    	}
     	
 		return true;
     }
