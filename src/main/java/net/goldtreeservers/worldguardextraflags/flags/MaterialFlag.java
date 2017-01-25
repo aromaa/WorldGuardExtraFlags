@@ -22,7 +22,7 @@ public class MaterialFlag extends Flag<Material>
 	@Override
 	public Material parseInput(FlagContext context) throws InvalidFlagFormat
 	{
-		return Material.getMaterial(context.getUserInput().trim());
+		return Material.getMaterial(context.getUserInput().trim().toUpperCase());
 	}
 
 	@Override
