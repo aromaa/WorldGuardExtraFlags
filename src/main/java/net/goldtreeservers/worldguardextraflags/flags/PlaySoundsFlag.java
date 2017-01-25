@@ -1,8 +1,8 @@
 package net.goldtreeservers.worldguardextraflags.flags;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.Location;
@@ -30,7 +30,7 @@ public class PlaySoundsFlag extends Handler
         }
     }
     
-    private HashMap<ProtectedRegion, List<BukkitRunnable>> runnables = new HashMap<>();
+    private HashMap<String, BukkitRunnable> runnables = new HashMap<>();
 	    
 	protected PlaySoundsFlag(Session session)
 	{
@@ -45,7 +45,6 @@ public class PlaySoundsFlag extends Handler
 			Set<SoundData> sounds = region.getFlag(WorldGuardExtraFlagsPlugin.playSounds);
 			if (sounds != null)
 			{
-				List<BukkitRunnable> runnables = this.runnables.getOrDefault(region, new ArrayList<>());
 				for(SoundData sound : sounds)
 				{
 					BukkitRunnable runnable = new BukkitRunnable()
@@ -65,34 +64,81 @@ public class PlaySoundsFlag extends Handler
 							{
 								player.stopSound(sound.getSound());
 							}
-							catch(Exception ex)
+							catch(NoSuchMethodError ex)
 							{
 								
 							}
 						}
 					};
-					
-					runnables.add(runnable);
+
+					this.runnables.put(sound.getSound(), runnable);
 					runnable.runTaskTimer(WorldGuardExtraFlagsPlugin.getPlugin(), 0L, sound.getInterval());
 				}
-				
-				this.runnables.put(region, runnables);
 			}
 		}
 		
 		for(ProtectedRegion region : exited)
 		{
-			List<BukkitRunnable> runnables = this.runnables.remove(region);
-			if (runnables != null)
+			Set<SoundData> sounds = region.getFlag(WorldGuardExtraFlagsPlugin.playSounds);
+			if (sounds != null)
 			{
-				for(BukkitRunnable runnable : runnables)
+				for(SoundData sound : sounds)
 				{
-					runnable.cancel();
+					this.runnables.remove(sound.getSound()).cancel();
 				}
 			}
 		}
 		return true;
 	}
 	
-	
+	@Override
+	public void tick(Player player, ApplicableRegionSet set)
+	{
+		HashSet<String> foundSongs = new HashSet<String>();
+		for(Set<SoundData> sounds : set.queryAllValues(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.playSounds))
+		{
+			for(SoundData sound : sounds)
+			{
+				foundSongs.add(sound.getSound());
+				
+				if (!this.runnables.containsKey(sound.getSound()))
+				{
+					BukkitRunnable runnable = new BukkitRunnable()
+					{
+						@Override
+						public void run()
+						{
+							player.playSound(player.getLocation(), sound.getSound(), Float.MAX_VALUE, 1);
+						}
+						
+						@Override
+						public void cancel()
+						{
+							super.cancel();
+							
+							try
+							{
+								player.stopSound(sound.getSound());
+							}
+							catch(NoSuchMethodError ex)
+							{
+								
+							}
+						}
+					};
+					
+					this.runnables.put(sound.getSound(), runnable);
+					runnable.runTaskTimer(WorldGuardExtraFlagsPlugin.getPlugin(), 0L, sound.getInterval());
+				}
+			}
+		}
+		
+		for(Entry<String, BukkitRunnable> runnables : this.runnables.entrySet())
+		{
+			if (!foundSongs.contains(runnables.getKey()))
+			{
+				this.runnables.remove(runnables.getKey()).cancel();;
+			}
+		}
+	}
 }
