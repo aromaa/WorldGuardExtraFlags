@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -212,7 +213,7 @@ public class PlayerListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event)
+	public void onPlayerJoinEvent(PlayerJoinEvent event)
 	{
 		new BukkitRunnable()
 		{
@@ -228,7 +229,7 @@ public class PlayerListener implements Listener
 					
 				}
 			}
-		}.runTask(WorldGuardExtraFlagsPlugin.getPlugin());
+		}.runTaskLater(WorldGuardExtraFlagsPlugin.getPlugin(), 2);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
