@@ -29,21 +29,35 @@ public class ConsoleCommandOnEntryFlag extends Handler
 	{
 		super(session);
 	}
+	
+    @Override
+    public final void initialize(Player player, Location current, ApplicableRegionSet set)
+    {
+		for(ProtectedRegion region : set)
+		{
+			this.runCommands(region.getFlag(WorldGuardExtraFlagsPlugin.consoleCommandOnEntry), player);
+		}
+    }
 
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
 		for(ProtectedRegion region : entered)
 		{
-			Set<String> commands = region.getFlag(WorldGuardExtraFlagsPlugin.consoleCommandOnEntry);
-			if (commands != null)
+			this.runCommands(region.getFlag(WorldGuardExtraFlagsPlugin.consoleCommandOnEntry), player);
+		}
+		
+		return true;
+	}
+	
+	public void runCommands(Set<String> commands, Player player)
+	{
+		if (commands != null)
+		{
+			for(String command : commands)
 			{
-				for(String command : commands)
-				{
-					WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(WorldGuardExtraFlagsPlugin.getPlugin().getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName()));
-				}
+				WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(WorldGuardExtraFlagsPlugin.getPlugin().getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName()));
 			}
 		}
-		return true;
 	}
 }
