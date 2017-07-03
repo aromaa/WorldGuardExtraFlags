@@ -1,8 +1,20 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import com.sk89q.worldedit.Location;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
+
+import io.lumine.xikage.mythicmobs.mobs.EggManager;
+import io.lumine.xikage.mythicmobs.mobs.MythicMob;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.flags.FlyFlag;
+import net.goldtreeservers.worldguardextraflags.flags.GiveEffectsFlag;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -30,17 +42,6 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.sk89q.worldedit.Location;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.StateFlag.State;
-
-import net.elseland.xikage.MythicMobs.Mobs.EggManager;
-import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.flags.FlyFlag;
-import net.goldtreeservers.worldguardextraflags.flags.GiveEffectsFlag;
 
 @SuppressWarnings("deprecation")
 public class PlayerListener implements Listener
