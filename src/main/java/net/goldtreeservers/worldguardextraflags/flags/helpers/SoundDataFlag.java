@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.FlagContext;

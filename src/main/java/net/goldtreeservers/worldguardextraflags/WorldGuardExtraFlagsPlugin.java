@@ -1,46 +1,37 @@
 package net.goldtreeservers.worldguardextraflags;
 
+import java.awt.Color;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import com.earth2me.essentials.Essentials;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.BooleanFlag;
-import com.sk89q.worldguard.protection.flags.CommandStringFlag;
-import com.sk89q.worldguard.protection.flags.DoubleFlag;
-import com.sk89q.worldguard.protection.flags.LocationFlag;
-import com.sk89q.worldguard.protection.flags.SetFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.StringFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
-import net.goldtreeservers.worldguardextraflags.flags.BlockedEffectsFlag;
-import net.goldtreeservers.worldguardextraflags.flags.CommandOnEntryFlag;
-import net.goldtreeservers.worldguardextraflags.flags.CommandOnExitFlag;
-import net.goldtreeservers.worldguardextraflags.flags.ConsoleCommandOnEntryFlag;
-import net.goldtreeservers.worldguardextraflags.flags.ConsoleCommandOnExitFlag;
-import net.goldtreeservers.worldguardextraflags.flags.CustomSetFlag;
+import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.FlyFlag;
-import net.goldtreeservers.worldguardextraflags.flags.GiveEffectsFlag;
 import net.goldtreeservers.worldguardextraflags.flags.GlideFlag;
 import net.goldtreeservers.worldguardextraflags.flags.GodmodeFlag;
-import net.goldtreeservers.worldguardextraflags.flags.MaterialFlag;
-import net.goldtreeservers.worldguardextraflags.flags.PlaySoundsFlag;
-import net.goldtreeservers.worldguardextraflags.flags.PotionEffectFlag;
-import net.goldtreeservers.worldguardextraflags.flags.PotionEffectTypeFlag;
-import net.goldtreeservers.worldguardextraflags.flags.SoundDataFlag;
-import net.goldtreeservers.worldguardextraflags.flags.TeleportOnEntryFlag;
-import net.goldtreeservers.worldguardextraflags.flags.TeleportOnExitFlag;
 import net.goldtreeservers.worldguardextraflags.flags.WalkSpeedFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.BlockedEffectsFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.CommandOnEntryFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.CommandOnExitFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.ConsoleCommandOnEntryFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.ConsoleCommandOnExitFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.GiveEffectsFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.PlaySoundsFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.TeleportOnEntryFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.TeleportOnExitFlag;
 import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
@@ -48,48 +39,21 @@ import net.goldtreeservers.worldguardextraflags.listeners.EssentialsListener;
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
 import net.goldtreeservers.worldguardextraflags.utils.PluginUtils;
-import net.goldtreeservers.worldguardextraflags.utils.SoundData;
 
 public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 {
-	private static WorldGuardExtraFlagsPlugin plugin;
-	private static WorldGuardPlugin worldGuardPlugin;
-	private static WorldEditPlugin worldEditPlugin;
-	private static Essentials essentialsPlugin;
-	private static boolean mythicMobsEnabled;
-	private static boolean supportFrostwalker;
-	private static boolean fastAsyncWorldEditEnabled;
-	private static boolean essentialsEnabled;
-	
-	public final static LocationFlag teleportOnEntry = new LocationFlag("teleport-on-entry");
-	public final static LocationFlag teleportOnExit = new LocationFlag("teleport-on-exit");
-	public final static CustomSetFlag<String> commandOnEntry = new CustomSetFlag<String>("command-on-entry", new CommandStringFlag(null));
-	public final static CustomSetFlag<String> commandOnExit = new CustomSetFlag<String>("command-on-exit", new CommandStringFlag(null));
-	public final static CustomSetFlag<String> consoleCommandOnEntry = new CustomSetFlag<String>("console-command-on-entry", new CommandStringFlag(null));
-	public final static CustomSetFlag<String> consoleCommandOnExit = new CustomSetFlag<String>("console-command-on-exit", new CommandStringFlag(null));
-	public final static DoubleFlag walkSpeed = new DoubleFlag("walk-speed");
-	public final static BooleanFlag keepInventory = new BooleanFlag("keep-inventory");
-	public final static BooleanFlag keepExp = new BooleanFlag("keep-exp");
-	public final static StringFlag chatPrefix = new StringFlag("chat-prefix");
-	public final static StringFlag chatSuffix = new StringFlag("chat-suffix");
-	public final static SetFlag<PotionEffectType> blockedEffects = new SetFlag<PotionEffectType>("blocked-effects", new PotionEffectTypeFlag(null));
-	public final static StateFlag godmode = new StateFlag("godmode", false);
-	public final static LocationFlag respawnLocation = new LocationFlag("respawn-location");
-	public final static StateFlag worldEdit = new StateFlag("worldedit", true);
-	public final static SetFlag<PotionEffect> giveEffects = new SetFlag<PotionEffect>("give-effects", new PotionEffectFlag(null));
-	public final static StateFlag fly = new StateFlag("fly", false);
-	public final static SetFlag<SoundData> playSounds = new SetFlag<SoundData>("play-sounds", new SoundDataFlag(null));
-	public final static StateFlag mythicMobsEggs = new StateFlag("mythicmobs-eggs", true);
-	public final static StateFlag frostwalker = new StateFlag("frostwalker", true);
-	public final static StateFlag netherPortals = new StateFlag("nether-portals", true);
-	public final static SetFlag<Material> allowBlockPlace = new SetFlag<Material>("allow-block-place", new MaterialFlag(null));
-	public final static SetFlag<Material> denyBlockPlace = new SetFlag<Material>("deny-block-place", new MaterialFlag(null));
-	public final static SetFlag<Material> allowBlockBreak = new SetFlag<Material>("allow-block-break", new MaterialFlag(null));
-	public final static SetFlag<Material> denyBlockBreak = new SetFlag<Material>("deny-block-break", new MaterialFlag(null));
-	public final static StateFlag glide = new StateFlag("glide", false);
-	public final static StateFlag chunkUnload = new StateFlag("chunk-unload", true);
-	public final static StateFlag itemDurability = new StateFlag("item-durability", true);
+	@Getter private static WorldGuardExtraFlagsPlugin plugin;
+	@Getter private static WorldGuardPlugin worldGuardPlugin;
+	@Getter private static WorldEditPlugin worldEditPlugin;
+	@Getter private static Essentials essentialsPlugin;
+
+	@Getter private static boolean supportsMobEffectColors;
+	@Getter private static boolean supportFrostwalker;
+	@Getter private static boolean supportsStopSound;
+	@Getter private static boolean mythicMobsEnabled;
+	@Getter private static boolean fastAsyncWorldEditEnabled;
 	
 	public WorldGuardExtraFlagsPlugin()
 	{
@@ -102,9 +66,24 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 				WorldGuardExtraFlagsPlugin.supportFrostwalker = true;
 			}
 		}
-		catch (NoSuchFieldError ignored)
+		catch (Throwable ignored)
 		{
-			
+		}
+
+		try
+		{
+			WorldGuardExtraFlagsPlugin.supportsMobEffectColors = PotionEffect.class.getDeclaredMethod("getColor", Color.class) != null;
+		}
+		catch (Throwable ignored)
+		{
+		}
+		
+		try
+		{
+			WorldGuardExtraFlagsPlugin.supportsStopSound = Player.class.getDeclaredMethod("stopSound", Color.class) != null;
+		}
+		catch (Throwable ignored)
+		{
 		}
 	}
 	
@@ -114,34 +93,34 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		WorldGuardExtraFlagsPlugin.worldEditPlugin = (WorldEditPlugin) this.getServer().getPluginManager().getPlugin("WorldEdit");
 		
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin = (WorldGuardPlugin) this.getServer().getPluginManager().getPlugin("WorldGuard");
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.teleportOnEntry);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.teleportOnExit);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.commandOnEntry);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.commandOnExit);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.consoleCommandOnEntry);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.consoleCommandOnExit);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.walkSpeed);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.keepInventory);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.keepExp);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.chatPrefix);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.chatSuffix);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.blockedEffects);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.godmode);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.respawnLocation);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.worldEdit);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.giveEffects);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.fly);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.playSounds);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.mythicMobsEggs);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.frostwalker);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.netherPortals);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.allowBlockPlace);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.denyBlockPlace);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.allowBlockBreak);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.denyBlockBreak);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.glide);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.chunkUnload);
-		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(WorldGuardExtraFlagsPlugin.itemDurability);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.TELEPORT_ON_ENTRY);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.TELEPORT_ON_EXIT);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.COMMAND_ON_ENTRY);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.COMMAND_ON_EXIT);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.CONSOLE_COMMAND_ON_ENTRY);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.CONSOLE_COMMAND_ON_EXIT);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.WALK_SPEED);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.KEEP_INVENTORY);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.KEEP_EXP);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.CHAT_PREFIX);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.CHAT_SUFFIX);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.BLOCKED_EFFECTS);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.GODMODE);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.RESPAWN_LOCATION);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.WORLDEDIT);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.GIVE_EFFECTS);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.FLY);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.PLAY_SOUNDS);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.MYTHICMOB_EGGS);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.FROSTWALKER);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.NETHER_PORTALS);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.ALLOW_BLOCK_PLACE);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.DENY_BLOCK_PLACE);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.ALLOW_BLOCK_BREAK);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.DENY_BLOCK_BREAK);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.GLIDE);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.CHUNK_UNLOAD);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.ITEM_DURABILITY);
 	}
 	
 	@Override
@@ -183,9 +162,9 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		{
 			WorldGuardExtraFlagsPlugin.essentialsPlugin = (Essentials)essentialsPlugin;
 		}
+		
 		WorldGuardExtraFlagsPlugin.mythicMobsEnabled = this.getServer().getPluginManager().isPluginEnabled("MythicMobs");
 		WorldGuardExtraFlagsPlugin.fastAsyncWorldEditEnabled = this.getServer().getPluginManager().isPluginEnabled("FastAsyncWorldEdit");
-		WorldGuardExtraFlagsPlugin.essentialsEnabled = this.getServer().getPluginManager().isPluginEnabled("Essentials");
 		
 		if (WorldGuardExtraFlagsPlugin.fastAsyncWorldEditEnabled)
 		{
@@ -196,7 +175,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			WorldGuardExtraFlagsPlugin.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener());
 		}
 		
-		if (WorldGuardExtraFlagsPlugin.essentialsEnabled)
+		if (WorldGuardExtraFlagsPlugin.isEssentialsEnable())
 		{
 			this.getServer().getPluginManager().registerEvents(new EssentialsListener(), this);
 		}
@@ -207,53 +186,18 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		}
 	}
 	
-	public static WorldGuardExtraFlagsPlugin getPlugin()
+	public static boolean isEssentialsEnable()
 	{
-		return WorldGuardExtraFlagsPlugin.plugin;
-	}
-	
-	public static WorldGuardPlugin getWorldGuard()
-	{
-		return WorldGuardExtraFlagsPlugin.worldGuardPlugin;
-	}
-	
-	public static WorldEditPlugin getWorldEditPlugin()
-	{
-		return WorldGuardExtraFlagsPlugin.worldEditPlugin;
-	}
-	
-	public static boolean isMythicMobsEnabled()
-	{
-		return WorldGuardExtraFlagsPlugin.mythicMobsEnabled;
-	}
-	
-	public static boolean isSupportingFrostwalker()
-	{
-		return WorldGuardExtraFlagsPlugin.supportFrostwalker;
-	}
-	
-	public static boolean isFastAsyncWorldEditEnabled()
-	{
-		return WorldGuardExtraFlagsPlugin.fastAsyncWorldEditEnabled;
-	}
-	
-	public static boolean isEssentialsEnabled()
-	{
-		return WorldGuardExtraFlagsPlugin.essentialsEnabled;
-	}
-	
-	public static Essentials getEssentialsPlugin()
-	{
-		return WorldGuardExtraFlagsPlugin.essentialsPlugin;
+		return WorldGuardExtraFlagsPlugin.essentialsPlugin != null;
 	}
 	
 	public static void doUnloadChunkFlagWorldCheck(World world)
 	{
-		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionManager(world).getRegions().values())
+		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.worldGuardPlugin.getRegionManager(world).getRegions().values())
 		{
-			if (region.getFlag(WorldGuardExtraFlagsPlugin.chunkUnload) == State.DENY)
+			if (region.getFlag(FlagUtils.CHUNK_UNLOAD) == State.DENY)
 			{
-				System.out.println("Loading chunks for region " + region.getId() + " located in " + world.getName());
+				WorldGuardExtraFlagsPlugin.getPlugin().getLogger().info("Loading chunks for region " + region.getId() + " located in " + world.getName() + " due to chunk-unload flag being deny");
 				
 				Location min = BukkitUtil.toLocation(world, region.getMinimumPoint());
 				Location max = BukkitUtil.toLocation(world, region.getMaximumPoint());

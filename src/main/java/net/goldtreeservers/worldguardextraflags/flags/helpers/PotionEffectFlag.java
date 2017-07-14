@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -26,7 +26,15 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 		String[] splitd = context.getUserInput().trim().split(" ");
 		if (splitd.length == 2)
 		{
-			return new PotionEffect(PotionEffectType.getByName(splitd[0]), Integer.MAX_VALUE, new Integer(splitd[1]));
+			PotionEffectType potionEffect = PotionEffectType.getByName(splitd[0]);
+			if (potionEffect != null)
+			{
+				return new PotionEffect(potionEffect, 100, new Integer(splitd[1]));
+			}
+			else
+			{
+				throw new InvalidFlagFormat("Unable to find the potion effect!");
+			}
 		}
 		else
 		{
@@ -38,6 +46,6 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	public PotionEffect unmarshal(Object o)
 	{
 		String[] splitd = o.toString().split(" ");
-		return new PotionEffect(PotionEffectType.getByName(splitd[0]), Integer.MAX_VALUE, new Integer(splitd[1]));
+		return new PotionEffect(PotionEffectType.getByName(splitd[0]), 100, new Integer(splitd[1]));
 	}
 }

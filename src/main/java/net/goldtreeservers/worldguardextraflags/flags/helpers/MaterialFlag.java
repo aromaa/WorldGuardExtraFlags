@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
 import org.bukkit.Material;
 
@@ -22,7 +22,15 @@ public class MaterialFlag extends Flag<Material>
 	@Override
 	public Material parseInput(FlagContext context) throws InvalidFlagFormat
 	{
-		return Material.getMaterial(context.getUserInput().trim().toUpperCase());
+		Material material = Material.getMaterial(context.getUserInput().trim().toUpperCase());
+		if (material != null)
+		{
+			return material;
+		}
+		else
+		{
+			throw new InvalidFlagFormat("Unable to find the material!");
+		}
 	}
 
 	@Override

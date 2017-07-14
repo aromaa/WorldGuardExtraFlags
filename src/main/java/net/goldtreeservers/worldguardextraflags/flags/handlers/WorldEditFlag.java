@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.handlers;
 
 import org.bukkit.entity.Player;
 
@@ -9,10 +9,11 @@ import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extent.AbstractDelegateExtent;
 import com.sk89q.worldedit.extent.Extent;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
 public class WorldEditFlag extends AbstractDelegateExtent
 {
@@ -28,15 +29,13 @@ public class WorldEditFlag extends AbstractDelegateExtent
     public boolean setBlock(Vector location, BaseBlock block) throws WorldEditException
     {
     	Player player = WorldGuardExtraFlagsPlugin.getPlugin().getServer().getPlayer(this.actor.getUniqueId());
-    	if (WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
+		if (WorldGuardUtils.hasBypass(player))
     	{
     		return super.setBlock(location, block);
     	}
     	else
     	{
-    		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(BukkitUtil.toLocation(player.getWorld(), location));
-    		State state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.worldEdit);
-    		if (state != State.DENY)
+    		if (WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(BukkitUtil.toLocation(player.getWorld(), location)).queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.WORLDEDIT) != State.DENY)
     		{
     			return super.setBlock(location, block);
     		}

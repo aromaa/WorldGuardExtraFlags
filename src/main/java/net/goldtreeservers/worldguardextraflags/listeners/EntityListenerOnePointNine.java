@@ -1,6 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,28 +10,27 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
 public class EntityListenerOnePointNine implements Listener
 {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityToggleGlideEvent(EntityToggleGlideEvent event)
 	{
-		if (event.getEntity() instanceof LivingEntity)
+		if (event.getEntity() instanceof Player)
 		{
-			if (event.getEntity() instanceof Player)
+			Player player = (Player)event.getEntity();
+			if (!WorldGuardUtils.hasBypass(player))
 			{
-				if (WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass((Player)event.getEntity(), ((Player)event.getEntity()).getWorld()))
+				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+
+				State state = regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.GLIDE);
+				if (state != null)
 				{
-					return;
+					event.setCancelled(true);
+					player.setGliding(state == State.ALLOW);
 				}
-			}
-			
-			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(event.getEntity().getLocation());
-			State allowGliding = regions.queryValue(event.getEntity() instanceof Player ? WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer((Player)event.getEntity()) : null, WorldGuardExtraFlagsPlugin.glide);
-			if (allowGliding != null)
-			{
-				event.setCancelled(true);
-				((LivingEntity)event.getEntity()).setGliding(allowGliding == State.ALLOW);
 			}
 		}
 	}

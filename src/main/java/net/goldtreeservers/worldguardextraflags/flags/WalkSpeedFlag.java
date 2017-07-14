@@ -10,7 +10,7 @@ import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
 
 public class WalkSpeedFlag extends FlagValueChangeHandler<Double>
 {
@@ -28,7 +28,7 @@ public class WalkSpeedFlag extends FlagValueChangeHandler<Double>
 	    
 	protected WalkSpeedFlag(Session session)
 	{
-		super(session, WorldGuardExtraFlagsPlugin.walkSpeed);
+		super(session, FlagUtils.WALK_SPEED);
 	}
 	
 	private void updateWalkSpeed(Player player, Double newValue, World world)
@@ -46,10 +46,10 @@ public class WalkSpeedFlag extends FlagValueChangeHandler<Double>
     		
         	if (player.getWalkSpeed() != newValue.floatValue())
         	{
-            	if (this.originalWalkSpeed == null)
-            	{
-            		this.originalWalkSpeed = player.getWalkSpeed();
-            	}
+        		if (this.originalWalkSpeed == null)
+        		{
+        			this.originalWalkSpeed = player.getWalkSpeed();
+        		}
             	
         		player.setWalkSpeed(newValue.floatValue());
         	}
@@ -59,6 +59,7 @@ public class WalkSpeedFlag extends FlagValueChangeHandler<Double>
         	if (this.originalWalkSpeed != null)
         	{
         		player.setWalkSpeed(this.originalWalkSpeed);
+        		
         		this.originalWalkSpeed = null;
         	}
         }
@@ -74,6 +75,7 @@ public class WalkSpeedFlag extends FlagValueChangeHandler<Double>
     protected boolean onSetValue(Player player, Location from, Location to, ApplicableRegionSet toSet, Double currentValue, Double lastValue, MoveType moveType)
     {
     	this.updateWalkSpeed(player, currentValue, to.getWorld());
+    	
         return true;
     }
 
@@ -81,6 +83,7 @@ public class WalkSpeedFlag extends FlagValueChangeHandler<Double>
     protected boolean onAbsentValue(Player player, Location from, Location to, ApplicableRegionSet toSet, Double lastValue, MoveType moveType)
     {
     	this.updateWalkSpeed(player, null, player.getWorld());
+    	
         return true;
     }
 }

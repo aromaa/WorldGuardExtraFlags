@@ -10,6 +10,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
 
 public class EntityListener implements Listener
 {
@@ -18,12 +19,11 @@ public class EntityListener implements Listener
 	{
 		for(Block block : event.getBlocks())
 		{
-			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
-			State allowNetherPortals = regions.queryValue(null, WorldGuardExtraFlagsPlugin.netherPortals);
-			if (allowNetherPortals == State.DENY)
+			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+			if (regions.queryValue(null, FlagUtils.NETHER_PORTALS) == State.DENY)
 			{
 				event.setCancelled(true);
-				return;
+				break;
 			}
 		}
 	}

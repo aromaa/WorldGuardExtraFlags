@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,7 +22,15 @@ public class PotionEffectTypeFlag extends Flag<PotionEffectType>
 	@Override
 	public PotionEffectType parseInput(FlagContext context) throws InvalidFlagFormat
 	{
-        return PotionEffectType.getByName(context.getUserInput().trim());
+		PotionEffectType potionEffect = PotionEffectType.getByName(context.getUserInput().trim());
+		if (potionEffect != null)
+		{
+			return potionEffect;
+		}
+		else
+		{
+			throw new InvalidFlagFormat("Unable to find the potion effect!");
+		}
 	}
 
 	@Override

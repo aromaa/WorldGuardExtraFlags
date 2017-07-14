@@ -11,7 +11,8 @@ import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
 public class GlideFlag extends FlagValueChangeHandler<State>
 {
@@ -30,35 +31,33 @@ public class GlideFlag extends FlagValueChangeHandler<State>
     
 	protected GlideFlag(Session session)
 	{
-		super(session, WorldGuardExtraFlagsPlugin.glide);
+		super(session, FlagUtils.GLIDE);
 	}
 
 	private void updateGlide(Player player, State newValue, World world)
 	{
-		if (!this.getSession().getManager().hasBypass(player, world))
+		if (!WorldGuardUtils.hasBypass(player) && newValue != null)
 		{
-			this.currentValue = newValue == null ? null : newValue == State.ALLOW ? true : false;
+			boolean value = (newValue == State.ALLOW ? true : false);
 			
-	        if (this.currentValue != null)
-	        {
-	        	if (player.isGliding() != this.currentValue)
-	        	{
-	            	if (this.originalGlide == null)
-	            	{
-	            		this.originalGlide = player.isGliding();
-	            	}
-	            	
-	            	player.setGliding(this.currentValue);
-	        	}
-	        }
-	        else
-	        {
-	        	if (this.originalGlide != null)
-	        	{
-	        		player.setGliding(this.originalGlide);
-	        		this.originalGlide = null;
-	        	}
-	        }
+			if (player.isGliding() != value)
+			{
+				if (this.originalGlide == null)
+				{
+					this.originalGlide = player.isGliding();
+				}
+				
+				player.setGliding(value);
+			}
+		}
+		else
+		{
+			if (this.originalGlide != null)
+			{
+				player.setGliding(this.originalGlide);
+				
+				this.originalGlide = null;
+			}
 		}
 	}
 	
@@ -72,6 +71,7 @@ public class GlideFlag extends FlagValueChangeHandler<State>
 	protected boolean onSetValue(Player player, Location from, Location to, ApplicableRegionSet toSet, State currentValue, State lastValue, MoveType moveType)
 	{
     	this.updateGlide(player, currentValue, to.getWorld());
+    	
 		return true;
 	}
 
@@ -79,6 +79,7 @@ public class GlideFlag extends FlagValueChangeHandler<State>
 	protected boolean onAbsentValue(Player player, Location from, Location to, ApplicableRegionSet toSet, State lastValue, MoveType moveType)
 	{
     	this.updateGlide(player, null, player.getWorld());
+    	
 		return true;
 	}
 	

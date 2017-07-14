@@ -11,7 +11,9 @@ import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import lombok.Getter;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
 public class FlyFlag extends FlagValueChangeHandler<State>
 {
@@ -24,41 +26,39 @@ public class FlyFlag extends FlagValueChangeHandler<State>
             return new FlyFlag(session);
         }
     }
-    
+
+    @Getter private Boolean currentValue;
     private Boolean originalFly;
-    private Boolean currentValue;
 	    
 	protected FlyFlag(Session session)
 	{
-		super(session, WorldGuardExtraFlagsPlugin.fly);
+		super(session, FlagUtils.FLY);
 	}
 	
 	private void updateFly(Player player, State newValue, World world)
 	{
-		if (!this.getSession().getManager().hasBypass(player, world))
+		if (!WorldGuardUtils.hasBypass(player) && newValue != null)
 		{
-			this.currentValue = newValue == null ? null : newValue == State.ALLOW ? true : false;
+			boolean value = (newValue == State.ALLOW ? true : false);
 			
-	        if (this.currentValue != null)
-	        {
-	        	if (player.getAllowFlight() != this.currentValue)
-	        	{
-	            	if (this.originalFly == null)
-	            	{
-	            		this.originalFly = player.getAllowFlight();
-	            	}
-	            	
-	            	player.setAllowFlight(this.currentValue);
-	        	}
-	        }
-	        else
-	        {
-	        	if (this.originalFly != null)
-	        	{
-	        		player.setAllowFlight(this.originalFly);
-	        		this.originalFly = null;
-	        	}
-	        }
+			if (player.getAllowFlight() != value)
+			{
+				if (this.originalFly == null)
+				{
+					this.originalFly = player.getAllowFlight();
+				}
+				
+				player.setAllowFlight(value);
+			}
+		}
+		else
+		{
+			if (this.originalFly != null)
+			{
+				player.setAllowFlight(this.originalFly);
+				
+				this.originalFly = null;
+			}
 		}
 	}
 	
@@ -72,6 +72,7 @@ public class FlyFlag extends FlagValueChangeHandler<State>
     protected boolean onSetValue(Player player, Location from, Location to, ApplicableRegionSet toSet, State currentValue, State lastValue, MoveType moveType)
     {
     	this.updateFly(player, currentValue, to.getWorld());
+    	
         return true;
     }
 
@@ -79,6 +80,7 @@ public class FlyFlag extends FlagValueChangeHandler<State>
     protected boolean onAbsentValue(Player player, Location from, Location to, ApplicableRegionSet toSet, State lastValue, MoveType moveType)
     {
     	this.updateFly(player, null, player.getWorld());
+    	
         return true;
     }
     
@@ -91,10 +93,5 @@ public class FlyFlag extends FlagValueChangeHandler<State>
     	}
     	
 		return true;
-    }
-    
-    public Boolean getFlyStatys()
-    {
-    	return this.currentValue;
     }
 }

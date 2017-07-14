@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.handlers;
 
 import java.util.Set;
 
@@ -14,20 +14,22 @@ import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
-public class TeleportOnExitFlag extends Handler
+public class TeleportOnEntryFlag extends Handler
 {
 	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<TeleportOnExitFlag>
+    public static class Factory extends Handler.Factory<TeleportOnEntryFlag>
     {
         @Override
-        public TeleportOnExitFlag create(Session session)
+        public TeleportOnEntryFlag create(Session session)
         {
-            return new TeleportOnExitFlag(session);
+            return new TeleportOnEntryFlag(session);
         }
     }
-	   
-	protected TeleportOnExitFlag(Session session)
+	    
+	protected TeleportOnEntryFlag(Session session)
 	{
 		super(session);
 	}
@@ -36,19 +38,19 @@ public class TeleportOnExitFlag extends Handler
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		if (!player.hasMetadata("WorldGuardExtraFlagsWaitingForTeleportationToBeDone"))
+		if (!WorldGuardUtils.hasBypass(player))
 		{
-			for(ProtectedRegion region : exited)
+			if (!player.hasMetadata("WGEFP-TPOEF"))
 			{
-				com.sk89q.worldedit.Location location = region.getFlag(WorldGuardExtraFlagsPlugin.teleportOnExit);
+				com.sk89q.worldedit.Location location = toSet.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.TELEPORT_ON_ENTRY);
 				if (location != null)
 				{
-					player.setMetadata("WorldGuardExtraFlagsWaitingForTeleportationToBeDone", new FixedMetadataValue(WorldGuardExtraFlagsPlugin.getPlugin(), null));
+					player.setMetadata("WGEFP-TPOEF", new FixedMetadataValue(WorldGuardExtraFlagsPlugin.getPlugin(), null));
 					player.teleport(BukkitUtil.toLocation(location));
-					break;
 				}
 			}
 		}
+		
 		return true;
 	}
 }

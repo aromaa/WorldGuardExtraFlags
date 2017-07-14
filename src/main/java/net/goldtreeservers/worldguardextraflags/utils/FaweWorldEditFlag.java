@@ -24,8 +24,8 @@ public class FaweWorldEditFlag extends FaweMaskManager<Player>
 	
     public ProtectedRegion getRegion(final Player player, final Location loc)
     {
-        final com.sk89q.worldguard.LocalPlayer localplayer = WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player);
-        RegionManager manager = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionManager(player.getWorld());
+        final com.sk89q.worldguard.LocalPlayer localplayer = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player);
+        RegionManager manager = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(player.getWorld());
         final ProtectedRegion global = manager.getRegion("__global__");
         if (global != null && !isDenied(localplayer, global))
         {
@@ -45,7 +45,7 @@ public class FaweWorldEditFlag extends FaweMaskManager<Player>
 
     public boolean isDenied(LocalPlayer localplayer, ProtectedRegion region)
     {
-        return region.getFlag(WorldGuardExtraFlagsPlugin.worldEdit) == State.DENY;
+        return region.getFlag(FlagUtils.WORLDEDIT) == State.DENY;
     }
 
 	@Override

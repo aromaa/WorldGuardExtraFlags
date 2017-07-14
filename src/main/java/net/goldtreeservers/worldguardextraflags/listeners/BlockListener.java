@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -17,30 +18,28 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
 public class BlockListener implements Listener
 {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityBlockFormEvent(EntityBlockFormEvent event)
 	{
-		if (WorldGuardExtraFlagsPlugin.isSupportingFrostwalker())
+		if (WorldGuardExtraFlagsPlugin.isSupportFrostwalker())
 		{
-			if (event.getNewState().getType() == Material.FROSTED_ICE)
+			BlockState newState = event.getNewState();
+			if (newState.getType() == Material.FROSTED_ICE)
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(event.getNewState().getLocation());
-				State state = null;
 				if (event.getEntity() instanceof Player)
 				{
-					state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(((Player)event.getEntity())), WorldGuardExtraFlagsPlugin.frostwalker);
-				}
-				else
-				{
-					state = regions.queryValue(null, WorldGuardExtraFlagsPlugin.frostwalker);
-				}
-				
-				if (state == State.DENY)
-				{
-					event.setCancelled(true);
+					Player player = (Player)event.getEntity();
+
+					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(newState.getLocation());
+					if (regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.FROSTWALKER) == State.DENY)
+					{
+						event.setCancelled(true);
+					}
 				}
 			}
 		}
@@ -56,20 +55,20 @@ public class BlockListener implements Listener
 		{
 			Player player = (Player)cause;
 
-			if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
+			if (!WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().hasBypass(player, player.getWorld()))
 			{
 				for(Block block : event.getBlocks())
 				{
-					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 					
-					Set<Material> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockPlace);
+					Set<Material> state = regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.ALLOW_BLOCK_PLACE);
 					if (state != null && state.contains(block.getType()))
 					{
 						event.setResult(Result.ALLOW);
 					}
 					else
 					{
-						Set<Material> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockPlace);
+						Set<Material> state2 = regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.DENY_BLOCK_PLACE);
 						if (state2 != null && state2.contains(block.getType()))
 						{
 							event.setResult(Result.DENY);
@@ -96,20 +95,20 @@ public class BlockListener implements Listener
 		{
 			Player player = (Player)cause;
 
-			if (!WorldGuardExtraFlagsPlugin.getWorldGuard().getSessionManager().hasBypass(player, player.getWorld()))
+			if (!WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().hasBypass(player, player.getWorld()))
 			{
 				for(Block block : event.getBlocks())
 				{
-					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 
-					Set<Material> state = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.allowBlockBreak);
+					Set<Material> state = regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.ALLOW_BLOCK_BREAK);
 					if (state != null && state.contains(block.getType()))
 					{
 						event.setResult(Result.ALLOW);
 					}
 					else
 					{
-						Set<Material> state2 = regions.queryValue(WorldGuardExtraFlagsPlugin.getWorldGuard().wrapPlayer(player), WorldGuardExtraFlagsPlugin.denyBlockBreak);
+						Set<Material> state2 = regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.DENY_BLOCK_BREAK);
 						if (state2 != null && state2.contains(block.getType()))
 						{
 							event.setResult(Result.DENY);

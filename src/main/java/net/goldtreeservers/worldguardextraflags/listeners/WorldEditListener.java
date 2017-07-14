@@ -4,7 +4,7 @@ import com.sk89q.worldedit.event.extent.EditSessionEvent;
 import com.sk89q.worldedit.util.eventbus.EventHandler;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 
-import net.goldtreeservers.worldguardextraflags.flags.WorldEditFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.WorldEditFlag;
 
 public class WorldEditListener
 {

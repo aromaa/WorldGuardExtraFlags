@@ -12,6 +12,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
 
 public class WorldListener implements Listener
 {
@@ -24,9 +25,9 @@ public class WorldListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onChunkUnloadEvent(ChunkUnloadEvent event)
 	{
-		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuard().getRegionManager(event.getWorld()).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", new BlockVector(event.getChunk().getX() * 16, 0, event.getChunk().getZ() * 16), new BlockVector(event.getChunk().getX() * 16 + 15, 256, event.getChunk().getZ() * 16 + 15))))
+		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(event.getWorld()).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", new BlockVector(event.getChunk().getX() * 16, 0, event.getChunk().getZ() * 16), new BlockVector(event.getChunk().getX() * 16 + 15, 256, event.getChunk().getZ() * 16 + 15))))
 		{
-			if (region.getFlag(WorldGuardExtraFlagsPlugin.chunkUnload) == State.DENY)
+			if (region.getFlag(FlagUtils.CHUNK_UNLOAD) == State.DENY)
 			{
 				event.setCancelled(true);
 				break;
