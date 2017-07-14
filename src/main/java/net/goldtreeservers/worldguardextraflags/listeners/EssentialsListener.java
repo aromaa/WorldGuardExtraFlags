@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 
 import net.ess3.api.events.GodStatusChangeEvent;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.flags.GodmodeFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.GodmodeFlag;
 import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
 
 public class EssentialsListener implements Listener

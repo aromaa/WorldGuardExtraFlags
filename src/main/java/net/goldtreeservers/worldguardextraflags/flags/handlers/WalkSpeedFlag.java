@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.flags;
+package net.goldtreeservers.worldguardextraflags.flags.handlers;
 
 import org.bukkit.Location;
 import org.bukkit.World;

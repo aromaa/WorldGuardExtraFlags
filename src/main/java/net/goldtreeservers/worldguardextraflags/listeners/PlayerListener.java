@@ -35,7 +35,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import net.elseland.xikage.MythicMobs.Mobs.EggManager;
 import net.elseland.xikage.MythicMobs.Mobs.MythicMob;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.flags.FlyFlag;
+import net.goldtreeservers.worldguardextraflags.flags.handlers.FlyFlag;
 import net.goldtreeservers.worldguardextraflags.flags.handlers.GiveEffectsFlag;
 import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
 import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
