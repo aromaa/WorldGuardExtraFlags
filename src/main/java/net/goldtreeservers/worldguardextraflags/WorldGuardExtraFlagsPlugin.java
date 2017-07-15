@@ -121,6 +121,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.GLIDE);
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.CHUNK_UNLOAD);
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.ITEM_DURABILITY);
+		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(FlagUtils.JOIN_LOCATION);
 	}
 	
 	@Override

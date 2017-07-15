@@ -35,10 +35,13 @@ public class BlockListener implements Listener
 				{
 					Player player = (Player)event.getEntity();
 
-					ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(newState.getLocation());
-					if (regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.FROSTWALKER) == State.DENY)
+					if (!WorldGuardUtils.hasBypass(player))
 					{
-						event.setCancelled(true);
+						ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(newState.getLocation());
+						if (regions.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.FROSTWALKER) == State.DENY)
+						{
+							event.setCancelled(true);
+						}
 					}
 				}
 			}
@@ -55,7 +58,7 @@ public class BlockListener implements Listener
 		{
 			Player player = (Player)cause;
 
-			if (!WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().hasBypass(player, player.getWorld()))
+			if (!WorldGuardUtils.hasBypass(player))
 			{
 				for(Block block : event.getBlocks())
 				{
@@ -95,7 +98,7 @@ public class BlockListener implements Listener
 		{
 			Player player = (Player)cause;
 
-			if (!WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().hasBypass(player, player.getWorld()))
+			if (!WorldGuardUtils.hasBypass(player))
 			{
 				for(Block block : event.getBlocks())
 				{

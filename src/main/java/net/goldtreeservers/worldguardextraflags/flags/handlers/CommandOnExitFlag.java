@@ -49,7 +49,7 @@ public class CommandOnExitFlag extends Handler
 	{
 		if (!WorldGuardUtils.hasBypass(player))
 		{
-			Collection<Set<String>> commands = toSet.queryAllValues(WorldGuardUtils.wrapPlayer(player), FlagUtils.COMMAND_ON_EXIT);
+			Collection<Set<String>> commands = new ArrayList<Set<String>>(toSet.queryAllValues(WorldGuardUtils.wrapPlayer(player), FlagUtils.COMMAND_ON_EXIT));
 			
 			if (!commands.isEmpty())
 			{
@@ -58,7 +58,7 @@ public class CommandOnExitFlag extends Handler
 	                Set<String> commands_ = region.getFlag(FlagUtils.COMMAND_ON_EXIT);
 	                if (commands_ != null)
 	                {
-	                	this.lastCommands.add(commands_);
+	                	commands.add(commands_);
 	                }
 	            }
 			}

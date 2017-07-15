@@ -171,7 +171,7 @@ public class GiveEffectsFlag extends Handler
 	public void drinkMilk(Player player)
 	{
 		this.removedEffects.clear();
-		
+
 		this.check(player, WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
 	}
 	

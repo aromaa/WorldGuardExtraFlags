@@ -19,6 +19,8 @@ public class EntityListener implements Listener
 	{
 		for(Block block : event.getBlocks())
 		{
+			//Unable to get the player who created it....
+			
 			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 			if (regions.queryValue(null, FlagUtils.NETHER_PORTALS) == State.DENY)
 			{
