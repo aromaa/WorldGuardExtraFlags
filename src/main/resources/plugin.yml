@@ -1,8 +1,7 @@
 name: WorldGuardExtraFlags
-version: 2.14
-description: Add more flags to worldguard to help manage your server easily!
+version: 2.14.1
+description: Adds more flags to worldguard to help manage your server easily!
 author: isokissa3
-authors: [isokissa3]
 website: https://goldtreevers.net
 depend: [ WorldGuard ]
 softdepend: [ MythicMobs, FastAsyncWorldEdit, Essentials ]
