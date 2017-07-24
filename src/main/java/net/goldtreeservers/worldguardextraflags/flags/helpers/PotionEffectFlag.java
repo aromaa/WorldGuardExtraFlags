@@ -29,7 +29,7 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 			PotionEffectType potionEffect = PotionEffectType.getByName(splitd[0]);
 			if (potionEffect != null)
 			{
-				return new PotionEffect(potionEffect, 100, new Integer(splitd[1]));
+				return new PotionEffect(potionEffect, 160, new Integer(splitd[1]));
 			}
 			else
 			{
