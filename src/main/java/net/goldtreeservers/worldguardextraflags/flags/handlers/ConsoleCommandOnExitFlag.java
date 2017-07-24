@@ -63,28 +63,17 @@ public class ConsoleCommandOnExitFlag extends Handler
 	            }
 			}
 			
-			boolean isOp = player.isOp();
-			
-			try
+			for(Set<String> commands_ : this.lastCommands)
 			{
-				player.setOp(true);
-				
-				for(Set<String> commands_ : commands)
+				if (!commands.contains(commands_))
 				{
-					if (!this.lastCommands.contains(commands_))
+					for(String command : commands_)
 					{
-						for(String command : commands_)
-						{
-							WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(WorldGuardExtraFlagsPlugin.getPlugin().getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
-						}
-						
-						break;
+						WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(WorldGuardExtraFlagsPlugin.getPlugin().getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
 					}
+					
+					break;
 				}
-			}
-			finally
-			{
-				player.setOp(isOp);
 			}
 			
 			this.lastCommands = commands;

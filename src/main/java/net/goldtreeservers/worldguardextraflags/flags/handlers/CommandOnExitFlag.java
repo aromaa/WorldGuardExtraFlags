@@ -63,9 +63,9 @@ public class CommandOnExitFlag extends Handler
 	            }
 			}
 			
-			for(Set<String> commands_ : commands)
+			for(Set<String> commands_ : this.lastCommands)
 			{
-				if (!this.lastCommands.contains(commands_))
+				if (!commands.contains(commands_))
 				{
 					boolean isOp = player.isOp();
 					
