@@ -65,31 +65,12 @@ public class CommandOnExitFlag extends Handler
 			
 			for(Set<String> commands_ : this.lastCommands)
 			{
-				if (!commands.contains(commands_))
+				if (!commands.contains(commands_) && commands_.size() > 0)
 				{
-					boolean isOp = player.isOp();
-					
-					try
+					for(String command : commands_)
 					{
-						if (!isOp)
-						{
-							player.setOp(true);
-						}
-						
-						for(String command : commands_)
-						{
-							WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(player, command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
-						}
+						WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(player, command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
 					}
-					finally
-					{
-						if (!isOp)
-						{
-							player.setOp(isOp);
-						}
-					}
-
-					break;
 				}
 			}
 			

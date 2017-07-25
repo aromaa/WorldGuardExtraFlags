@@ -47,28 +47,11 @@ public class CommandOnEntryFlag extends Handler
 
 			for(Set<String> commands_ : commands)
 			{
-				if (!this.lastCommands.contains(commands_))
+				if (!this.lastCommands.contains(commands_) && commands_.size() > 0)
 				{
-					boolean isOp = player.isOp();
-					
-					try
+					for(String command : commands_)
 					{
-						if (!isOp)
-						{
-							player.setOp(true);
-						}
-						
-						for(String command : commands_)
-						{
-							WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(player, command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
-						}
-					}
-					finally
-					{
-						if (!isOp)
-						{
-							player.setOp(isOp);
-						}
+						WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(player, command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
 					}
 					
 					break;
