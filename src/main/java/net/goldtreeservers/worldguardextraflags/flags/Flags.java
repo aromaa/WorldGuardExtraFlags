@@ -38,7 +38,7 @@ public final class Flags
 	public final static StringFlag CHAT_PREFIX = new StringFlag("chat-prefix");
 	public final static StringFlag CHAT_SUFFIX = new StringFlag("chat-suffix");
 	
-	public final static SetFlag<PotionEffectType> BLOCKED_EFFECTS = new SetFlag<PotionEffectType>("blocked-effects", new PotionEffectTypeFlag(null)); //LOOK AT MORE
+	public final static SetFlag<PotionEffectType> BLOCKED_EFFECTS = new SetFlag<PotionEffectType>("blocked-effects", new PotionEffectTypeFlag(null));
 	
 	public final static StateFlag GODMODE = new StateFlag("godmode", false);
 	
@@ -63,7 +63,7 @@ public final class Flags
 	public final static SetFlag<Material> ALLOW_BLOCK_BREAK = new SetFlag<Material>("allow-block-break", new MaterialFlag(null));
 	public final static SetFlag<Material> DENY_BLOCK_BREAK = new SetFlag<Material>("deny-block-break", new MaterialFlag(null));
 	
-	public final static StateFlag GLIDE = new StateFlag("glide", false); //UNSUPPORTED
+	public final static StateFlag GLIDE = new StateFlag("glide", false);
 	
 	public final static StateFlag CHUNK_UNLOAD = new StateFlag("chunk-unload", true);
 	
