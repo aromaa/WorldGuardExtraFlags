@@ -1,6 +1,6 @@
 name: WorldGuardExtraFlags
-version: 2.14.3
-description: Adds more flags to worldguard to help manage your server easily!
+version: 3.0.0
+description: Adds more flags to WorldGuard to help manage your server easily!
 author: isokissa3
 website: https://goldtreevers.net
 depend: [ WorldGuard ]

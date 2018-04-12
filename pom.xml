@@ -3,7 +3,6 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>net.goldtreeservers</groupId>
    <artifactId>worldguardextraflags</artifactId>
-   <version>2.14.3</version>
    <name>WorldGuardExtraFlags</name>
    <build>
       <finalName>WorldGuardExtraFlagsPlugin</finalName>
@@ -74,4 +73,5 @@
          <scope>provided</scope>
       </dependency>
    </dependencies>
+   <version>3.0.0</version>
 </project>

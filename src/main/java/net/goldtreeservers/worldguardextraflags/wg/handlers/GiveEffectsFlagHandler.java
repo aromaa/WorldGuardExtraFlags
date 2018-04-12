@@ -1,11 +1,13 @@
-package net.goldtreeservers.worldguardextraflags.flags.handlers;
+package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,27 +21,27 @@ import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.helpers.PotionEffectDetails;
-import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
-import net.goldtreeservers.worldguardextraflags.utils.TimeUtils;
-import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
+import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
+import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
-public class GiveEffectsFlag extends Handler
+public class GiveEffectsFlagHandler extends Handler
 {
 	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<GiveEffectsFlag>
+    public static class Factory extends Handler.Factory<GiveEffectsFlagHandler>
     {
         @Override
-        public GiveEffectsFlag create(Session session)
+        public GiveEffectsFlagHandler create(Session session)
         {
-            return new GiveEffectsFlag(session);
+            return new GiveEffectsFlagHandler(session);
         }
     }
 
-	private HashMap<PotionEffectType, PotionEffectDetails> removedEffects;
-    private HashSet<PotionEffectType> givenEffects;
+	private Map<PotionEffectType, PotionEffectDetails> removedEffects;
+    private Set<PotionEffectType> givenEffects;
     
-	protected GiveEffectsFlag(Session session)
+	protected GiveEffectsFlagHandler(Session session)
 	{
 		super(session);
 		
@@ -50,19 +52,13 @@ public class GiveEffectsFlag extends Handler
 	@Override
 	public void initialize(Player player, Location current, ApplicableRegionSet set)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, set);
-		}
+		this.check(player, set);
     }
 	
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, toSet);
-		}
+		this.check(player, toSet);
 		
 		return true;
 	}
@@ -70,15 +66,12 @@ public class GiveEffectsFlag extends Handler
 	@Override
 	public void tick(Player player, ApplicableRegionSet set)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, set);
-		}
+		this.check(player, set);
 	}
 	
 	private void check(Player player, ApplicableRegionSet set)
 	{
-		Set<PotionEffect> potionEffects = set.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.GIVE_EFFECTS);
+		Set<PotionEffect> potionEffects = WorldGuardUtils.queryValue(player, player.getWorld(), set.getRegions(), Flags.GIVE_EFFECTS);
 		if (potionEffects != null && potionEffects.size() > 0)
 		{
 			for (PotionEffect effect : potionEffects)
@@ -95,14 +88,7 @@ public class GiveEffectsFlag extends Handler
 
 				if (this.givenEffects.add(effect.getType()) && effect_ != null)
 				{
-					if (WorldGuardExtraFlagsPlugin.isSupportsMobEffectColors())
-					{
-						this.removedEffects.put(effect_.getType(), new PotionEffectDetails(TimeUtils.getUnixtimestamp() + effect_.getDuration() / 20, effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles(), effect_.getColor()));
-					}
-					else
-					{
-						this.removedEffects.put(effect_.getType(), new PotionEffectDetails(TimeUtils.getUnixtimestamp() + effect_.getDuration() / 20, effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles(), null));
-					}
+					this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles(), SupportedFeatures.isMobEffectColorsSupported() ? effect_.getColor() : null));
 					
 					player.removePotionEffect(effect_.getType());
 				}
@@ -152,7 +138,7 @@ public class GiveEffectsFlag extends Handler
 					
 					if (timeLeft > 0)
 					{
-						if (WorldGuardExtraFlagsPlugin.isSupportsMobEffectColors())
+						if (SupportedFeatures.isMobEffectColorsSupported())
 						{
 							player.addPotionEffect(new PotionEffect(effect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles(), removedEffect.getColor()), true);
 						}
@@ -179,14 +165,7 @@ public class GiveEffectsFlag extends Handler
 	{
 		for(PotionEffect effect : effects)
 		{
-			if (WorldGuardExtraFlagsPlugin.isSupportsMobEffectColors())
-			{
-				this.removedEffects.put(effect.getType(), new PotionEffectDetails(TimeUtils.getUnixtimestamp() + effect.getDuration() / 20, effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), effect.getColor()));
-			}
-			else
-			{
-				this.removedEffects.put(effect.getType(), new PotionEffectDetails(TimeUtils.getUnixtimestamp() + effect.getDuration() / 20, effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), null));
-			}
+			this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), SupportedFeatures.isMobEffectColorsSupported() ? effect.getColor() : null));
 		}
 		
 		this.check(player, WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));

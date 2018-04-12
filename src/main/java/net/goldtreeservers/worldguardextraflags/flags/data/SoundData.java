@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.utils;
+package net.goldtreeservers.worldguardextraflags.flags.data;
 
 public class SoundData
 {

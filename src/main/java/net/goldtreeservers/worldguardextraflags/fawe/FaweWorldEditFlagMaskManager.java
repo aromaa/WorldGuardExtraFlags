@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.utils;
+package net.goldtreeservers.worldguardextraflags.fawe;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,15 +14,16 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
-public class FaweWorldEditFlag extends FaweMaskManager<Player> 
+public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player> 
 {
-	public FaweWorldEditFlag()
+	public FaweWorldEditFlagMaskManager()
 	{
 		super("WorldGuardExtraFlags");
 	}
 	
-    public ProtectedRegion getRegion(final Player player, final Location loc)
+    public ProtectedRegion getRegion(Player player, Location loc)
     {
         final com.sk89q.worldguard.LocalPlayer localplayer = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player);
         RegionManager manager = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(player.getWorld());
@@ -45,7 +46,7 @@ public class FaweWorldEditFlag extends FaweMaskManager<Player>
 
     public boolean isDenied(LocalPlayer localplayer, ProtectedRegion region)
     {
-        return region.getFlag(FlagUtils.WORLDEDIT) == State.DENY;
+        return region.getFlag(Flags.WORLDEDIT) == State.DENY;
     }
 
 	@Override
@@ -54,6 +55,7 @@ public class FaweWorldEditFlag extends FaweMaskManager<Player>
 		final Player player = fawePlayer.parent;
 		final Location location = player.getLocation();
         final ProtectedRegion myregion = this.getRegion(player, location);
+        
         if (myregion != null)
         {
             final BlockVector pos1;

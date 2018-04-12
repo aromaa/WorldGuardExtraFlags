@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import org.bukkit.Chunk;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,22 +14,25 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
+import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.utils.WorldUtils;
 
 public class WorldListener implements Listener
 {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldLoadEvent(WorldLoadEvent event)
 	{
-		WorldGuardExtraFlagsPlugin.doUnloadChunkFlagWorldCheck(event.getWorld());
+		WorldUtils.doUnloadChunkFlagCheck(event.getWorld());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(ignoreCancelled = true)
 	public void onChunkUnloadEvent(ChunkUnloadEvent event)
 	{
-		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(event.getWorld()).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", new BlockVector(event.getChunk().getX() * 16, 0, event.getChunk().getZ() * 16), new BlockVector(event.getChunk().getX() * 16 + 15, 256, event.getChunk().getZ() * 16 + 15))))
+		World world = event.getWorld();
+		Chunk chunk = event.getChunk();
+		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(world).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", new BlockVector(chunk.getX() * 16, 0, chunk.getZ() * 16), new BlockVector(chunk.getX() * 16 + 15, 256, chunk.getZ() * 16 + 15))))
 		{
-			if (region.getFlag(FlagUtils.CHUNK_UNLOAD) == State.DENY)
+			if (region.getFlag(Flags.CHUNK_UNLOAD) == State.DENY)
 			{
 				event.setCancelled(true);
 				break;

@@ -1,7 +1,8 @@
-package net.goldtreeservers.worldguardextraflags.flags.handlers;
+package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -16,25 +17,26 @@ import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
-import net.goldtreeservers.worldguardextraflags.utils.SoundData;
-import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
+import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
+import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
-public class PlaySoundsFlag extends Handler
+public class PlaySoundsFlagHandler extends Handler
 {
 	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<PlaySoundsFlag>
+    public static class Factory extends Handler.Factory<PlaySoundsFlagHandler>
     {
         @Override
-        public PlaySoundsFlag create(Session session)
+        public PlaySoundsFlagHandler create(Session session)
         {
-            return new PlaySoundsFlag(session);
+            return new PlaySoundsFlagHandler(session);
         }
     }
 
-    private HashMap<String, BukkitRunnable> runnables;
+    private Map<String, BukkitRunnable> runnables;
 	    
-	protected PlaySoundsFlag(Session session)
+	protected PlaySoundsFlagHandler(Session session)
 	{
 		super(session);
 		
@@ -44,34 +46,25 @@ public class PlaySoundsFlag extends Handler
 	@Override
 	public void initialize(Player player, Location current, ApplicableRegionSet set)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, set);
-		}
+		this.check(player, set);
     }
 	
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, toSet);
-		}
+		this.check(player, toSet);
 		
 		return true;
 	}
 	
 	public void tick(Player player, ApplicableRegionSet set)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, set);
-		}
+		this.check(player, set);
     }
 	
 	private void check(Player player, ApplicableRegionSet set)
 	{
-		Set<SoundData> soundData = set.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.PLAY_SOUNDS);
+		Set<SoundData> soundData = WorldGuardUtils.queryValue(player, player.getWorld(), set.getRegions(), Flags.PLAY_SOUNDS);
 		if (soundData != null && soundData.size() > 0)
 		{
 			for(SoundData sound : soundData)
@@ -91,7 +84,7 @@ public class PlaySoundsFlag extends Handler
 						{
 							super.cancel();
 							
-							if (WorldGuardExtraFlagsPlugin.isSupportsStopSound())
+							if (SupportedFeatures.isStopSoundSupported())
 							{
 								player.stopSound(sound.getSound());
 							}

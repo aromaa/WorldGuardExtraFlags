@@ -1,15 +1,16 @@
-package net.goldtreeservers.worldguardextraflags.helpers;
+package net.goldtreeservers.worldguardextraflags.flags.data;
+
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Color;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.goldtreeservers.worldguardextraflags.utils.TimeUtils;
 
 @RequiredArgsConstructor
 public class PotionEffectDetails
 {
-	@Getter private final double endTime;
+	@Getter private final long endTime;
 	@Getter private final int amplifier;
 	@Getter private final boolean ambient;
 	@Getter private final boolean particles;
@@ -17,7 +18,7 @@ public class PotionEffectDetails
 	
 	public double getTimeLeft()
 	{
-		return this.endTime - TimeUtils.getUnixtimestamp();
+		return (this.endTime - System.nanoTime()) / TimeUnit.MICROSECONDS.toNanos(50L);
 	}
 	
 	public int getTimeLeftInTicks()

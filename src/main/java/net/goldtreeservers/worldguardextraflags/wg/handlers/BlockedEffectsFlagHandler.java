@@ -1,9 +1,10 @@
-package net.goldtreeservers.worldguardextraflags.flags.handlers;
+package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,27 +17,26 @@ import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.helpers.PotionEffectDetails;
-import net.goldtreeservers.worldguardextraflags.utils.FlagUtils;
-import net.goldtreeservers.worldguardextraflags.utils.TimeUtils;
-import net.goldtreeservers.worldguardextraflags.utils.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
+import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
+import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
-public class BlockedEffectsFlag extends Handler
+public class BlockedEffectsFlagHandler extends Handler
 {
 	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<BlockedEffectsFlag>
+    public static class Factory extends Handler.Factory<BlockedEffectsFlagHandler>
     {
         @Override
-        public BlockedEffectsFlag create(Session session)
+        public BlockedEffectsFlagHandler create(Session session)
         {
-            return new BlockedEffectsFlag(session);
+            return new BlockedEffectsFlagHandler(session);
         }
     }
 	
 	private HashMap<PotionEffectType, PotionEffectDetails> removedEffects;
     
-	protected BlockedEffectsFlag(Session session)
+	protected BlockedEffectsFlagHandler(Session session)
 	{
 		super(session);
 		
@@ -46,19 +46,13 @@ public class BlockedEffectsFlag extends Handler
 	@Override
 	public void initialize(Player player, Location current, ApplicableRegionSet set)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, set);
-		}
+		this.check(player, set);
     }
 	
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, toSet);
-		}
+		this.check(player, toSet);
 		
 		return true;
 	}
@@ -66,15 +60,12 @@ public class BlockedEffectsFlag extends Handler
 	@Override
 	public void tick(Player player, ApplicableRegionSet set)
 	{
-		if (!WorldGuardUtils.hasBypass(player))
-		{
-			this.check(player, set);
-		}
+		this.check(player, set);
 	}
 	
 	private void check(Player player, ApplicableRegionSet set)
 	{
-		Set<PotionEffectType> potionEffects = set.queryValue(WorldGuardUtils.wrapPlayer(player), FlagUtils.BLOCKED_EFFECTS);
+		Set<PotionEffectType> potionEffects = WorldGuardUtils.queryValue(player, player.getWorld(), set.getRegions(), Flags.BLOCKED_EFFECTS);
 		if (potionEffects != null && potionEffects.size() > 0)
 		{
 			for (PotionEffectType effectType : potionEffects)
@@ -91,14 +82,7 @@ public class BlockedEffectsFlag extends Handler
 				
 				if (effect != null)
 				{
-					if (WorldGuardExtraFlagsPlugin.isSupportsMobEffectColors())
-					{
-						this.removedEffects.put(effect.getType(), new PotionEffectDetails(TimeUtils.getUnixtimestamp() + effect.getDuration() / 20, effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), effect.getColor()));
-					}
-					else
-					{
-						this.removedEffects.put(effect.getType(), new PotionEffectDetails(TimeUtils.getUnixtimestamp() + effect.getDuration() / 20, effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), null));
-					}
+					this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), SupportedFeatures.isMobEffectColorsSupported() ? effect.getColor() : null));
 					
 					player.removePotionEffect(effectType);
 				}
@@ -118,7 +102,7 @@ public class BlockedEffectsFlag extends Handler
 					int timeLeft = removedEffect.getTimeLeftInTicks();
 					if (timeLeft > 0)
 					{
-						if (WorldGuardExtraFlagsPlugin.isSupportsMobEffectColors())
+						if (SupportedFeatures.isMobEffectColorsSupported())
 						{
 							player.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles(), removedEffect.getColor()), true);
 						}
