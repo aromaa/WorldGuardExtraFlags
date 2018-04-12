@@ -20,7 +20,7 @@ public class EssentialsListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onGodStatusChangeEvent(GodStatusChangeEvent event)
 	{
-		IUser user = event.getController();
+		IUser user = event.getAffected();
 		Player player = user.getBase();
 		
 		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
