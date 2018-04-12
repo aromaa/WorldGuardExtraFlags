@@ -88,7 +88,7 @@ public class GiveEffectsFlagHandler extends Handler
 
 				if (this.givenEffects.add(effect.getType()) && effect_ != null)
 				{
-					this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles(), SupportedFeatures.isMobEffectColorsSupported() ? effect_.getColor() : null));
+					this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect_.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles(), SupportedFeatures.isMobEffectColorsSupported() ? effect_.getColor() : null));
 					
 					player.removePotionEffect(effect_.getType());
 				}

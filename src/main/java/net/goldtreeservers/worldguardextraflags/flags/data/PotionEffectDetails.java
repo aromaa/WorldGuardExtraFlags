@@ -16,13 +16,13 @@ public class PotionEffectDetails
 	@Getter private final boolean particles;
 	@Getter private final Color color;
 	
-	public double getTimeLeft()
+	public long getTimeLeft()
 	{
-		return (this.endTime - System.nanoTime()) / TimeUnit.MICROSECONDS.toNanos(50L);
+		return (this.endTime - System.nanoTime());
 	}
 	
 	public int getTimeLeftInTicks()
 	{
-		return (int)(this.getTimeLeft() / 0.05);
+		return (int)(this.getTimeLeft() / TimeUnit.MILLISECONDS.toNanos(50L));
 	}
 }
