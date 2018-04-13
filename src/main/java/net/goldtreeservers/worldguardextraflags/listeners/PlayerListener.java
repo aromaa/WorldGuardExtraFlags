@@ -26,6 +26,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.essentials.EssentialsUtils;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.FlyFlagHandler;
@@ -188,9 +189,9 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		if (WorldGuardExtraFlagsPlugin.isEssentialsEnable()) //Essentials how dare u do this to me!?!
+		if (WorldGuardExtraFlagsPlugin.isEssentialsPluginEnabled()) //Essentials how dare u do this to me!?!
 		{
-			if (player.getGameMode() != GameMode.CREATIVE && !WorldGuardExtraFlagsPlugin.getEssentialsPlugin().getUser(player).isAuthorized("essentials.fly"))
+			if (player.getGameMode() != GameMode.CREATIVE && !EssentialsUtils.getPlugin().getUser(player).isAuthorized("essentials.fly"))
 			{
 				//Essentials now turns off flight, fuck him
 				Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();

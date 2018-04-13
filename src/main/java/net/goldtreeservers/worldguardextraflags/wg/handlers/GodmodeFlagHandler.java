@@ -17,6 +17,7 @@ import com.sk89q.worldguard.session.handler.Handler;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.essentials.EssentialsUtils;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
@@ -67,9 +68,9 @@ public class GodmodeFlagHandler extends Handler
 			this.isGodmodeEnabled = null;
 		}
 		
-		if (WorldGuardExtraFlagsPlugin.isEssentialsEnable())
+		if (WorldGuardExtraFlagsPlugin.isEssentialsPluginEnabled())
 		{
-			User user = WorldGuardExtraFlagsPlugin.getEssentialsPlugin().getUser(player);
+			User user = EssentialsUtils.getPlugin().getUser(player);
 			
 			if (this.isGodmodeEnabled != null)
 			{

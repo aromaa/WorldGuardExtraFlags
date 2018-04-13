@@ -1,6 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.event.extent.EditSessionEvent;
 import com.sk89q.worldedit.extension.platform.Actor;
@@ -17,7 +16,7 @@ public class WorldEditListener
 		Actor actor = event.getActor();
 		if (actor != null && actor.isPlayer())
 		{
-			event.setExtent(new WorldEditFlagHandler((BukkitWorld)event.getWorld(), event.getExtent(), (Player)actor));
+			event.setExtent(new WorldEditFlagHandler(event.getWorld(), event.getExtent(), (Player)actor));
 		}
 	}
 }

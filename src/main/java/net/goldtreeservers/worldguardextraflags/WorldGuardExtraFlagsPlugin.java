@@ -5,21 +5,20 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.earth2me.essentials.Essentials;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import lombok.Getter;
-import net.elseland.xikage.MythicMobs.MythicMobs;
+import net.goldtreeservers.worldguardextraflags.essentials.EssentialsUtils;
 import net.goldtreeservers.worldguardextraflags.fawe.FAWEUtils;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
-import net.goldtreeservers.worldguardextraflags.listeners.EssentialsListener;
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
+import net.goldtreeservers.worldguardextraflags.mb.MythicMobsUtils;
 import net.goldtreeservers.worldguardextraflags.utils.WorldUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.BlockedEffectsFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnEntryFlagHandler;
@@ -41,9 +40,9 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	
 	@Getter private static WorldGuardPlugin worldGuardPlugin;
 	@Getter private static WorldEditPlugin worldEditPlugin;
-	@Getter private static Essentials essentialsPlugin;
-	@Getter private static MythicMobs mythicMobsPlugin;
-	
+
+	@Getter private static boolean essentialsPluginEnabled;
+	@Getter private static boolean mythicMobsPluginEnabled;
 	@Getter private static boolean fastAsyncWorldEditPluginEnabled;
 	
 	public WorldGuardExtraFlagsPlugin()
@@ -88,19 +87,50 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		WorldGuardExtraFlagsPlugin.worldGuardPlugin.getFlagRegistry().register(Flags.JOIN_LOCATION);
 
 		//Soft dependencies, due to some compatibility issues or add flags related to a plugin
-		Plugin essentialsPlugin = this.getServer().getPluginManager().getPlugin("Essentials");
-		if (essentialsPlugin != null)
+		try
 		{
-			WorldGuardExtraFlagsPlugin.essentialsPlugin = (Essentials)essentialsPlugin;
+			Plugin essentialsPlugin = WorldGuardExtraFlagsPlugin.getPlugin().getServer().getPluginManager().getPlugin("Essentials");
+			if (essentialsPlugin != null)
+			{
+				EssentialsUtils.onLoad(essentialsPlugin);
+				
+				WorldGuardExtraFlagsPlugin.essentialsPluginEnabled = true;
+			}
+		}
+		catch(Throwable ex)
+		{
+			
 		}
 		
-		Plugin mythicMobsPlugin = this.getServer().getPluginManager().getPlugin("MythicMobs");
-		if (mythicMobsPlugin != null)
+		try
 		{
-			WorldGuardExtraFlagsPlugin.mythicMobsPlugin = (MythicMobs)mythicMobsPlugin;
+			Plugin mythicMobsPlugin = this.getServer().getPluginManager().getPlugin("MythicMobs");
+			if (mythicMobsPlugin != null)
+			{
+				MythicMobsUtils.onLoad(mythicMobsPlugin);
+				
+				WorldGuardExtraFlagsPlugin.mythicMobsPluginEnabled = true;
+			}
 		}
-		
-		WorldGuardExtraFlagsPlugin.fastAsyncWorldEditPluginEnabled = this.getServer().getPluginManager().isPluginEnabled("FastAsyncWorldEdit");
+		catch(Throwable ex)
+		{
+			
+		}
+
+		try
+		{
+			Plugin fastAsyncWorldEditPlugin = this.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit");
+			if (fastAsyncWorldEditPlugin != null)
+			{
+				FAWEUtils.onLoad(fastAsyncWorldEditPlugin);
+				
+				WorldGuardExtraFlagsPlugin.fastAsyncWorldEditPluginEnabled = true;
+			}
+		}
+		catch(Throwable ex)
+		{
+			
+		}
 	}
 	
 	@Override
@@ -137,33 +167,23 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			
 		}
 		
-		if (WorldGuardExtraFlagsPlugin.fastAsyncWorldEditPluginEnabled)
+		if (WorldGuardExtraFlagsPlugin.isFastAsyncWorldEditPluginEnabled())
 		{
-			FAWEUtils.registerFAWE();
+			FAWEUtils.onEnable();
 		}
 		else
 		{
-			WorldGuardExtraFlagsPlugin.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener());
+			WorldGuardExtraFlagsPlugin.getWorldEditPlugin().getWorldEdit().getEventBus().register(new WorldEditListener());
 		}
 		
-		if (WorldGuardExtraFlagsPlugin.isEssentialsEnable())
+		if (WorldGuardExtraFlagsPlugin.isEssentialsPluginEnabled())
 		{
-			this.getServer().getPluginManager().registerEvents(new EssentialsListener(), this);
+			EssentialsUtils.onEnable();
 		}
 		
 		for(World world : this.getServer().getWorlds())
 		{
 			WorldUtils.doUnloadChunkFlagCheck(world);
 		}
-	}
-	
-	public static boolean isEssentialsEnable()
-	{
-		return WorldGuardExtraFlagsPlugin.essentialsPlugin != null;
-	}
-	
-	public static boolean isMythicMobsPluginEnabled()
-	{
-		return WorldGuardExtraFlagsPlugin.essentialsPlugin != null;
 	}
 }
