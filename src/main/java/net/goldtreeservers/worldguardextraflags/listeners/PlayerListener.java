@@ -25,6 +25,7 @@ import com.sk89q.worldedit.Location;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
+import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.essentials.EssentialsUtils;
@@ -125,21 +126,41 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
-		if (value != null)
+		Session wgSession = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().getIfPresent(player);
+		if (wgSession != null)
+		{
+			Boolean value = wgSession.getHandler(FlyFlagHandler.class).getCurrentValue();
+			if (value != null)
+			{
+				new BukkitRunnable()
+				{
+					@Override
+					public void run()
+					{
+						PlayerListener.this.checkFlyStatus(player);
+					}
+				}.runTask(WorldGuardExtraFlagsPlugin.getPlugin());
+			}
+		}
+		else
 		{
 			new BukkitRunnable()
 			{
 				@Override
 				public void run()
 				{
-					Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
-					if (value != null)
-					{
-						player.setAllowFlight(value);
-					}
+					PlayerListener.this.checkFlyStatus(player);
 				}
 			}.runTask(WorldGuardExtraFlagsPlugin.getPlugin());
+		}
+	}
+	
+	private void checkFlyStatus(Player player)
+	{
+		Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+		if (value != null)
+		{
+			player.setAllowFlight(value);
 		}
 	}
 
