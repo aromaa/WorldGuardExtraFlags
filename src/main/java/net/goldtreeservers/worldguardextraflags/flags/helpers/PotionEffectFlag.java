@@ -29,7 +29,7 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 			PotionEffectType potionEffect = PotionEffectType.getByName(splitd[0]);
 			if (potionEffect != null)
 			{
-				return new PotionEffect(potionEffect, 160, new Integer(splitd[1]));
+				return new PotionEffect(potionEffect, 319, new Integer(splitd[1]));
 			}
 			else
 			{
@@ -46,6 +46,6 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	public PotionEffect unmarshal(Object o)
 	{
 		String[] splitd = o.toString().split(" ");
-		return new PotionEffect(PotionEffectType.getByName(splitd[0]), 100, new Integer(splitd[1]));
+		return new PotionEffect(PotionEffectType.getByName(splitd[0]), 319, new Integer(splitd[1]));
 	}
 }
