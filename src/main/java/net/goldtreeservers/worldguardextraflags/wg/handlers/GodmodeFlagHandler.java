@@ -4,10 +4,13 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.User;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.BukkitPlayer;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -42,23 +45,24 @@ public class GodmodeFlagHandler extends Handler
 	}
 	
 	@Override
-	public void initialize(Player player, Location current, ApplicableRegionSet set)
+	public void initialize(LocalPlayer player, Location current, ApplicableRegionSet set)
 	{
-		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.GODMODE);
+		State state = WorldGuardUtils.queryState(((BukkitPlayer)player).getPlayer(), BukkitAdapter.adapt(current).getWorld(), set.getRegions(), Flags.GODMODE);
 		this.handleValue(player, state);
     }
 	
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	public boolean onCrossBoundary(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.GODMODE);
+		State state = WorldGuardUtils.queryState(((BukkitPlayer)player).getPlayer(), BukkitAdapter.adapt(to).getWorld(), toSet.getRegions(), Flags.GODMODE);
 		this.handleValue(player, state);
 		
 		return true;
 	}
 	
-	private void handleValue(Player player, State state)
+	private void handleValue(LocalPlayer localPlayer, State state)
 	{
+		Player player = ((BukkitPlayer)localPlayer).getPlayer();
 		if (state != null)
 		{
 			this.isGodmodeEnabled = (state == State.ALLOW ? true : false);
@@ -98,7 +102,7 @@ public class GodmodeFlagHandler extends Handler
 	
 	@Nullable
 	@Override
-    public State getInvincibility(Player player)
+    public State getInvincibility(LocalPlayer player)
 	{
 		if (this.isGodmodeEnabled != null)
 		{

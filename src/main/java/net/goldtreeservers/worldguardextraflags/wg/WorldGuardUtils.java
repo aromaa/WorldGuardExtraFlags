@@ -66,7 +66,7 @@ public class WorldGuardUtils
 		
 		NormativeOrders.sort(checkForRegions);
 		
-		ProtectedRegion global = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(world).getRegion(ProtectedRegion.GLOBAL_REGION);
+		ProtectedRegion global = WorldGuardExtraFlagsPlugin.getRegionManager(world).getRegion(ProtectedRegion.GLOBAL_REGION);
 		if (global != null) //Global region can be null
 		{
 			if (WorldGuardUtils.hasBypass(player, world, global, flag)) //Lets do like this for now to reduce dublicated code

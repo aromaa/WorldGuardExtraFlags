@@ -2,9 +2,12 @@ package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import java.util.Set;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.BukkitPlayer;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -35,16 +38,18 @@ public class GlideFlagHandler extends Handler
 	}
 	
 	@Override
-    public void initialize(Player player, Location current, ApplicableRegionSet set)
+    public void initialize(LocalPlayer localPlayer, Location current, ApplicableRegionSet set)
 	{
-		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.GLIDE);
+		Player player = ((BukkitPlayer)localPlayer).getPlayer();
+		State state = WorldGuardUtils.queryState(player, BukkitAdapter.adapt(current).getWorld(), set.getRegions(), Flags.GLIDE);
 		this.handleValue(player, state);
 	}
 	
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	public boolean onCrossBoundary(LocalPlayer localPlayer, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.GLIDE);
+		Player player = ((BukkitPlayer)localPlayer).getPlayer();
+		State state = WorldGuardUtils.queryState(player, BukkitAdapter.adapt(to).getWorld(), toSet.getRegions(), Flags.GLIDE);
 		this.handleValue(player, state);
 		
 		return true;
