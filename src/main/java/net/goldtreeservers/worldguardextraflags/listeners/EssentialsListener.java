@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
@@ -23,12 +24,12 @@ public class EssentialsListener implements Listener
 		IUser user = event.getAffected();
 		Player player = user.getBase();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
 		State state = WorldGuardUtils.queryState(player, player.getWorld(), regions.getRegions(), Flags.GODMODE);
 		if (state != null)
 		{
-			if (WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(GodmodeFlagHandler.class).getIsGodmodeEnabled() != null)
+			if (WorldGuardExtraFlagsPlugin.getSessionManager().get(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player)).getHandler(GodmodeFlagHandler.class).getIsGodmodeEnabled() != null)
 			{
 				event.setCancelled(true);
 			}

@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.PortalCreateEvent;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
@@ -20,7 +21,7 @@ public class EntityListener implements Listener
 		{
 			//Unable to get the player who created it....
 			
-			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(block.getLocation()));
 			if (regions.queryValue(null, Flags.NETHER_PORTALS) == State.DENY)
 			{
 				event.setCancelled(true);

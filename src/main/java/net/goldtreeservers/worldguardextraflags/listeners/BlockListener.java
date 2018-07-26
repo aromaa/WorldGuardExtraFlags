@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.bukkit.event.block.BreakBlockEvent;
 import com.sk89q.worldguard.bukkit.event.block.PlaceBlockEvent;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -33,7 +34,7 @@ public class BlockListener implements Listener
 			BlockState newState = event.getNewState();
 			if (newState.getType() == Material.FROSTED_ICE)
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(newState.getLocation());
+				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(newState.getLocation()));
 				
 				Entity entity = event.getEntity();
 				if (entity instanceof Player)
@@ -68,7 +69,7 @@ public class BlockListener implements Listener
 
 			for(Block block : event.getBlocks())
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(block.getLocation()));
 				
 				Set<Material> state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.ALLOW_BLOCK_PLACE);
 				if (state != null && state.contains(block.getType()))
@@ -106,7 +107,7 @@ public class BlockListener implements Listener
 
 			for(Block block : event.getBlocks())
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(block.getLocation()));
 
 				Set<Material> state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.ALLOW_BLOCK_BREAK);
 				if (state != null && state.contains(block.getType()))

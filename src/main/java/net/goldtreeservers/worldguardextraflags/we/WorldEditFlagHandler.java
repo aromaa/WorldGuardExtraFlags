@@ -2,12 +2,12 @@ package net.goldtreeservers.worldguardextraflags.we;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.extent.AbstractDelegateExtent;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
@@ -30,9 +30,9 @@ public class WorldEditFlagHandler extends AbstractDelegateExtent
 
 	//TODO: Prebuild list
     @Override
-    public boolean setBlock(Vector location, BaseBlock block) throws WorldEditException
+    public boolean setBlock(Vector location, BlockStateHolder block) throws WorldEditException
     {
-    	ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(BukkitUtil.toLocation(this.world, location));
+    	ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(BukkitAdapter.adapt(this.world, location)));
     	
     	State state = WorldGuardUtils.queryState(this.player, this.world, regions.getRegions(), Flags.WORLDEDIT);
     	if (state != State.DENY)

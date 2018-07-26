@@ -21,8 +21,8 @@ import org.bukkit.potion.Potion;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import com.sk89q.worldedit.Location;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.session.Session;
@@ -49,7 +49,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getEntity();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
 		Boolean keepInventory = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.KEEP_INVENTORY);
 		if (Boolean.TRUE.equals(keepInventory))
@@ -71,7 +71,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
 		String prefix = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.CHAT_PREFIX);
 		String suffix = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.CHAT_SUFFIX);
@@ -92,12 +92,12 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
 		Location respawnLocation =  WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.RESPAWN_LOCATION);
 		if (respawnLocation != null)
 		{
-			event.setRespawnLocation(BukkitUtil.toLocation(respawnLocation));
+			event.setRespawnLocation(BukkitAdapter.adapt(respawnLocation));
 		}
 	}
 	
@@ -109,14 +109,14 @@ public class PlayerListener implements Listener
 		ItemMeta itemMeta = event.getItem().getItemMeta();
 		if (itemMeta instanceof PotionMeta)
 		{
-			WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(GiveEffectsFlagHandler.class).drinkPotion(player, Potion.fromItemStack(event.getItem()).getEffects());
+			WorldGuardExtraFlagsPlugin.getSessionManager().get(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player)).getHandler(GiveEffectsFlagHandler.class).drinkPotion(player, Potion.fromItemStack(event.getItem()).getEffects());
 		}
 		else
 		{
 			Material material = event.getItem().getType();
 			if (material == Material.MILK_BUCKET)
 			{
-				WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(GiveEffectsFlagHandler.class).drinkMilk(player);
+				WorldGuardExtraFlagsPlugin.getSessionManager().get(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player)).getHandler(GiveEffectsFlagHandler.class).drinkMilk(player);
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		Session wgSession = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().getIfPresent(player);
+		Session wgSession = WorldGuardExtraFlagsPlugin.getSessionManager().getIfPresent(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player));
 		if (wgSession != null)
 		{
 			Boolean value = wgSession.getHandler(FlyFlagHandler.class).getCurrentValue();
@@ -157,7 +157,7 @@ public class PlayerListener implements Listener
 	
 	private void checkFlyStatus(Player player)
 	{
-		Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+		Boolean value = WorldGuardExtraFlagsPlugin.getSessionManager().get(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
 		if (value != null)
 		{
 			player.setAllowFlight(value);
@@ -216,7 +216,7 @@ public class PlayerListener implements Listener
 			if (player.getGameMode() != GameMode.CREATIVE && !EssentialsUtils.getPlugin().getUser(player).isAuthorized("essentials.fly"))
 			{
 				//Essentials now turns off flight, fuck him
-				Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+				Boolean value = WorldGuardExtraFlagsPlugin.getSessionManager().get(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
 				if (value != null)
 				{
 					player.setAllowFlight(value);
@@ -230,7 +230,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		if (WorldGuardUtils.queryState(player, player.getWorld(), regions.getRegions(), Flags.ITEM_DURABILITY) == State.DENY)
 		{
 			event.setCancelled(true);
@@ -242,12 +242,12 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getRegionContainer().createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
 		Location location = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.JOIN_LOCATION);
 		if (location != null)
 		{
-			event.setSpawnLocation(BukkitUtil.toLocation(location));
+			event.setSpawnLocation(BukkitAdapter.adapt(location));
 		}
 	}
 	
@@ -256,7 +256,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+		Boolean value = WorldGuardExtraFlagsPlugin.getSessionManager().get(WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
 		if (value != null)
 		{
 			player.setAllowFlight(value);

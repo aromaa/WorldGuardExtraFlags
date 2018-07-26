@@ -2,11 +2,13 @@ package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import java.util.Set;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.BukkitPlayer;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
@@ -36,15 +38,16 @@ public class TeleportOnExitFlagHandler extends Handler
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	public boolean onCrossBoundary(LocalPlayer localPlayer, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
+		Player player = ((BukkitPlayer)localPlayer).getPlayer();
 		if (!player.hasMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META))
 		{
-			com.sk89q.worldedit.Location location = WorldGuardUtils.queryValue(player, to.getWorld(), exited, Flags.TELEPORT_ON_EXIT);
+			com.sk89q.worldedit.util.Location location = WorldGuardUtils.queryValue(player, BukkitAdapter.adapt(to).getWorld(), exited, Flags.TELEPORT_ON_EXIT);
 			if (location != null)
 			{
 				player.setMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, new FixedMetadataValue(WorldGuardExtraFlagsPlugin.getPlugin(), true));
-				player.teleport(BukkitUtil.toLocation(location));
+				player.teleport(BukkitAdapter.adapt(location));
 				
 				return false;
 			}

@@ -7,6 +7,7 @@ import com.boydti.fawe.object.FawePlayer;
 import com.boydti.fawe.regions.FaweMask;
 import com.boydti.fawe.regions.FaweMaskManager;
 import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
@@ -26,14 +27,14 @@ public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player>
     public ProtectedRegion getRegion(Player player, Location loc)
     {
         final com.sk89q.worldguard.LocalPlayer localplayer = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player);
-        RegionManager manager = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(player.getWorld());
+        RegionManager manager = WorldGuardExtraFlagsPlugin.getRegionManager(player.getWorld());
         final ProtectedRegion global = manager.getRegion("__global__");
         if (global != null && !isDenied(localplayer, global))
         {
             return global;
         }
         
-        final ApplicableRegionSet regions = manager.getApplicableRegions(player.getLocation());
+        final ApplicableRegionSet regions = manager.getApplicableRegions(BukkitAdapter.adapt(player.getLocation()).toVector());
         for (final ProtectedRegion region : regions)
         {
             if (!isDenied(localplayer, region))
