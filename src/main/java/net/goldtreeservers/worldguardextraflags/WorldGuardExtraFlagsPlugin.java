@@ -18,7 +18,6 @@ import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePoint
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
-import net.goldtreeservers.worldguardextraflags.mb.MythicMobsUtils;
 import net.goldtreeservers.worldguardextraflags.utils.WorldUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.BlockedEffectsFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnEntryFlagHandler;
@@ -95,21 +94,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 				EssentialsUtils.onLoad(essentialsPlugin);
 				
 				WorldGuardExtraFlagsPlugin.essentialsPluginEnabled = true;
-			}
-		}
-		catch(Throwable ex)
-		{
-			
-		}
-		
-		try
-		{
-			Plugin mythicMobsPlugin = this.getServer().getPluginManager().getPlugin("MythicMobs");
-			if (mythicMobsPlugin != null)
-			{
-				MythicMobsUtils.onLoad(mythicMobsPlugin);
-				
-				WorldGuardExtraFlagsPlugin.mythicMobsPluginEnabled = true;
 			}
 		}
 		catch(Throwable ex)
