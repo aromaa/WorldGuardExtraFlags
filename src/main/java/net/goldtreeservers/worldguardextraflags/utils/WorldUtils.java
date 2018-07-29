@@ -1,9 +1,8 @@
 package net.goldtreeservers.worldguardextraflags.utils;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -14,18 +13,18 @@ public class WorldUtils
 {
 	public static void doUnloadChunkFlagCheck(World world)
 	{
-		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(world).getRegions().values())
+		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().get(world).getRegions().values())
 		{
 			if (region.getFlag(Flags.CHUNK_UNLOAD) == State.DENY)
 			{
 				WorldGuardExtraFlagsPlugin.getPlugin().getLogger().info("Loading chunks for region " + region.getId() + " located in " + world.getName() + " due to chunk-unload flag being deny");
 				
-				Location min = BukkitUtil.toLocation(world, region.getMinimumPoint());
-				Location max = BukkitUtil.toLocation(world, region.getMaximumPoint());
+				BlockVector min = region.getMinimumPoint();
+				BlockVector max = region.getMaximumPoint();
 
-				for(int x = min.getChunk().getX(); x <= max.getChunk().getX(); x++)
+				for(int x = min.getBlockX() << 16; x <= max.getBlockX() << 16; x++)
 				{
-					for(int z = min.getChunk().getZ(); z <= max.getChunk().getZ(); z++)
+					for(int z = max.getBlockZ() << 16; z <= max.getBlockZ() << 16; z++)
 					{
 						world.getChunkAt(x, z).load(true);
 					}

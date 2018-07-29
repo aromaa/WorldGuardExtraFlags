@@ -21,8 +21,9 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.HandlerWrapper;
 
-public class PlaySoundsFlagHandler extends Handler
+public class PlaySoundsFlagHandler extends HandlerWrapper
 {
 	public static final Factory FACTORY = new Factory();
     public static class Factory extends Handler.Factory<PlaySoundsFlagHandler>

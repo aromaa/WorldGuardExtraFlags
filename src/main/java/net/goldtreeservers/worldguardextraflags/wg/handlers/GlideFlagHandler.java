@@ -14,8 +14,9 @@ import com.sk89q.worldguard.session.handler.Handler;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.HandlerWrapper;
 
-public class GlideFlagHandler extends Handler
+public class GlideFlagHandler extends HandlerWrapper
 {
 	public static final Factory FACTORY = new Factory();
     public static class Factory extends Handler.Factory<GlideFlagHandler>

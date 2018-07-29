@@ -13,12 +13,17 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.utils.WorldUtils;
 
+@RequiredArgsConstructor
 public class WorldListener implements Listener
 {
+	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldLoadEvent(WorldLoadEvent event)
 	{
@@ -30,7 +35,8 @@ public class WorldListener implements Listener
 	{
 		World world = event.getWorld();
 		Chunk chunk = event.getChunk();
-		for (ProtectedRegion region : WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(world).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", new BlockVector(chunk.getX() * 16, 0, chunk.getZ() * 16), new BlockVector(chunk.getX() * 16 + 15, 256, chunk.getZ() * 16 + 15))))
+
+		for (ProtectedRegion region : this.plugin.getWorldGuardCommunicator().getRegionContainer().get(world).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", new BlockVector(chunk.getX() * 16, 0, chunk.getZ() * 16), new BlockVector(chunk.getX() * 16 + 15, 256, chunk.getZ() * 16 + 15))))
 		{
 			if (region.getFlag(Flags.CHUNK_UNLOAD) == State.DENY)
 			{

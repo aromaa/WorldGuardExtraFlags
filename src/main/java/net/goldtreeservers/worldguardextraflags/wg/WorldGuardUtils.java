@@ -22,9 +22,9 @@ public class WorldGuardUtils
 {
 	public static final String PREVENT_TELEPORT_LOOP_META = "WGEFP: TLP";
 	
-	public static LocalPlayer wrapPlayer(Player player)
+	private static LocalPlayer wrapPlayer(Player player)
 	{
-		return WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player);
+		return WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().wrapPlayer(player);
 	}
 	
 	public static boolean hasBypass(Player player, World world, ProtectedRegion region, Flag<?> flag)
@@ -48,6 +48,12 @@ public class WorldGuardUtils
 		return WorldGuardUtils.createFlagValueCalculator(player, world, regions, flag).queryValue(WorldGuardUtils.wrapPlayer(player), flag);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static Object queryValueUnchecked(Player player, World world, Set<ProtectedRegion> regions, Flag flag)
+	{
+		return WorldGuardUtils.createFlagValueCalculator(player, world, regions, flag).queryValue(WorldGuardUtils.wrapPlayer(player), flag);
+	}
+	
 	public static <T> Collection<T> queryAllValues(Player player, World world, Set<ProtectedRegion> regions, Flag<T> flag)
 	{
 		return WorldGuardUtils.createFlagValueCalculator(player, world, regions, flag).queryAllValues(WorldGuardUtils.wrapPlayer(player), flag);
@@ -66,7 +72,7 @@ public class WorldGuardUtils
 		
 		NormativeOrders.sort(checkForRegions);
 		
-		ProtectedRegion global = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(world).getRegion(ProtectedRegion.GLOBAL_REGION);
+		ProtectedRegion global = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().get(world).getRegion(ProtectedRegion.GLOBAL_REGION);
 		if (global != null) //Global region can be null
 		{
 			if (WorldGuardUtils.hasBypass(player, world, global, flag)) //Lets do like this for now to reduce dublicated code

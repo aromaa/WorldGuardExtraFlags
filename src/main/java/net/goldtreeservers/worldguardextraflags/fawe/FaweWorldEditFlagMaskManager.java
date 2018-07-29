@@ -6,27 +6,30 @@ import org.bukkit.entity.Player;
 import com.boydti.fawe.object.FawePlayer;
 import com.boydti.fawe.regions.FaweMask;
 import com.boydti.fawe.regions.FaweMaskManager;
-import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.RegionManagerWrapper;
 
 public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player> 
 {
-	public FaweWorldEditFlagMaskManager()
+	private final WorldGuardExtraFlagsPlugin plugin;
+	
+	public FaweWorldEditFlagMaskManager(WorldGuardExtraFlagsPlugin plugin)
 	{
-		super("WorldGuardExtraFlags");
+		super(plugin.getName());
+		
+		this.plugin = plugin;
 	}
 	
     public ProtectedRegion getRegion(Player player, Location loc)
     {
-        final com.sk89q.worldguard.LocalPlayer localplayer = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().wrapPlayer(player);
-        RegionManager manager = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionManager(player.getWorld());
+        final com.sk89q.worldguard.LocalPlayer localplayer = this.plugin.getWorldGuardCommunicator().wrapPlayer(player);
+        RegionManagerWrapper manager = this.plugin.getWorldGuardCommunicator().getRegionContainer().get(player.getWorld());
         final ProtectedRegion global = manager.getRegion("__global__");
         if (global != null && !isDenied(localplayer, global))
         {
@@ -52,7 +55,9 @@ public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player>
 	@Override
 	public FaweMask getMask(FawePlayer<Player> fawePlayer)
 	{
-		final Player player = fawePlayer.parent;
+		return null; //Problems here due to FaweMask using LocalWorld
+		
+		/*final Player player = fawePlayer.parent;
 		final Location location = player.getLocation();
         final ProtectedRegion myregion = this.getRegion(player, location);
         
@@ -83,6 +88,6 @@ public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player>
         else
         {
             return null;
-        }
+        }*/
 	}
 }

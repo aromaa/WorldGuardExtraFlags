@@ -18,13 +18,18 @@ import com.sk89q.worldguard.bukkit.event.block.PlaceBlockEvent;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
+@RequiredArgsConstructor
 public class BlockListener implements Listener
 {
+	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+	
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityBlockFormEvent(EntityBlockFormEvent event)
 	{
@@ -33,7 +38,7 @@ public class BlockListener implements Listener
 			BlockState newState = event.getNewState();
 			if (newState.getType() == Material.FROSTED_ICE)
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(newState.getLocation());
+				ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(newState.getLocation());
 				
 				Entity entity = event.getEntity();
 				if (entity instanceof Player)
@@ -68,7 +73,7 @@ public class BlockListener implements Listener
 
 			for(Block block : event.getBlocks())
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+				ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 				
 				Set<Material> state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.ALLOW_BLOCK_PLACE);
 				if (state != null && state.contains(block.getType()))
@@ -106,7 +111,7 @@ public class BlockListener implements Listener
 
 			for(Block block : event.getBlocks())
 			{
-				ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+				ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 
 				Set<Material> state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.ALLOW_BLOCK_BREAK);
 				if (state != null && state.contains(block.getType()))

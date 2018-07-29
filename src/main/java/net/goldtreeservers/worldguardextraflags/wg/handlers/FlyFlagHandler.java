@@ -15,8 +15,9 @@ import com.sk89q.worldguard.session.handler.Handler;
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.HandlerWrapper;
 
-public class FlyFlagHandler extends Handler
+public class FlyFlagHandler extends HandlerWrapper
 {
 	public static final Factory FACTORY = new Factory();
     public static class Factory extends Handler.Factory<FlyFlagHandler>

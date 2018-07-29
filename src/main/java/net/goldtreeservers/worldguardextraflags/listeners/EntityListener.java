@@ -8,11 +8,16 @@ import org.bukkit.event.world.PortalCreateEvent;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
+@RequiredArgsConstructor
 public class EntityListener implements Listener
 {
+	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+	
 	@EventHandler(ignoreCancelled = true)
 	public void onPortalCreateEvent(PortalCreateEvent event)
 	{
@@ -20,7 +25,7 @@ public class EntityListener implements Listener
 		{
 			//Unable to get the player who created it....
 			
-			ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+			ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 			if (regions.queryValue(null, Flags.NETHER_PORTALS) == State.DENY)
 			{
 				event.setCancelled(true);

@@ -2,8 +2,6 @@ package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -17,11 +15,12 @@ import com.sk89q.worldguard.session.handler.Handler;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.essentials.EssentialsUtils;
+import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.HandlerWrapper;
 
-public class GodmodeFlagHandler extends Handler
+public class GodmodeFlagHandler extends HandlerWrapper
 {
 	public static final Factory FACTORY = new Factory();
     public static class Factory extends Handler.Factory<GodmodeFlagHandler>
@@ -68,9 +67,10 @@ public class GodmodeFlagHandler extends Handler
 			this.isGodmodeEnabled = null;
 		}
 		
-		if (WorldGuardExtraFlagsPlugin.isEssentialsPluginEnabled())
+		EssentialsHelper helper = WorldGuardExtraFlagsPlugin.getPlugin().getEssentialsHelper();
+		if (helper != null)
 		{
-			User user = EssentialsUtils.getPlugin().getUser(player);
+			User user = helper.getEssentialsPlugin().getUser(player);
 			
 			if (this.isGodmodeEnabled != null)
 			{
@@ -96,7 +96,6 @@ public class GodmodeFlagHandler extends Handler
 		}
 	}
 	
-	@Nullable
 	@Override
     public State getInvincibility(Player player)
 	{

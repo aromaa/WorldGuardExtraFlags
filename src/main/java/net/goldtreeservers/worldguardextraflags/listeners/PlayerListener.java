@@ -1,6 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,7 +7,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -21,26 +19,29 @@ import org.bukkit.potion.Potion;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
-import com.sk89q.worldedit.Location;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.session.Session;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.essentials.EssentialsUtils;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.we.WorldEditUtils;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.FlyFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandler;
 
-@SuppressWarnings("deprecation")
+@RequiredArgsConstructor
 public class PlayerListener implements Listener
 {
+	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerTeleportEvent(PlayerTeleportEvent event)
 	{
 		Player player = event.getPlayer();
+		
 		player.removeMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, WorldGuardExtraFlagsPlugin.getPlugin());
 	}
 
@@ -49,7 +50,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getEntity();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 		
 		Boolean keepInventory = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.KEEP_INVENTORY);
 		if (Boolean.TRUE.equals(keepInventory))
@@ -71,7 +72,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 		
 		String prefix = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.CHAT_PREFIX);
 		String suffix = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.CHAT_SUFFIX);
@@ -92,12 +93,12 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 		
-		Location respawnLocation =  WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.RESPAWN_LOCATION);
+		Object respawnLocation = WorldGuardUtils.queryValueUnchecked(player, player.getWorld(), regions.getRegions(), Flags.RESPAWN_LOCATION);
 		if (respawnLocation != null)
 		{
-			event.setRespawnLocation(BukkitUtil.toLocation(respawnLocation));
+			event.setRespawnLocation(WorldEditUtils.toLocation(respawnLocation));
 		}
 	}
 	
@@ -109,14 +110,14 @@ public class PlayerListener implements Listener
 		ItemMeta itemMeta = event.getItem().getItemMeta();
 		if (itemMeta instanceof PotionMeta)
 		{
-			WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(GiveEffectsFlagHandler.class).drinkPotion(player, Potion.fromItemStack(event.getItem()).getEffects());
+			this.plugin.getWorldGuardCommunicator().getSessionManager().get(player).getHandler(GiveEffectsFlagHandler.class).drinkPotion(player, Potion.fromItemStack(event.getItem()).getEffects());
 		}
 		else
 		{
 			Material material = event.getItem().getType();
 			if (material == Material.MILK_BUCKET)
 			{
-				WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(GiveEffectsFlagHandler.class).drinkMilk(player);
+				this.plugin.getWorldGuardCommunicator().getSessionManager().get(player).getHandler(GiveEffectsFlagHandler.class).drinkMilk(player);
 			}
 		}
 	}
@@ -126,7 +127,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		Session wgSession = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().getIfPresent(player);
+		Session wgSession = this.plugin.getWorldGuardCommunicator().getSessionManager().getIfPresent(player);
 		if (wgSession != null)
 		{
 			Boolean value = wgSession.getHandler(FlyFlagHandler.class).getCurrentValue();
@@ -157,71 +158,10 @@ public class PlayerListener implements Listener
 	
 	private void checkFlyStatus(Player player)
 	{
-		Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+		Boolean value = this.plugin.getWorldGuardCommunicator().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
 		if (value != null)
 		{
 			player.setAllowFlight(value);
-		}
-	}
-
-	//Re-enable if needed and the plugin checks for cancelled events
-	/*@EventHandler(priority = EventPriority.LOWEST)	
-	public void onPlayerInteractEvent(PlayerInteractEvent event)
-	{
-		if (WorldGuardExtraFlagsPlugin.isMythicMobsPluginEnabled())
-		{
-			Player player = event.getPlayer();
-			
-			if (!WorldGuardUtils.hasBypass(player))
-			{
-				Action action = event.getAction();
-				if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
-				{
-					if (event.hasItem())
-					{
-						ItemStack item = event.getItem();
-						if (item.getType() == Material.MONSTER_EGG)
-						{
-							if (item.getItemMeta().hasLore())
-							{
-								List<String> lore = item.getItemMeta().getLore();
-								if (lore.get(0).equals(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + "A Mythical Egg that can"))
-								{
-									MythicMob mm = EggManager.getMythicMobFromEgg(lore.get(2));
-									if (mm != null)
-									{
-										ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(action == Action.RIGHT_CLICK_BLOCK ? event.getClickedBlock().getLocation() : player.getLocation());
-										if (regions.queryValue(WorldGuardUtils.wrapPlayer(player), Flags.MYTHICMOB_EGGS) == State.DENY)
-										{
-											event.setCancelled(true);
-											event.setUseItemInHand(Result.DENY);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}*/
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event)
-	{
-		Player player = event.getPlayer();
-		
-		if (WorldGuardExtraFlagsPlugin.isEssentialsPluginEnabled()) //Essentials how dare u do this to me!?!
-		{
-			if (player.getGameMode() != GameMode.CREATIVE && !EssentialsUtils.getPlugin().getUser(player).isAuthorized("essentials.fly"))
-			{
-				//Essentials now turns off flight, fuck him
-				Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
-				if (value != null)
-				{
-					player.setAllowFlight(value);
-				}
-			}
 		}
 	}
 
@@ -230,7 +170,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 		if (WorldGuardUtils.queryState(player, player.getWorld(), regions.getRegions(), Flags.ITEM_DURABILITY) == State.DENY)
 		{
 			event.setCancelled(true);
@@ -242,12 +182,12 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 		
-		Location location = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.JOIN_LOCATION);
+		Object location = WorldGuardUtils.queryValueUnchecked(player, player.getWorld(), regions.getRegions(), Flags.JOIN_LOCATION);
 		if (location != null)
 		{
-			event.setSpawnLocation(BukkitUtil.toLocation(location));
+			event.setSpawnLocation(WorldEditUtils.toLocation(location));
 		}
 	}
 	
@@ -256,7 +196,7 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		Boolean value = WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+		Boolean value = this.plugin.getWorldGuardCommunicator().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
 		if (value != null)
 		{
 			player.setAllowFlight(value);

@@ -21,8 +21,9 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.HandlerWrapper;
 
-public class BlockedEffectsFlagHandler extends Handler
+public class BlockedEffectsFlagHandler extends HandlerWrapper
 {
 	public static final Factory FACTORY = new Factory();
     public static class Factory extends Handler.Factory<BlockedEffectsFlagHandler>
@@ -42,13 +43,13 @@ public class BlockedEffectsFlagHandler extends Handler
 		
 		this.removedEffects = new HashMap<>();
 	}
-	
+
 	@Override
 	public void initialize(Player player, Location current, ApplicableRegionSet set)
 	{
 		this.check(player, set);
     }
-	
+
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
@@ -56,7 +57,7 @@ public class BlockedEffectsFlagHandler extends Handler
 		
 		return true;
 	}
-	
+
 	@Override
 	public void tick(Player player, ApplicableRegionSet set)
 	{

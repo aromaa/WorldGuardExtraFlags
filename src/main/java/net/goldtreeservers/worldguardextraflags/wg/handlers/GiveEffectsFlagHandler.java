@@ -25,8 +25,9 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import net.goldtreeservers.worldguardextraflags.wg.legacy.wrappers.HandlerWrapper;
 
-public class GiveEffectsFlagHandler extends Handler
+public class GiveEffectsFlagHandler extends HandlerWrapper
 {
 	public static final Factory FACTORY = new Factory();
     public static class Factory extends Handler.Factory<GiveEffectsFlagHandler>
@@ -158,7 +159,7 @@ public class GiveEffectsFlagHandler extends Handler
 	{
 		this.removedEffects.clear();
 
-		this.check(player, WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
+		this.check(player, WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
 	}
 	
 	public void drinkPotion(Player player, Collection<PotionEffect> effects)
@@ -168,6 +169,6 @@ public class GiveEffectsFlagHandler extends Handler
 			this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles(), SupportedFeatures.isMobEffectColorsSupported() ? effect.getColor() : null));
 		}
 		
-		this.check(player, WorldGuardExtraFlagsPlugin.getWorldGuardPlugin().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
+		this.check(player, WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
 	}
 }
