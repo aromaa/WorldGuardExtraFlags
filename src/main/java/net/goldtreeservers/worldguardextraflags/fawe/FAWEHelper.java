@@ -13,7 +13,7 @@ public class FAWEHelper
 {
 	@Getter private final WorldGuardExtraFlagsPlugin plugin;
 	@Getter private final Plugin fawePlugin;
-	
+
 	public void onEnable()
 	{
 		FaweAPI.addMaskManager(new FaweWorldEditFlagMaskManager(this.plugin));
