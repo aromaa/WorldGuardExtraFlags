@@ -53,6 +53,12 @@ public class PlaySoundsFlagHandler extends HandlerWrapper
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
+		// Ignore Player NPC's
+		if (player.hasMetadata("NPC"))
+		{
+			return true;
+		}
+
 		this.check(player, toSet);
 		
 		return true;

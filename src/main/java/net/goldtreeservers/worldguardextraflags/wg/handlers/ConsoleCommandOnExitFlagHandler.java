@@ -48,6 +48,12 @@ public class ConsoleCommandOnExitFlagHandler extends HandlerWrapper
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
+		// Ignore Player NPC's
+		if (player.hasMetadata("NPC"))
+		{
+			return true;
+		}
+
 		Collection<Set<String>> commands = new ArrayList<Set<String>>(WorldGuardUtils.queryAllValues(player, to.getWorld(), toSet.getRegions(), Flags.CONSOLE_COMMAND_ON_EXIT));
 		
 		if (!commands.isEmpty())

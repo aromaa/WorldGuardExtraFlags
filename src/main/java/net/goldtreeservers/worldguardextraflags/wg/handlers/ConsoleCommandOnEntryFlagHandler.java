@@ -42,6 +42,12 @@ public class ConsoleCommandOnEntryFlagHandler extends HandlerWrapper
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
+		// Ignore Player NPC's
+		if (player.hasMetadata("NPC"))
+		{
+			return true;
+		}
+
 		Collection<Set<String>> commands = WorldGuardUtils.queryAllValues(player, to.getWorld(), toSet.getRegions(), Flags.CONSOLE_COMMAND_ON_ENTRY);
 
 		for(Set<String> commands_ : commands)
