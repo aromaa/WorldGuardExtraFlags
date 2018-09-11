@@ -16,16 +16,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class WorldGuardFilter extends CuboidRegionFilter
 {
-	private final World world;
-	private boolean large;
-	private RegionManagerWrapper manager;
 	private WorldGuardExtraFlagsPlugin plugin;
+	private final World world;
+	private RegionManagerWrapper manager;
+
+	private boolean large;
+
 
 	WorldGuardFilter(WorldGuardExtraFlagsPlugin plugin, World world)
 	{
 		checkNotNull(world);
-		this.world = world;
 		this.plugin = plugin;
+		this.world = world;
+		this.manager = plugin.getWorldGuardCommunicator().getRegionContainer().get(world);
 	}
 
 	@Override
@@ -36,7 +39,6 @@ public class WorldGuardFilter extends CuboidRegionFilter
 			@Override
 			public void run(Object value)
 			{
-				WorldGuardFilter.this.manager = plugin.getWorldGuardCommunicator().getRegionContainer().get(world);
 				for (ProtectedRegion region : manager.getRegions().values())
 				{
 					BlockVector min = region.getMinimumPoint();
@@ -56,7 +58,9 @@ public class WorldGuardFilter extends CuboidRegionFilter
 	@Override
 	public boolean containsChunk(int chunkX, int chunkZ)
 	{
-		if (!large) return super.containsChunk(chunkX, chunkZ);
+		if (!large) {
+			return super.containsChunk(chunkX, chunkZ);
+		}
 		BlockVector pos1 = new BlockVector(chunkX << 4, 0, chunkZ << 4);
 		BlockVector pos2 = new BlockVector(pos1.getBlockX() + 15, 255, pos1.getBlockZ() + 15);
 		ProtectedCuboidRegion chunkRegion = new ProtectedCuboidRegion("unimportant", pos1, pos2);
@@ -67,7 +71,9 @@ public class WorldGuardFilter extends CuboidRegionFilter
 	@Override
 	public boolean containsRegion(int mcaX, int mcaZ)
 	{
-		if (!large) return super.containsRegion(mcaX, mcaZ);
+		if (!large) {
+			return super.containsRegion(mcaX, mcaZ);
+		}
 		BlockVector pos1 = new BlockVector(mcaX << 9, 0, mcaZ << 9);
 		BlockVector pos2 = new BlockVector(pos1.getBlockX() + 511, 255, pos1.getBlockZ() + 511);
 		ProtectedCuboidRegion regionRegion = new ProtectedCuboidRegion("unimportant", pos1, pos2);

@@ -72,7 +72,8 @@
       <dependency>
          <groupId>com.boydti</groupId>
          <artifactId>fawe-api</artifactId>
-         <version>18.07.27-3ed2e57-1163-20.5.2</version>
+         <version>latest</version>
+         <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>net.ess3</groupId>

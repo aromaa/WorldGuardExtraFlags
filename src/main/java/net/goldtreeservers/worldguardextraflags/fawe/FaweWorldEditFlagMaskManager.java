@@ -35,8 +35,8 @@ public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player>
 	@Override
 	public FaweMask getMask(FawePlayer<Player> fp, MaskType type)
 	{
-		final Player player = fp.parent;
-		final LocalPlayer localplayer = this.plugin.getWorldGuardCommunicator().wrapPlayer(player);
+		Player player = fp.parent;
+		LocalPlayer localplayer = this.plugin.getWorldGuardCommunicator().wrapPlayer(player);
 		RegionManagerWrapper manager = this.plugin.getWorldGuardCommunicator().getRegionContainer().get(player.getWorld());
 
 		return new FaweMask(new MultiRegion(manager, localplayer), null)
@@ -79,8 +79,8 @@ public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player>
 		{
 			return manager.getRegions().entrySet().stream()
 					.map(s -> s.getValue().getMaximumPoint())
-					.min(Vector::compareTo)
-					.orElse(new BlockVector(Integer.MAX_VALUE, 0, Integer.MAX_VALUE));
+					.max(Vector::compareTo)
+					.orElse(new BlockVector(Integer.MAX_VALUE, 256, Integer.MAX_VALUE));
 		}
 
 		@Override
@@ -96,14 +96,19 @@ public class FaweWorldEditFlagMaskManager extends FaweMaskManager<Player>
 		@Override
 		public boolean contains(Vector position)
 		{
-			// Make sure that all these flags are not denied. Denies override allows.
-			return  manager.getApplicableRegions(position).testState(
+			boolean canWorldEdit = manager.getApplicableRegions(position).testState(
 					localplayer,
-					Flags.BUILD,
-					Flags.BLOCK_PLACE,
-					Flags.BLOCK_BREAK,
 					net.goldtreeservers.worldguardextraflags.flags.Flags.WORLDEDIT
 			);
+
+			boolean canBuild = manager.getApplicableRegions(position).testState(
+						localplayer,
+						Flags.BUILD,
+						Flags.BLOCK_PLACE,
+						Flags.BLOCK_BREAK
+			);
+
+			return canWorldEdit && canBuild;
 		}
 
 	}
