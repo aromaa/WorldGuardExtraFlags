@@ -4,10 +4,11 @@
    <groupId>net.goldtreeservers</groupId>
    <artifactId>worldguardextraflags</artifactId>
    <name>WorldGuardExtraFlags</name>
-   <version>4.0.0</version>
+   <version>4.1.0</version>
    
-   <build>
-      <finalName>WorldGuardExtraFlagsPlugin</finalName>
+   <packaging>pom</packaging>
+   
+      <build>
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -21,29 +22,6 @@
       </plugins>
    </build>
    
-   <repositories>
-      <repository>
-         <id>spigot-repo</id>
-         <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-      </repository>
-      <repository>
-         <id>sk89q-repo</id>
-         <url>https://maven.sk89q.com/repo/</url>
-      </repository>
-      <repository>
-         <id>ess-repo</id>
-         <url>http://repo.ess3.net/content/groups/essentials</url>
-      </repository>
-      <repository>
-         <id>empcraft</id>
-         <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
-      </repository>
-      <!-- FOR NOW -->
-      <repository>
-         <id>elMakers</id>
-         <url>http://maven.elmakers.com/repository/</url>
-      </repository>
-   </repositories>
    <dependencies>
       <dependency>
          <groupId>org.projectlombok</groupId>
@@ -51,33 +29,13 @@
          <version>1.16.18</version>
          <scope>provided</scope>
       </dependency>
-      <dependency>
-         <groupId>org.spigotmc</groupId>
-         <artifactId>spigot-api</artifactId>
-         <version>1.13-R0.1-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sk89q.worldedit</groupId>
-         <artifactId>worldedit</artifactId>
-         <version>7.0-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sk89q.worldguard</groupId>
-         <artifactId>worldguard-legacy</artifactId>
-         <version>7.0-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.boydti</groupId>
-         <artifactId>fawe-api</artifactId>
-         <version>18.07.27-3ed2e57-1163-20.5.2</version>
-      </dependency>
-      <dependency>
-         <groupId>net.ess3</groupId>
-         <artifactId>Essentials</artifactId>
-         <version>2.13-SNAPSHOT</version>
-      </dependency>
    </dependencies>
+   
+   <modules>
+   	<module>WG6</module>
+   	<module>Common</module>
+   	<module>WG</module>
+   	<module>WG7</module>
+   	<module>Spigot</module>
+   </modules>
 </project>
