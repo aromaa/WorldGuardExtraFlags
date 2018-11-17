@@ -19,7 +19,6 @@ import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePoint
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
-import net.goldtreeservers.worldguardextraflags.utils.WorldUtils;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.BlockedEffectsFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnEntryFlagHandler;
@@ -36,6 +35,8 @@ import net.goldtreeservers.worldguardextraflags.wg.handlers.TeleportOnExitFlagHa
 import net.goldtreeservers.worldguardextraflags.wg.handlers.WalkSpeedFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.AbstractSessionManagerWrapper;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
+import net.goldtreeservers.worldguardextraflags.wg.wrappers.v6.WorldGuardSixCommunicator;
+import net.goldtreeservers.worldguardextraflags.wg.wrappers.v7.WorldGuardSevenCommunicator;
 
 public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 {
@@ -60,11 +61,13 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		this.worldEditPlugin = (WorldEditPlugin)this.getServer().getPluginManager().getPlugin("WorldEdit");
 		this.worldGuardPlugin = (WorldGuardPlugin)this.getServer().getPluginManager().getPlugin("WorldGuard");
 		
-		this.worldGuardCommunicator = WorldGuardUtils.createWorldGuardCommunicator();
+		this.worldGuardCommunicator = WorldGuardExtraFlagsPlugin.createWorldGuardCommunicator();
 		if (this.worldGuardCommunicator == null)
 		{
 			throw new RuntimeException("Unsupported WorldGuard version: " + this.worldGuardPlugin.getDescription().getVersion());
 		}
+		
+		WorldGuardUtils.setCommunicator(this.worldGuardCommunicator);
 		
 		try
 		{
@@ -195,7 +198,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		}
 		else
 		{
-			this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener());
+			this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this));
 		}
 		
 		if (this.essentialsHelper != null)
@@ -205,7 +208,36 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		
 		for(World world : this.getServer().getWorlds())
 		{
-			WorldUtils.doUnloadChunkFlagCheck(world);
+			this.getWorldGuardCommunicator().doUnloadChunkFlagCheck(world);
 		}
+	}
+	
+	public static WorldGuardCommunicator createWorldGuardCommunicator()
+	{
+		try
+		{
+			Class.forName("com.sk89q.worldguard.WorldGuard"); //Only exists in WG 7
+			
+			return new WorldGuardSevenCommunicator();
+		}
+		catch (Throwable ignored)
+		{
+			
+		}
+		
+		try
+		{
+			Class<?> clazz = Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
+			if (clazz.getMethod("getFlagRegistry") != null)
+			{
+				return new WorldGuardSixCommunicator();
+			}
+		}
+		catch (Throwable ignored)
+		{
+			ignored.printStackTrace();
+		}
+		
+		return null;
 	}
 }

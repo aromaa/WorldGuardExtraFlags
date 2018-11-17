@@ -12,23 +12,23 @@ import com.sk89q.worldguard.protection.flags.SetFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StringFlag;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.MaterialFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.PotionEffectFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.PotionEffectTypeFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.SoundDataFlag;
+import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
 public final class Flags
 {
 	public final static LocationFlag TELEPORT_ON_ENTRY = new LocationFlag("teleport-on-entry");
 	public final static LocationFlag TELEPORT_ON_EXIT = new LocationFlag("teleport-on-exit");
 	
-	public final static SetFlag<String> COMMAND_ON_ENTRY = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getCustomSetFlag("command-on-entry", new CommandStringFlag(null));
-	public final static SetFlag<String> COMMAND_ON_EXIT = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getCustomSetFlag("command-on-exit", new CommandStringFlag(null));
+	public final static SetFlag<String> COMMAND_ON_ENTRY = WorldGuardUtils.getCommunicator().getCustomSetFlag("command-on-entry", new CommandStringFlag(null));
+	public final static SetFlag<String> COMMAND_ON_EXIT = WorldGuardUtils.getCommunicator().getCustomSetFlag("command-on-exit", new CommandStringFlag(null));
 	
-	public final static SetFlag<String> CONSOLE_COMMAND_ON_ENTRY = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getCustomSetFlag("console-command-on-entry", new CommandStringFlag(null));
-	public final static SetFlag<String> CONSOLE_COMMAND_ON_EXIT = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getCustomSetFlag("console-command-on-exit", new CommandStringFlag(null));
+	public final static SetFlag<String> CONSOLE_COMMAND_ON_ENTRY = WorldGuardUtils.getCommunicator().getCustomSetFlag("console-command-on-entry", new CommandStringFlag(null));
+	public final static SetFlag<String> CONSOLE_COMMAND_ON_EXIT = WorldGuardUtils.getCommunicator().getCustomSetFlag("console-command-on-exit", new CommandStringFlag(null));
 	
 	public final static DoubleFlag WALK_SPEED = new DoubleFlag("walk-speed");
 	

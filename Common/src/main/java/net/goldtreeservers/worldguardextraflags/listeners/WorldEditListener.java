@@ -6,17 +6,21 @@ import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.util.eventbus.EventHandler;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 
-import net.goldtreeservers.worldguardextraflags.we.WorldEditFlagHandler;
+import lombok.RequiredArgsConstructor;
+import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 
+@RequiredArgsConstructor
 public class WorldEditListener
 {
+	private final WorldGuardExtraFlagsPlugin plugin;
+	
 	@Subscribe(priority = EventHandler.Priority.VERY_EARLY)
     public void onEditSessionEvent(EditSessionEvent event)
 	{
 		Actor actor = event.getActor();
 		if (actor != null && actor.isPlayer())
 		{
-			event.setExtent(new WorldEditFlagHandler(event.getWorld(), event.getExtent(), (Player)actor));
+			event.setExtent(this.plugin.getWorldGuardCommunicator().getWorldEditFlag(event.getWorld(), event.getExtent(), (Player)actor));
 		}
 	}
 }

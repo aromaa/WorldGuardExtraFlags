@@ -16,18 +16,19 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.util.NormativeOrders;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import lombok.Getter;
+import lombok.Setter;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.v6.WorldGuardSixCommunicator;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.v7.WorldGuardSevenCommunicator;
 
 public class WorldGuardUtils
 {
 	public static final String PREVENT_TELEPORT_LOOP_META = "WGEFP: TLP";
 	
+	@Getter @Setter private static WorldGuardCommunicator communicator;
+	
 	private static LocalPlayer wrapPlayer(Player player)
 	{
-		return WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().wrapPlayer(player);
+		return WorldGuardUtils.getCommunicator().wrapPlayer(player);
 	}
 	
 	public static boolean hasBypass(Player player, World world, ProtectedRegion region, Flag<?> flag)
@@ -75,7 +76,7 @@ public class WorldGuardUtils
 		
 		NormativeOrders.sort(checkForRegions);
 		
-		ProtectedRegion global = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().get(world).getRegion(ProtectedRegion.GLOBAL_REGION);
+		ProtectedRegion global = WorldGuardUtils.getCommunicator().getRegionContainer().get(world).getRegion(ProtectedRegion.GLOBAL_REGION);
 		if (global != null) //Global region can be null
 		{
 			if (WorldGuardUtils.hasBypass(player, world, global, flag)) //Lets do like this for now to reduce dublicated code
@@ -85,34 +86,5 @@ public class WorldGuardUtils
 		}
 		
 		return new FlagValueCalculator(checkForRegions, global);
-	}
-	
-	public static WorldGuardCommunicator createWorldGuardCommunicator()
-	{
-		try
-		{
-			Class.forName("com.sk89q.worldguard.WorldGuard"); //Only exists in WG 7
-			
-			return new WorldGuardSevenCommunicator();
-		}
-		catch (Throwable ignored)
-		{
-			
-		}
-		
-		try
-		{
-			Class<?> clazz = Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
-			if (clazz.getMethod("getFlagRegistry") != null)
-			{
-				return new WorldGuardSixCommunicator();
-			}
-		}
-		catch (Throwable ignored)
-		{
-			ignored.printStackTrace();
-		}
-		
-		return null;
 	}
 }
