@@ -26,6 +26,10 @@
         <id>empcraft</id>
         <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
      </repository>
+	  <repository>
+	    <id>dmulloy2-repo</id>
+	    <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+	  </repository>
   </repositories>
   
      
@@ -79,5 +83,10 @@
          <version>2.13-SNAPSHOT</version>
          <scope>provided</scope>
       </dependency>
+	  <dependency>
+	    <groupId>com.comphenix.protocol</groupId>
+	    <artifactId>ProtocolLib-API</artifactId>
+	    <version>4.4.0</version>
+	  </dependency>
    </dependencies>
 </project>

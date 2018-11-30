@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 
 import lombok.Getter;
 
@@ -14,6 +15,7 @@ public class SupportedFeatures
 {
 	@Getter private static boolean frostwalkerSupported;
 	@Getter private static boolean stopSoundSupported;
+	@Getter private static boolean potionEffectEventSupported;
 	
 	static
 	{
@@ -28,6 +30,14 @@ public class SupportedFeatures
 		try
 		{
 			SupportedFeatures.stopSoundSupported = Player.class.getDeclaredMethod("stopSound", Color.class) != null;
+		}
+		catch (Throwable ignored)
+		{
+		}
+
+		try
+		{
+			SupportedFeatures.potionEffectEventSupported = EntityPotionEffectEvent.class != null;
 		}
 		catch (Throwable ignored)
 		{

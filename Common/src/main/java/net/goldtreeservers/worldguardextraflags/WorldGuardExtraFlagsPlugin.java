@@ -16,9 +16,12 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
+import net.goldtreeservers.worldguardextraflags.listeners.EntityPotionEffectEventListener;
 import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
 import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
+import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
+import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.BlockedEffectsFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnEntryFlagHandler;
@@ -49,6 +52,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 
 	@Getter private EssentialsHelper essentialsHelper;
 	@Getter private FAWEHelper faweHelper;
+	@Getter private ProtocolLibHelper protocolLibHelper;
 	
 	public WorldGuardExtraFlagsPlugin()
 	{
@@ -137,6 +141,19 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		{
 			
 		}
+		
+		try
+		{
+			Plugin protocolLibPlugin = this.getServer().getPluginManager().getPlugin("ProtocolLib");
+			if (protocolLibPlugin != null)
+			{
+				this.protocolLibHelper = new ProtocolLibHelper(this, protocolLibPlugin);
+			}
+		}
+		catch(Throwable ignore)
+		{
+			
+		}
 	}
 	
 	@Override
@@ -204,6 +221,15 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		if (this.essentialsHelper != null)
 		{
 			this.essentialsHelper.onEnable();
+		}
+		
+		if (this.protocolLibHelper != null)
+		{
+			this.protocolLibHelper.onEnable();
+		}
+		else if (SupportedFeatures.isPotionEffectEventSupported())
+		{
+			this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this), this);
 		}
 		
 		for(World world : this.getServer().getWorlds())

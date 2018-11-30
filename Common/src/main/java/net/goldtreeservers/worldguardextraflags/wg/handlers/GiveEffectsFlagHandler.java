@@ -20,6 +20,7 @@ import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
 
+import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
@@ -40,6 +41,8 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 
 	private Map<PotionEffectType, PotionEffectDetails> removedEffects;
     private Set<PotionEffectType> givenEffects;
+    
+    @Getter private boolean supressRemovePotionPacket;
     
 	protected GiveEffectsFlagHandler(Session session)
 	{
@@ -72,28 +75,39 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 	private void check(Player player, ApplicableRegionSet set)
 	{
 		Set<PotionEffect> potionEffects = WorldGuardUtils.queryValue(player, player.getWorld(), set.getRegions(), Flags.GIVE_EFFECTS);
+
+	
 		if (potionEffects != null && potionEffects.size() > 0)
 		{
-			for (PotionEffect effect : potionEffects)
+			this.supressRemovePotionPacket = true;
+			
+			try
 			{
-				PotionEffect effect_ = null;
-				for(PotionEffect activeEffect : player.getActivePotionEffects())
+				for (PotionEffect effect : potionEffects)
 				{
-					if (activeEffect.getType().equals(effect.getType()))
+					PotionEffect effect_ = null;
+					for(PotionEffect activeEffect : player.getActivePotionEffects())
 					{
-						effect_ = activeEffect;
-						break;
+						if (activeEffect.getType().equals(effect.getType()))
+						{
+							effect_ = activeEffect;
+							break;
+						}
 					}
-				}
-
-				if (this.givenEffects.add(effect.getType()) && effect_ != null)
-				{
-					this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect_.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles()));
+	
+					if (this.givenEffects.add(effect.getType()) && effect_ != null)
+					{
+						this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect_.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles()));
+						
+						player.removePotionEffect(effect_.getType());
+					}
 					
-					player.removePotionEffect(effect_.getType());
+					player.addPotionEffect(effect, true);
 				}
-				
-				player.addPotionEffect(effect, true);
+			}
+			finally
+			{
+				this.supressRemovePotionPacket = false;
 			}
 		}
 		
