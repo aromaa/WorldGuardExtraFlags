@@ -19,25 +19,31 @@ import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 
 public class WorldEditFlagHandler extends AbstractDelegateExtent
 {
-	protected final World world;
+	protected final org.bukkit.World world;
 	protected final org.bukkit.entity.Player player;
 	
 	protected WorldEditFlagHandler(World world, Extent extent, Player player)
 	{
 		super(extent);
 
-		this.world = world;
+		if (world instanceof BukkitWorld)
+		{
+			this.world = ((BukkitWorld)world).getWorld();
+		}
+		else
+		{
+			this.world = Bukkit.getWorld(world.getName());
+		}
+		
 		this.player = Bukkit.getPlayer(player.getUniqueId());
 	}
 
 	@Override
     public boolean setBlock(Vector location, BaseBlock block) throws WorldEditException
     {
-		org.bukkit.World world = ((BukkitWorld)this.world).getWorld();
-		
-    	ApplicableRegionSet regions = WorldGuardPlugin.inst().getRegionContainer().get(world).getApplicableRegions(location);
+    	ApplicableRegionSet regions = WorldGuardPlugin.inst().getRegionContainer().get(this.world).getApplicableRegions(location);
     	
-    	State state = WorldGuardUtils.queryState(this.player, world, regions.getRegions(), Flags.WORLDEDIT);
+    	State state = WorldGuardUtils.queryState(this.player, this.world, regions.getRegions(), Flags.WORLDEDIT);
     	if (state != State.DENY)
     	{
     		return super.setBlock(location, block);
