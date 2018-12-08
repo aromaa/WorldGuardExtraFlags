@@ -16,26 +16,26 @@ public class MaterialFlag extends Flag<Material>
 	@Override
 	public Object marshal(Material o)
 	{
-		return o.toString();
+		return o.name();
 	}
 
 	@Override
 	public Material parseInput(FlagContext context) throws InvalidFlagFormat
 	{
-		Material material = Material.getMaterial(context.getUserInput().trim().toUpperCase());
+		Material material = Material.matchMaterial(context.getUserInput());
 		if (material != null)
 		{
 			return material;
 		}
 		else
 		{
-			throw new InvalidFlagFormat("Unable to find the material!");
+			throw new InvalidFlagFormat("Unable to find the material! Please refer to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html for valid ids");
 		}
 	}
 
 	@Override
 	public Material unmarshal(Object o)
 	{
-		return Material.getMaterial(o.toString());
+		return Material.matchMaterial(o.toString());
 	}
 }

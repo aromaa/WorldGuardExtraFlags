@@ -13,7 +13,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StringFlag;
 
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
-import net.goldtreeservers.worldguardextraflags.flags.helpers.MaterialFlag;
+import net.goldtreeservers.worldguardextraflags.flags.helpers.BlockMaterialFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.PotionEffectFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.PotionEffectTypeFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.SoundDataFlag;
@@ -58,10 +58,10 @@ public final class Flags
 	
 	public final static StateFlag NETHER_PORTALS = new StateFlag("nether-portals", true);
 	
-	public final static SetFlag<Material> ALLOW_BLOCK_PLACE = new SetFlag<Material>("allow-block-place", new MaterialFlag(null));
-	public final static SetFlag<Material> DENY_BLOCK_PLACE = new SetFlag<Material>("deny-block-place", new MaterialFlag(null));
-	public final static SetFlag<Material> ALLOW_BLOCK_BREAK = new SetFlag<Material>("allow-block-break", new MaterialFlag(null));
-	public final static SetFlag<Material> DENY_BLOCK_BREAK = new SetFlag<Material>("deny-block-break", new MaterialFlag(null));
+	public final static SetFlag<Material> ALLOW_BLOCK_PLACE = new SetFlag<Material>("allow-block-place", new BlockMaterialFlag(null));
+	public final static SetFlag<Material> DENY_BLOCK_PLACE = new SetFlag<Material>("deny-block-place", new BlockMaterialFlag(null));
+	public final static SetFlag<Material> ALLOW_BLOCK_BREAK = new SetFlag<Material>("allow-block-break", new BlockMaterialFlag(null));
+	public final static SetFlag<Material> DENY_BLOCK_BREAK = new SetFlag<Material>("deny-block-break", new BlockMaterialFlag(null));
 	
 	public final static StateFlag GLIDE = new StateFlag("glide", false);
 	
