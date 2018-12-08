@@ -29,7 +29,7 @@ public class PotionEffectTypeFlag extends Flag<PotionEffectType>
 		}
 		else
 		{
-			throw new InvalidFlagFormat("Unable to find the potion effect!");
+			throw new InvalidFlagFormat("Unable to find the potion effect type! Please refer to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html");
 		}
 	}
 
