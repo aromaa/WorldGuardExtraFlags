@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,10 +19,8 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
 import lombok.Getter;
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
@@ -29,13 +28,22 @@ import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
 public class GiveEffectsFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<GiveEffectsFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<GiveEffectsFlagHandler>
     {
-        @Override
+        public Factory(Plugin plugin)
+        {
+			super(plugin);
+		}
+
+		@Override
         public GiveEffectsFlagHandler create(Session session)
         {
-            return new GiveEffectsFlagHandler(session);
+            return new GiveEffectsFlagHandler(this.getPlugin(), session);
         }
     }
 
@@ -44,9 +52,9 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
     
     @Getter private boolean supressRemovePotionPacket;
     
-	protected GiveEffectsFlagHandler(Session session)
+	protected GiveEffectsFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 		
 		this.removedEffects = new HashMap<>();
 		this.givenEffects = new HashSet<>();
@@ -165,7 +173,7 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 	{
 		this.removedEffects.clear();
 
-		this.check(player, WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
+		this.check(player, WorldGuardUtils.getCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
 	}
 	
 	public void drinkPotion(Player player, Collection<PotionEffect> effects)
@@ -175,6 +183,6 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 			this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()));
 		}
 		
-		this.check(player, WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
+		this.check(player, WorldGuardUtils.getCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));
 	}
 }

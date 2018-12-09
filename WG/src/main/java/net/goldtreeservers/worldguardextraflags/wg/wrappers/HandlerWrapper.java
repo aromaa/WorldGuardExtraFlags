@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
@@ -15,11 +16,17 @@ import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 import com.sk89q.worldguard.session.handler.Handler;
 
+import lombok.Getter;
+
 public abstract class HandlerWrapper extends Handler
 {
-	protected HandlerWrapper(Session session)
+	@Getter private final Plugin plugin;
+	
+	protected HandlerWrapper(Plugin plugin, Session session)
 	{
 		super(session);
+		
+		this.plugin = plugin;
 	}
 	
 	public void initialize(Player player, Location current, ApplicableRegionSet set)
@@ -62,5 +69,15 @@ public abstract class HandlerWrapper extends Handler
 	public State getInvincibility(LocalPlayer localPlayer)
 	{
 		return this.getInvincibility(((BukkitPlayer)localPlayer).getPlayer());
+	}
+	
+	public abstract static class Factory<T extends HandlerWrapper> extends Handler.Factory<T>
+	{
+		@Getter private final Plugin plugin;
+		
+		public Factory(Plugin plugin)
+		{
+			this.plugin = plugin;
+		}
 	}
 }

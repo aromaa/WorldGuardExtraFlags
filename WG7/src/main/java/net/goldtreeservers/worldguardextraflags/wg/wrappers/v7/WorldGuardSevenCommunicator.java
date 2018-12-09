@@ -2,6 +2,7 @@ package net.goldtreeservers.worldguardextraflags.wg.wrappers.v7;
 
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldedit.extent.AbstractDelegateExtent;
 import com.sk89q.worldedit.extent.Extent;
@@ -28,15 +29,18 @@ public class WorldGuardSevenCommunicator implements WorldGuardCommunicator
 	private AbstractRegionContainerWrapper regionContainer;
 	
 	@Override
-	public void onLoad() throws Exception
+	public void onLoad(Plugin plugin) throws Exception
 	{
+		WorldGuardCommunicator.super.onLoad(plugin);
 	}
 
 	@Override
-	public void onEnable() throws Exception
+	public void onEnable(Plugin plugin) throws Exception
 	{
 		this.sessionManager = new SessionManagerWrapper(WorldGuard.getInstance().getPlatform().getSessionManager());
 		this.regionContainer = new RegionContainerWrapper();
+		
+		WorldGuardCommunicator.super.onEnable(plugin);
 	}
 
 	@Override

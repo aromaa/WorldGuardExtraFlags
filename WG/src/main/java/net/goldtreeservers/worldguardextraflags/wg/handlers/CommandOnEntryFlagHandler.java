@@ -6,35 +6,43 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class ConsoleCommandOnEntryFlagHandler extends HandlerWrapper
+public class CommandOnEntryFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<ConsoleCommandOnEntryFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<CommandOnEntryFlagHandler>
     {
-        @Override
-        public ConsoleCommandOnEntryFlagHandler create(Session session)
+        public Factory(Plugin plugin)
         {
-            return new ConsoleCommandOnEntryFlagHandler(session);
+			super(plugin);
+		}
+
+		@Override
+        public CommandOnEntryFlagHandler create(Session session)
+        {
+            return new CommandOnEntryFlagHandler(this.getPlugin(), session);
         }
     }
-    
+	
 	private Collection<Set<String>> lastCommands;
 	    
-	protected ConsoleCommandOnEntryFlagHandler(Session session)
+	protected CommandOnEntryFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 		
 		this.lastCommands = new ArrayList<>();
 	}
@@ -42,15 +50,15 @@ public class ConsoleCommandOnEntryFlagHandler extends HandlerWrapper
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		Collection<Set<String>> commands = WorldGuardUtils.queryAllValues(player, to.getWorld(), toSet.getRegions(), Flags.CONSOLE_COMMAND_ON_ENTRY);
+		Collection<Set<String>> commands = WorldGuardUtils.queryAllValues(player, to.getWorld(), toSet.getRegions(), Flags.COMMAND_ON_ENTRY);
 
 		for(Set<String> commands_ : commands)
 		{
-			if (!this.lastCommands.contains(commands_))
+			if (!this.lastCommands.contains(commands_) && commands_.size() > 0)
 			{
 				for(String command : commands_)
 				{
-					WorldGuardExtraFlagsPlugin.getPlugin().getServer().dispatchCommand(WorldGuardExtraFlagsPlugin.getPlugin().getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+					this.getPlugin().getServer().dispatchCommand(player, command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
 				}
 				
 				break;
@@ -63,7 +71,7 @@ public class ConsoleCommandOnEntryFlagHandler extends HandlerWrapper
 		{
 			for (ProtectedRegion region : toSet)
 			{
-                Set<String> commands_ = region.getFlag(Flags.CONSOLE_COMMAND_ON_ENTRY);
+                Set<String> commands_ = region.getFlag(Flags.COMMAND_ON_ENTRY);
                 if (commands_ != null)
                 {
                 	this.lastCommands.add(commands_);

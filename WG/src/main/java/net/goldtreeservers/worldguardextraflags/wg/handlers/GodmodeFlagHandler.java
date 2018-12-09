@@ -4,40 +4,48 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
+import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
 import lombok.Getter;
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
-import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
 public class GodmodeFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<GodmodeFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<GodmodeFlagHandler>
     {
-        @Override
+        public Factory(Plugin plugin)
+        {
+			super(plugin);
+		}
+
+		@Override
         public GodmodeFlagHandler create(Session session)
         {
-            return new GodmodeFlagHandler(session);
+            return new GodmodeFlagHandler(this.getPlugin(), session);
         }
     }
     
     @Getter private Boolean isGodmodeEnabled;
     private Boolean originalEssentialsGodmode;
 	    
-	protected GodmodeFlagHandler(Session session)
+	protected GodmodeFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 	}
 	
 	@Override
@@ -67,10 +75,11 @@ public class GodmodeFlagHandler extends HandlerWrapper
 			this.isGodmodeEnabled = null;
 		}
 		
-		EssentialsHelper helper = WorldGuardExtraFlagsPlugin.getPlugin().getEssentialsHelper();
-		if (helper != null)
+		//For now at least
+		Plugin essentials = this.getPlugin().getServer().getPluginManager().getPlugin("Essentials");
+		if (essentials != null)
 		{
-			User user = helper.getEssentialsPlugin().getUser(player);
+			User user = ((Essentials)essentials).getUser(player);
 			
 			if (this.isGodmodeEnabled != null)
 			{

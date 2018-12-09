@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -15,7 +16,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
@@ -24,21 +24,30 @@ import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
 public class BlockedEffectsFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<BlockedEffectsFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<BlockedEffectsFlagHandler>
     {
-        @Override
+        public Factory(Plugin plugin)
+        {
+			super(plugin);
+		}
+
+		@Override
         public BlockedEffectsFlagHandler create(Session session)
         {
-            return new BlockedEffectsFlagHandler(session);
+            return new BlockedEffectsFlagHandler(this.getPlugin(), session);
         }
     }
 	
 	private HashMap<PotionEffectType, PotionEffectDetails> removedEffects;
     
-	protected BlockedEffectsFlagHandler(Session session)
+	protected BlockedEffectsFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 		
 		this.removedEffects = new HashMap<>();
 	}

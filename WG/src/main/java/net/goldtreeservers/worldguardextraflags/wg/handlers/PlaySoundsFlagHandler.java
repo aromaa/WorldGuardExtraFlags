@@ -8,15 +8,14 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
@@ -25,21 +24,30 @@ import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
 public class PlaySoundsFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<PlaySoundsFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<PlaySoundsFlagHandler>
     {
-        @Override
+        public Factory(Plugin plugin)
+        {
+			super(plugin);
+		}
+
+		@Override
         public PlaySoundsFlagHandler create(Session session)
         {
-            return new PlaySoundsFlagHandler(session);
+            return new PlaySoundsFlagHandler(this.getPlugin(), session);
         }
     }
 
     private Map<String, BukkitRunnable> runnables;
 	    
-	protected PlaySoundsFlagHandler(Session session)
+	protected PlaySoundsFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 		
 		this.runnables = new HashMap<>();
 	}
@@ -93,7 +101,8 @@ public class PlaySoundsFlagHandler extends HandlerWrapper
 					};
 	
 					this.runnables.put(sound.getSound(), runnable);
-					runnable.runTaskTimer(WorldGuardExtraFlagsPlugin.getPlugin(), 0L, sound.getInterval());
+					
+					runnable.runTaskTimer(this.getPlugin(), 0L, sound.getInterval());
 				}
 			}
 		}

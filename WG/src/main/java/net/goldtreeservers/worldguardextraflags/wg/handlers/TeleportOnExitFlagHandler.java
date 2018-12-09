@@ -5,14 +5,13 @@ import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
-import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.we.WorldEditUtils;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
@@ -20,19 +19,28 @@ import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
 public class TeleportOnExitFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<TeleportOnExitFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<TeleportOnExitFlagHandler>
     {
-        @Override
+        public Factory(Plugin plugin)
+        {
+			super(plugin);
+		}
+
+		@Override
         public TeleportOnExitFlagHandler create(Session session)
         {
-            return new TeleportOnExitFlagHandler(session);
+            return new TeleportOnExitFlagHandler(this.getPlugin(), session);
         }
     }
 	   
-	protected TeleportOnExitFlagHandler(Session session)
+	protected TeleportOnExitFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 	}
 	
 	@Override
@@ -43,7 +51,8 @@ public class TeleportOnExitFlagHandler extends HandlerWrapper
 			Object location = WorldGuardUtils.queryValueUnchecked(player, to.getWorld(), exited, Flags.TELEPORT_ON_EXIT);
 			if (location != null)
 			{
-				player.setMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, new FixedMetadataValue(WorldGuardExtraFlagsPlugin.getPlugin(), true));
+				player.setMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, new FixedMetadataValue(this.getPlugin(), true));
+				
 				player.teleport(WorldEditUtils.toLocation(location));
 				
 				return false;

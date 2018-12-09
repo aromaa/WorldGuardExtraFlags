@@ -7,12 +7,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.fawe.FAWEHelper;
-import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
@@ -23,20 +21,6 @@ import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
 import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.BlockedEffectsFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnEntryFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnExitFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.ConsoleCommandOnEntryFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.ConsoleCommandOnExitFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.FlyFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.GlideFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.GodmodeFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.PlaySoundsFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.TeleportOnEntryFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.TeleportOnExitFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.handlers.WalkSpeedFlagHandler;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.AbstractSessionManagerWrapper;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v6.WorldGuardSixCommunicator;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v7.WorldGuardSevenCommunicator;
@@ -75,7 +59,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		
 		try
 		{
-			this.worldGuardCommunicator.onLoad();
+			this.worldGuardCommunicator.onLoad(this);
 		}
 		catch (Exception e)
 		{
@@ -83,37 +67,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			
 			throw new RuntimeException("Failed to load WorldGuard communicator", e);
 		}
-		
-		FlagRegistry flagRegistry = this.worldGuardCommunicator.getFlagRegistry();
-		flagRegistry.register(Flags.TELEPORT_ON_ENTRY);
-		flagRegistry.register(Flags.TELEPORT_ON_EXIT);
-		flagRegistry.register(Flags.COMMAND_ON_ENTRY);
-		flagRegistry.register(Flags.COMMAND_ON_EXIT);
-		flagRegistry.register(Flags.CONSOLE_COMMAND_ON_ENTRY);
-		flagRegistry.register(Flags.CONSOLE_COMMAND_ON_EXIT);
-		flagRegistry.register(Flags.WALK_SPEED);
-		flagRegistry.register(Flags.KEEP_INVENTORY);
-		flagRegistry.register(Flags.KEEP_EXP);
-		flagRegistry.register(Flags.CHAT_PREFIX);
-		flagRegistry.register(Flags.CHAT_SUFFIX);
-		flagRegistry.register(Flags.BLOCKED_EFFECTS);
-		flagRegistry.register(Flags.GODMODE);
-		flagRegistry.register(Flags.RESPAWN_LOCATION);
-		flagRegistry.register(Flags.WORLDEDIT);
-		flagRegistry.register(Flags.GIVE_EFFECTS);
-		flagRegistry.register(Flags.FLY);
-		flagRegistry.register(Flags.PLAY_SOUNDS);
-		flagRegistry.register(Flags.MYTHICMOB_EGGS);
-		flagRegistry.register(Flags.FROSTWALKER);
-		flagRegistry.register(Flags.NETHER_PORTALS);
-		flagRegistry.register(Flags.ALLOW_BLOCK_PLACE);
-		flagRegistry.register(Flags.DENY_BLOCK_PLACE);
-		flagRegistry.register(Flags.ALLOW_BLOCK_BREAK);
-		flagRegistry.register(Flags.DENY_BLOCK_BREAK);
-		flagRegistry.register(Flags.GLIDE);
-		flagRegistry.register(Flags.CHUNK_UNLOAD);
-		flagRegistry.register(Flags.ITEM_DURABILITY);
-		flagRegistry.register(Flags.JOIN_LOCATION);
 
 		//Soft dependencies, due to some compatibility issues or add flags related to a plugin
 		try
@@ -168,7 +121,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		
 		try
 		{
-			this.worldGuardCommunicator.onEnable();
+			this.worldGuardCommunicator.onEnable(this);
 		}
 		catch (Exception e)
 		{
@@ -176,21 +129,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			
 			throw new RuntimeException("Failed to enable WorldGuard communicator", e);
 		}
-		
-		AbstractSessionManagerWrapper sessionManager = this.worldGuardCommunicator.getSessionManager();
-		sessionManager.registerHandler(TeleportOnEntryFlagHandler.FACTORY);
-		sessionManager.registerHandler(TeleportOnExitFlagHandler.FACTORY);
-		sessionManager.registerHandler(CommandOnEntryFlagHandler.FACTORY);
-		sessionManager.registerHandler(CommandOnExitFlagHandler.FACTORY);
-		sessionManager.registerHandler(ConsoleCommandOnEntryFlagHandler.FACTORY);
-		sessionManager.registerHandler(ConsoleCommandOnExitFlagHandler.FACTORY);
-		sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY);
-		sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY);
-		sessionManager.registerHandler(GodmodeFlagHandler.FACTORY);
-		sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY);
-		sessionManager.registerHandler(FlyFlagHandler.FACTORY);
-		sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY);
-		sessionManager.registerHandler(GlideFlagHandler.FACTORY);
 
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new BlockListener(this), this);

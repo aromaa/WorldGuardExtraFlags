@@ -4,50 +4,57 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
-import com.sk89q.worldguard.session.handler.Handler;
 
-import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class FlyFlagHandler extends HandlerWrapper
+public class GlideFlagHandler extends HandlerWrapper
 {
-	public static final Factory FACTORY = new Factory();
-    public static class Factory extends Handler.Factory<FlyFlagHandler>
+	public static final Factory FACTORY(Plugin plugin)
+	{
+		return new Factory(plugin);
+	}
+	
+    public static class Factory extends HandlerWrapper.Factory<GlideFlagHandler>
     {
-        @Override
-        public FlyFlagHandler create(Session session)
+        public Factory(Plugin plugin)
         {
-            return new FlyFlagHandler(session);
+			super(plugin);
+		}
+
+		@Override
+        public GlideFlagHandler create(Session session)
+        {
+            return new GlideFlagHandler(this.getPlugin(), session);
         }
     }
-
-    @Getter private Boolean currentValue;
-    private Boolean originalFly;
-	    
-	protected FlyFlagHandler(Session session)
+    
+    private Boolean originalGlide;
+    
+	protected GlideFlagHandler(Plugin plugin, Session session)
 	{
-		super(session);
+		super(plugin, session);
 	}
 	
 	@Override
     public void initialize(Player player, Location current, ApplicableRegionSet set)
 	{
-		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.FLY);
+		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.GLIDE);
 		this.handleValue(player, state);
 	}
 	
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.FLY);
+		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.GLIDE);
 		this.handleValue(player, state);
 		
 		return true;
@@ -59,23 +66,23 @@ public class FlyFlagHandler extends HandlerWrapper
 		{
 			boolean value = (state == State.ALLOW ? true : false);
 			
-			if (player.getAllowFlight() != value)
+			if (player.isGliding() != value)
 			{
-				if (this.originalFly == null)
+				if (this.originalGlide == null)
 				{
-					this.originalFly = player.getAllowFlight();
+					this.originalGlide = player.isGliding();
 				}
 				
-				player.setAllowFlight(value);
+				player.setGliding(value);
 			}
 		}
 		else
 		{
-			if (this.originalFly != null)
+			if (this.originalGlide != null)
 			{
-				player.setAllowFlight(this.originalFly);
+				player.setGliding(this.originalGlide);
 				
-				this.originalFly = null;
+				this.originalGlide = null;
 			}
 		}
 	}
