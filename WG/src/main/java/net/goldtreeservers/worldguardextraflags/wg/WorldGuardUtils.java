@@ -38,6 +38,11 @@ public class WorldGuardUtils
 	
 	public static boolean hasBypass(Player player, World world, ProtectedRegion region, Flag<?> flag)
 	{
+		if (player.hasMetadata("NPC"))
+		{
+			return true;
+		}
+		
 		//Permission system that supports wildcars is really helpful here :)
 		if (player.hasPermission("worldguard.region.bypass." + world.getName() + "." + region.getId() + "." + flag.getName()))
 		{
