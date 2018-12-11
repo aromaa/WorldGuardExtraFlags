@@ -1,8 +1,12 @@
 name: WorldGuardExtraFlags
-version: 4.1.2-DEV
 description: Adds more flags to WorldGuard to help manage your server easily!
+
+version: 4.1.2-DEV
+api-version: 1.13
+
 author: isokissa3
 website: https://goldtreevers.net
+
 depend: [ WorldGuard ]
 softdepend: [ MythicMobs, FastAsyncWorldEdit, Essentials, ProtocolLib ]
 
