@@ -23,6 +23,7 @@ import com.sk89q.worldguard.session.Session;
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
+import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
@@ -105,7 +106,7 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 	
 					if (this.givenEffects.add(effect.getType()) && effect_ != null)
 					{
-						this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect_.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles()));
+						this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect_.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), SupportedFeatures.isPotionEffectParticles() ? effect_.hasParticles() : true));
 						
 						player.removePotionEffect(effect_.getType());
 					}
@@ -160,7 +161,14 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 					
 					if (timeLeft > 0)
 					{
-						player.addPotionEffect(new PotionEffect(effect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
+						if (SupportedFeatures.isPotionEffectParticles())
+						{
+							player.addPotionEffect(new PotionEffect(effect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
+						}
+						else
+						{
+							player.addPotionEffect(new PotionEffect(effect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient()), true);
+						}
 					}
 				}
 				
@@ -180,7 +188,7 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 	{
 		for(PotionEffect effect : effects)
 		{
-			this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()));
+			this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), SupportedFeatures.isPotionEffectParticles() ? effect.hasParticles() : true));
 		}
 		
 		this.check(player, WorldGuardUtils.getCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()));

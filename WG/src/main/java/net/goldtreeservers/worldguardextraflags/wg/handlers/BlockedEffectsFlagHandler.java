@@ -19,6 +19,7 @@ import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
+import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
@@ -91,7 +92,7 @@ public class BlockedEffectsFlagHandler extends HandlerWrapper
 				
 				if (effect != null)
 				{
-					this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()));
+					this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), SupportedFeatures.isPotionEffectParticles() ? effect.hasParticles() : true));
 					
 					player.removePotionEffect(effectType);
 				}
@@ -111,7 +112,14 @@ public class BlockedEffectsFlagHandler extends HandlerWrapper
 					int timeLeft = removedEffect.getTimeLeftInTicks();
 					if (timeLeft > 0)
 					{
-						player.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
+						if (SupportedFeatures.isPotionEffectParticles())
+						{
+							player.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
+						}
+						else
+						{
+							player.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient()), true);
+						}
 					}
 				}
 				
