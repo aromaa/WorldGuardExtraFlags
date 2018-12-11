@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -46,17 +45,10 @@ public class TeleportOnEntryFlagHandler extends HandlerWrapper
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		if (!player.hasMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META))
+		Object location = WorldGuardUtils.queryValueUnchecked(player, to.getWorld(), entered, Flags.TELEPORT_ON_ENTRY);
+		if (location != null && WorldGuardUtils.hasNoTeleportLoop(this.getPlugin(), player, location))
 		{
-			Object location = WorldGuardUtils.queryValueUnchecked(player, to.getWorld(), entered, Flags.TELEPORT_ON_ENTRY);
-			if (location != null)
-			{
-				player.setMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, new FixedMetadataValue(this.getPlugin(), true));
-				
-				player.teleport(WorldEditUtils.toLocation(location));
-				
-				return false;
-			}
+			player.teleport(WorldEditUtils.toLocation(location));
 		}
 		
 		return true;
