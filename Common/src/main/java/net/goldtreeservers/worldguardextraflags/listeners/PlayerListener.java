@@ -53,17 +53,25 @@ public class PlayerListener implements Listener
 		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 		
 		Boolean keepInventory = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.KEEP_INVENTORY);
-		if (Boolean.TRUE.equals(keepInventory))
+		if (keepInventory != null)
 		{
-			event.setKeepInventory(true);
-			event.getDrops().clear();
+			event.setKeepInventory(keepInventory);
+			
+			if (keepInventory)
+			{
+				event.getDrops().clear();
+			}
 		}
 		
 		Boolean keepExp = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.KEEP_EXP);
-		if (Boolean.TRUE.equals(keepExp))
+		if (keepExp != null)
 		{
-			event.setKeepLevel(true);
-			event.setDroppedExp(0);
+			event.setKeepLevel(keepExp);
+
+			if (keepExp)
+			{
+				event.setDroppedExp(0);
+			}
 		}
 	}
 
