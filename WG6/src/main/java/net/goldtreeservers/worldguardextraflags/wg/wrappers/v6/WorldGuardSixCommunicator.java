@@ -90,9 +90,9 @@ public class WorldGuardSixCommunicator implements WorldGuardCommunicator
 				BlockVector min = region.getMinimumPoint();
 				BlockVector max = region.getMaximumPoint();
 
-				for(int x = min.getBlockX() << 16; x <= max.getBlockX() << 16; x++)
+				for(int x = min.getBlockX() >> 4; x <= max.getBlockX() >> 4; x++)
 				{
-					for(int z = max.getBlockZ() << 16; z <= max.getBlockZ() << 16; z++)
+					for(int z = min.getBlockZ() >> 4; z <= max.getBlockZ() >> 4; z++)
 					{
 						world.getChunkAt(x, z).load(true);
 					}
