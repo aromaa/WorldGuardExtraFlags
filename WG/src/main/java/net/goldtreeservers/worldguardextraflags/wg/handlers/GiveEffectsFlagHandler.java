@@ -84,12 +84,8 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 	private void check(Player player, ApplicableRegionSet set)
 	{
 		Set<PotionEffect> potionEffects = WorldGuardUtils.queryValue(player, player.getWorld(), set.getRegions(), Flags.GIVE_EFFECTS);
-
-	
 		if (potionEffects != null && potionEffects.size() > 0)
 		{
-			this.supressRemovePotionPacket = true;
-			
 			try
 			{
 				for (PotionEffect effect : potionEffects)
@@ -103,6 +99,8 @@ public class GiveEffectsFlagHandler extends HandlerWrapper
 							break;
 						}
 					}
+					
+					this.supressRemovePotionPacket = effect_ != null && effect_.getAmplifier() == effect.getAmplifier();
 	
 					if (this.givenEffects.add(effect.getType()) && effect_ != null)
 					{
