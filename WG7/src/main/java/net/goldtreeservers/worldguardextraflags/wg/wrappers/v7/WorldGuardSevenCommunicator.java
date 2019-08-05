@@ -28,6 +28,20 @@ public class WorldGuardSevenCommunicator implements WorldGuardCommunicator
 	private AbstractSessionManagerWrapper sessionManager;
 	private AbstractRegionContainerWrapper regionContainer;
 	
+	public static boolean supportsForceLoad;
+	
+	static
+	{
+		try
+		{
+			WorldGuardSevenCommunicator.supportsForceLoad = Chunk.class.getMethod("setForceLoaded", boolean.class) != null;
+		}
+		catch(Throwable e)
+		{
+			
+		}
+	}
+	
 	@Override
 	public void onLoad(Plugin plugin) throws Exception
 	{
@@ -96,6 +110,11 @@ public class WorldGuardSevenCommunicator implements WorldGuardCommunicator
 					for(int z = min.getBlockZ() >> 4; z <= max.getBlockZ() >> 4; z++)
 					{
 						world.getChunkAt(x, z).load(true);
+						
+						if (WorldGuardSevenCommunicator.supportsForceLoad)
+						{
+							world.getChunkAt(x, z).setForceLoaded(true);
+						}
 					}
 				}
 			}
@@ -109,6 +128,14 @@ public class WorldGuardSevenCommunicator implements WorldGuardCommunicator
 		{
 			if (region.getFlag(Flags.CHUNK_UNLOAD) == State.DENY)
 			{
+				if (WorldGuardSevenCommunicator.supportsForceLoad)
+				{
+					chunk.setForceLoaded(true);
+					chunk.load(true);
+					
+					return true;
+				}
+				
 				return false;
 			}
 		}
