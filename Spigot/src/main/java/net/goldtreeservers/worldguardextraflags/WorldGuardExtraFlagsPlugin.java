@@ -1,9 +1,12 @@
 package net.goldtreeservers.worldguardextraflags;
 
+import java.lang.reflect.ParameterizedType;
+
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -25,14 +28,12 @@ import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicat
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v6.WorldGuardSixCommunicator;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v7.WorldGuardSevenCommunicator;
 
-public class WorldGuardExtraFlagsPlugin extends JavaPlugin
+public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlugin
 {
 	@Getter private static WorldGuardExtraFlagsPlugin plugin;
 	
 	@Getter private WorldGuardPlugin worldGuardPlugin;
 	@Getter private WorldEditPlugin worldEditPlugin;
-	
-	@Getter private WorldGuardCommunicator worldGuardCommunicator;
 
 	@Getter private EssentialsHelper essentialsHelper;
 	@Getter private FAWEHelper faweHelper;
@@ -132,7 +133,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-		this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new WorldListener(this), this);
 		
 		try
@@ -145,6 +145,24 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		catch(NoClassDefFoundError ignored)
 		{
 			
+		}
+		
+		try
+		{
+			ParameterizedType type = (ParameterizedType)PortalCreateEvent.class.getDeclaredField("blocks").getGenericType();
+			Class<?> clazz = (Class<?>)type.getActualTypeArguments()[0];
+			if (clazz == BlockState.class)
+			{
+				this.getServer().getPluginManager().registerEvents(new net.goldtreeservers.worldguardextraflags.spigot1_14.EntityListener(this), this);
+			}
+			else
+			{
+				this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
+			}
+		}
+		catch(Throwable ignored)
+		{
+			this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
 		}
 		
 		if (this.faweHelper != null)

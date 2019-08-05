@@ -37,5 +37,6 @@
    	<module>WG</module>
    	<module>WG7</module>
    	<module>Spigot</module>
+    <module>Spigot-1_14</module>
    </modules>
 </project>
