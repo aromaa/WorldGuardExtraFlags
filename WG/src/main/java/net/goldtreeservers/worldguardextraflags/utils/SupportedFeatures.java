@@ -1,8 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.utils;
 
-import java.awt.Color;
-
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffect;
@@ -33,7 +32,7 @@ public class SupportedFeatures
 
 		try
 		{
-			SupportedFeatures.stopSoundSupported = Player.class.getDeclaredMethod("stopSound", Color.class) != null;
+			SupportedFeatures.stopSoundSupported = Player.class.getDeclaredMethod("stopSound", Sound.class) != null;
 		}
 		catch (Throwable ignored)
 		{
