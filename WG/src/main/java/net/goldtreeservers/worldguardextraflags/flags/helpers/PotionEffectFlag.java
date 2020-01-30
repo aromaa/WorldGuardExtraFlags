@@ -23,39 +23,51 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	@Override
 	public Object marshal(PotionEffect o)
 	{
-		return o.getType().getName() + " " + o.getAmplifier();
+		return o.getType().getName() + " " + o.getAmplifier() + " " + o.hasParticles();
 	}
 
 	@Override
 	public PotionEffect parseInput(FlagContext context) throws InvalidFlagFormat
 	{
-		String[] splitd = context.getUserInput().trim().split(" ");
-		if (splitd.length == 2)
+		String[] split = context.getUserInput().trim().split(" ");
+		if (split.length < 1 || split.length > 3)
 		{
-			PotionEffectType potionEffect = PotionEffectType.getByName(splitd[0]);
-			if (potionEffect != null)
-			{
-				return new PotionEffect(potionEffect, 319, new Integer(splitd[1]));
-			}
-			else
-			{
-				throw new InvalidFlagFormat("Unable to find the potion effect type! Please refer to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html");
-			}
+			throw new InvalidFlagFormat("Please use the following format: <effect name> [effect amplifier] [show particles]");
 		}
-		else
+		
+		PotionEffectType potionEffect = PotionEffectType.getByName(split[0]);
+		if (potionEffect == null)
 		{
-			throw new InvalidFlagFormat("Please use the following format: <effect name> <effect amplifier>");
+			throw new InvalidFlagFormat("Unable to find the potion effect type! Please refer to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html");
 		}
+		
+		return this.buildPotionEffect(split);
 	}
 
 	@Override
 	public PotionEffect unmarshal(Object o)
 	{
-		String[] splitd = o.toString().split(" ");
+		String[] split = o.toString().split(" ");
 		
-		PotionEffectType type = PotionEffectType.getByName(splitd[0]);
-		int amplifier = Integer.parseInt(splitd[1]);
+		return this.buildPotionEffect(split);
+	}
+	
+	private PotionEffect buildPotionEffect(String[] split)
+	{
+		PotionEffectType potionEffect = PotionEffectType.getByName(split[0]);
 		
-		return new PotionEffect(type, PotionEffectFlag.POTION_EFFECT_DURATION, amplifier);
+		int amplifier = 0;
+		if (split.length >= 2)
+		{
+			amplifier = Integer.parseInt(split[1]);
+		}
+		
+		boolean showParticles = false;
+		if (split.length >= 3)
+		{
+			showParticles = Boolean.parseBoolean(split[2]);
+		}
+		
+		return new PotionEffect(potionEffect, PotionEffectFlag.POTION_EFFECT_DURATION, amplifier, true, showParticles);
 	}
 }
