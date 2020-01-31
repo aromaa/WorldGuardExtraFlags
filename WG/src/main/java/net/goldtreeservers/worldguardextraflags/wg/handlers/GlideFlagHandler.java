@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.flags.helpers.ForcedStateFlag.ForcedState;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
@@ -47,24 +47,31 @@ public class GlideFlagHandler extends HandlerWrapper
 	@Override
     public void initialize(Player player, Location current, ApplicableRegionSet set)
 	{
-		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.GLIDE);
+		ForcedState state = WorldGuardUtils.queryValue(player, current.getWorld(), set.getRegions(), Flags.GLIDE);
+		
 		this.handleValue(player, state);
 	}
 	
 	@Override
 	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.GLIDE);
+		ForcedState state = WorldGuardUtils.queryValue(player, to.getWorld(), toSet.getRegions(), Flags.GLIDE);
+		
 		this.handleValue(player, state);
 		
 		return true;
 	}
 	
-	private void handleValue(Player player, State state)
+	private void handleValue(Player player, ForcedState state)
 	{
 		if (state != null)
 		{
-			boolean value = (state == State.ALLOW ? true : false);
+			if (state == ForcedState.ALLOW)
+			{
+				return;
+			}
+			
+			boolean value = (state == ForcedState.FORCE ? true : false);
 			
 			if (player.isGliding() != value)
 			{
