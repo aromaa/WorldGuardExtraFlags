@@ -4,7 +4,7 @@
    <groupId>net.goldtreeservers</groupId>
    <artifactId>worldguardextraflags</artifactId>
    <name>WorldGuardExtraFlags</name>
-   <version>4.1.2</version>
+   <version>4.1.3</version>
    
    <packaging>pom</packaging>
    
