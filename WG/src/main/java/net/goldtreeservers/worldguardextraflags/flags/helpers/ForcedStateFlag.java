@@ -100,11 +100,11 @@ public class ForcedStateFlag extends Flag<ForcedState>
         
         switch(str)
         {
-	        case "allow":
+	        case "ALLOW":
 	        	return ForcedState.ALLOW;
-	        case "force":
+	        case "FORCE":
 	        	return ForcedState.FORCE;
-	        case "deny":
+	        case "DENY":
 	        	return ForcedState.DENY;
         	default:
         		return null;
