@@ -5,57 +5,57 @@
     <artifactId>worldguardextraflags</artifactId>
     <version>4.1.4-DEV</version>
   </parent>
-  
+
   <groupId>net.goldtreeservers.worldguardextraflags</groupId>
   <artifactId>wg7</artifactId>
-  
+
   <repositories>
-     <repository>
-        <id>spigot-repo</id>
-        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-     </repository>
-     <repository>
-        <id>sk89q-repo</id>
-        <url>https://maven.sk89q.com/repo/</url>
-     </repository>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+    <repository>
+      <id>sk89q-repo</id>
+      <url>https://maven.sk89q.com/repo/</url>
+    </repository>
   </repositories>
-  
+
   <dependencies>
-      <dependency>
-         <groupId>net.goldtreeservers.worldguardextraflags</groupId>
-         <artifactId>wg</artifactId>
-         <version>${project.version}</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.spigotmc</groupId>
-         <artifactId>spigot-api</artifactId>
-         <version>1.14.4-R0.1-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sk89q.worldedit</groupId>
-         <artifactId>worldedit-core</artifactId>
-         <version>7.0.0-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sk89q.worldedit</groupId>
-         <artifactId>worldedit-bukkit</artifactId>
-         <version>7.0.0-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sk89q.worldguard</groupId>
-         <artifactId>worldguard-core</artifactId>
-         <version>7.0.0-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sk89q.worldguard</groupId>
-         <artifactId>worldguard-legacy</artifactId>
-         <version>7.0.0-SNAPSHOT</version>
-         <scope>provided</scope>
-      </dependency>
+    <dependency>
+      <groupId>net.goldtreeservers.worldguardextraflags</groupId>
+      <artifactId>wg</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>1.14.4-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sk89q.worldedit</groupId>
+      <artifactId>worldedit-core</artifactId>
+      <version>7.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sk89q.worldedit</groupId>
+      <artifactId>worldedit-bukkit</artifactId>
+      <version>7.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sk89q.worldguard</groupId>
+      <artifactId>worldguard-core</artifactId>
+      <version>7.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sk89q.worldguard</groupId>
+      <artifactId>worldguard-legacy</artifactId>
+      <version>7.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>
