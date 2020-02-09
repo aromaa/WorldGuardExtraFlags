@@ -50,8 +50,8 @@
       <url>https://maven.sk89q.com/repo/</url>
     </repository>
     <repository>
-      <id>ess-repo</id>
-      <url>http://repo.ess3.net/content/groups/essentials</url>
+      <id>essentialsx-repo</id>
+      <url>https://ci.ender.zone/plugin/repository/everything/</url>
     </repository>
     <repository>
       <id>empcraft</id>
@@ -115,8 +115,8 @@
     </dependency>
     <dependency>
       <groupId>net.ess3</groupId>
-      <artifactId>Essentials</artifactId>
-      <version>2.13-SNAPSHOT</version>
+      <artifactId>EssentialsX</artifactId>
+      <version>2.17.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -127,8 +127,8 @@
     </dependency>
     <dependency>
       <groupId>com.comphenix.protocol</groupId>
-      <artifactId>ProtocolLib-API</artifactId>
-      <version>4.4.0</version>
+      <artifactId>ProtocolLib</artifactId>
+      <version>4.5.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
