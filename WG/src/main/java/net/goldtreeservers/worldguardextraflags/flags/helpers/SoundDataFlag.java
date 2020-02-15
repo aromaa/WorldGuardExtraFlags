@@ -25,7 +25,7 @@ public class SoundDataFlag extends Flag<SoundData>
 		String[] splitd = context.getUserInput().trim().split(" ");
 		if (splitd.length == 2)
 		{
-			return new SoundData(splitd[0], new Integer(splitd[1]));
+			return new SoundData(splitd[0], Integer.parseInt(splitd[1]));
 		}
 		else
 		{
@@ -37,6 +37,6 @@ public class SoundDataFlag extends Flag<SoundData>
 	public SoundData unmarshal(Object o)
 	{
 		String[] splitd = o.toString().split(" ");
-		return new SoundData(splitd[0], new Integer(splitd[1]));
+		return new SoundData(splitd[0], Integer.parseInt(splitd[1]));
 	}
 }
