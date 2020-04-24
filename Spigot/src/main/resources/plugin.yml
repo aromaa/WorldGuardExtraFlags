@@ -1,7 +1,7 @@
 name: WorldGuardExtraFlags
 description: Adds more flags to WorldGuard to help manage your server easily!
 
-version: 4.1.4-DEV
+version: 4.1.4
 api-version: 1.13
 
 author: isokissa3
