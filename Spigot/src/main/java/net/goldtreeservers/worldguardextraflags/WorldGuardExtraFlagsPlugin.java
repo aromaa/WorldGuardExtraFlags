@@ -233,8 +233,6 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 				return valueMap.entrySet().stream().collect(Collectors.toMap((v) -> v.getKey().getName(), (v) -> v.getValue()));
 			}
         }));
-        
-        System.out.println(metrics.getPluginData().toString());
 	}
 	
 	private Set<Flag<?>> getPluginFlags()
