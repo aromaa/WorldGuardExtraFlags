@@ -1,7 +1,14 @@
 package net.goldtreeservers.worldguardextraflags;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
@@ -10,10 +17,12 @@ import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flag;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.fawe.FAWEHelper;
+import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
 import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
@@ -192,6 +201,58 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		{
 			this.getWorldGuardCommunicator().doUnloadChunkFlagCheck(world);
 		}
+		
+		this.setupMetrics();
+	}
+	
+	private void setupMetrics()
+	{
+		final int bStatsPluginId = 7301;
+		
+        Metrics metrics = new Metrics(this, bStatsPluginId);
+        metrics.addCustomChart(new Metrics.AdvancedPie("flags_count", new Callable<Map<String, Integer>>()
+        {
+        	private final Set<Flag<?>> flags = WorldGuardExtraFlagsPlugin.this.getPluginFlags();
+        	
+			@Override
+			public Map<String, Integer> call() throws Exception
+			{
+	            Map<Flag<?>, Integer> valueMap = this.flags.stream().collect(Collectors.toMap((v) -> v, (v) -> 0));
+
+	            WorldGuardExtraFlagsPlugin.this.getWorldGuardCommunicator().getRegionContainer().getLoaded().forEach((m) ->
+	            {
+	            	m.getRegions().values().forEach((r) ->
+	            	{
+	            		r.getFlags().keySet().forEach((f) -> 
+	            		{
+	            			valueMap.computeIfPresent(f, (k, v) -> v + 1);
+	            		});
+	            	});
+	            });
+	            
+				return valueMap.entrySet().stream().collect(Collectors.toMap((v) -> v.getKey().getName(), (v) -> v.getValue()));
+			}
+        }));
+        
+        System.out.println(metrics.getPluginData().toString());
+	}
+	
+	private Set<Flag<?>> getPluginFlags()
+	{
+		Set<Flag<?>> flags = new HashSet<>();
+		
+		for (Field field : Flags.class.getFields())
+		{
+			try
+			{
+				flags.add((Flag<?>)field.get(null));
+			}
+			catch (IllegalArgumentException | IllegalAccessException e)
+			{
+			}
+		}
+		
+		return flags;
 	}
 	
 	public static WorldGuardCommunicator createWorldGuardCommunicator()
