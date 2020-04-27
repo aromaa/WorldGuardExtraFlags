@@ -36,6 +36,11 @@ public class EntityListenerOnePointNine implements Listener
 				event.setCancelled(true);
 				
 				player.setGliding(state == ForcedState.FORCE);
+				
+				if (state == ForcedState.DENY)
+				{
+					player.teleport(player.getLocation());
+				}
 			}
 		}
 	}
