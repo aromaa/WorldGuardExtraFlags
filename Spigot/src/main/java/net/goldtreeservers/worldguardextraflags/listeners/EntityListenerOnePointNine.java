@@ -31,15 +31,34 @@ public class EntityListenerOnePointNine implements Listener
 			ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
 
 			ForcedState state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.GLIDE);
-			if (state != ForcedState.ALLOW)
+			switch(state)
 			{
-				event.setCancelled(true);
-				
-				player.setGliding(state == ForcedState.FORCE);
-				
-				if (state == ForcedState.DENY)
+				case ALLOW:
+					break;
+				case DENY:
 				{
+					if (!event.isGliding())
+					{
+						return;
+					}
+
+					event.setCancelled(true);
+					
+					//Prevent the player from being allowed to glide by spamming space
 					player.teleport(player.getLocation());
+					
+					break;
+				}
+				case FORCE:
+				{
+					if (event.isGliding())
+					{
+						return;
+					}
+
+					event.setCancelled(true);
+					
+					break;
 				}
 			}
 		}
