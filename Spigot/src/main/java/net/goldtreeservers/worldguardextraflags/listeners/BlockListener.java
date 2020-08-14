@@ -73,17 +73,23 @@ public class BlockListener implements Listener
 
 			for(Block block : event.getBlocks())
 			{
+				Material type = block.getType();
+				if (type == Material.AIR) //Workaround for https://github.com/aromaa/WorldGuardExtraFlagsPlugin/issues/12
+				{
+					type = event.getEffectiveMaterial();
+				}
+				
 				ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
 				
 				Set<Material> state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.ALLOW_BLOCK_PLACE);
-				if (state != null && state.contains(block.getType()))
+				if (state != null && state.contains(type))
 				{
 					event.setResult(Result.ALLOW);
 				}
 				else
 				{
 					Set<Material> state2 = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.DENY_BLOCK_PLACE);
-					if (state2 != null && state2.contains(block.getType()))
+					if (state2 != null && state2.contains(type))
 					{
 						event.setResult(Result.DENY);
 						return;
