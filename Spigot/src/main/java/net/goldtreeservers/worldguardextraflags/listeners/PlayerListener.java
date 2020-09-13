@@ -1,5 +1,6 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -15,9 +16,15 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
@@ -109,6 +116,53 @@ public class PlayerListener implements Listener
 		if (respawnLocation != null)
 		{
 			event.setRespawnLocation(WorldEditUtils.toLocation(respawnLocation));
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerItemConsumeEnchantedAppleEvent(PlayerItemConsumeEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack item = event.getItem();
+		if (item.getType() != Material.ENCHANTED_GOLDEN_APPLE)
+		{
+			return;
+		}
+	
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+
+		State enchantedGoldenApple = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.ENCHANTED_GOLDEN_APPLE);
+		if (enchantedGoldenApple == State.DENY)
+		{
+			// Cancel the event and pretend the player ate a normal golden apple.
+			event.setCancelled(true);
+			
+			if (player.getGameMode() != GameMode.CREATIVE)
+			{
+				ItemStack original = item.clone();
+				
+				item.setAmount(item.getAmount() - 1);
+				event.setItem(item);
+				
+				PlayerInventory inventory = player.getInventory();
+				if (original.equals(inventory.getItemInMainHand()))
+				{
+					inventory.setItemInMainHand(item);
+				} else if (original.equals(inventory.getItemInOffHand())) {
+					inventory.setItemInOffHand(item);
+				} else {
+					// If we can't remove it, we'll just cancel the event.
+					return;
+				}
+			}
+			
+			final int ONE_SECOND = 20;
+			final int GOLDEN_APPLE_HUNGER = 4;
+			final float GOLDEN_APPLE_SATURATION = 9.6f;
+			player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, ONE_SECOND * 60 * 2, 0));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, ONE_SECOND * 5, 1));
+			player.setFoodLevel(Math.min(20, player.getFoodLevel() + GOLDEN_APPLE_HUNGER));
+			player.setSaturation(GOLDEN_APPLE_SATURATION);
 		}
 	}
 	
