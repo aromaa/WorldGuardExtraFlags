@@ -1,10 +1,12 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -208,6 +210,24 @@ public class PlayerListener implements Listener
 		if (value != null)
 		{
 			player.setAllowFlight(value);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerResurrectEvent(EntityResurrectEvent event)
+	{
+		LivingEntity entity = event.getEntity();
+		if (!(entity instanceof Player)) {
+			return;
+		}
+
+		Player player = (Player) entity;
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		
+		State totemOfUndying = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.TOTEM_OF_UNDYING);
+		if (totemOfUndying == State.DENY)
+		{
+			event.setCancelled(true);
 		}
 	}
 }

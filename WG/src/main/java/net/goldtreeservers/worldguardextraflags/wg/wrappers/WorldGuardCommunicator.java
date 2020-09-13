@@ -60,6 +60,7 @@ public interface WorldGuardCommunicator
 		flagRegistry.register(Flags.CHUNK_UNLOAD);
 		flagRegistry.register(Flags.ITEM_DURABILITY);
 		flagRegistry.register(Flags.JOIN_LOCATION);
+		flagRegistry.register(Flags.TOTEM_OF_UNDYING);
 	}
 	
 	default public void onEnable(Plugin plugin) throws Exception

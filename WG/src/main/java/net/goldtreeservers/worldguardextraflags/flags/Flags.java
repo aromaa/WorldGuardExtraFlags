@@ -51,6 +51,8 @@ public final class Flags
 	
 	public final static StateFlag FLY = new StateFlag("fly", false);
 	
+	public final static StateFlag TOTEM_OF_UNDYING = new StateFlag("totem-of-undying", true);
+	
 	public final static SetFlag<SoundData> PLAY_SOUNDS = new SetFlag<SoundData>("play-sounds", new SoundDataFlag(null));
 	
 	public final static StateFlag MYTHICMOB_EGGS = new StateFlag("mythicmobs-eggs", true);
