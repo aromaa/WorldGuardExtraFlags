@@ -18,6 +18,7 @@ import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnExitFlagHan
 import net.goldtreeservers.worldguardextraflags.wg.handlers.ConsoleCommandOnEntryFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.ConsoleCommandOnExitFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.FlyFlagHandler;
+import net.goldtreeservers.worldguardextraflags.wg.handlers.FlySpeedFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.GlideFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.GodmodeFlagHandler;
@@ -48,6 +49,7 @@ public interface WorldGuardCommunicator
 		flagRegistry.register(Flags.WORLDEDIT);
 		flagRegistry.register(Flags.GIVE_EFFECTS);
 		flagRegistry.register(Flags.FLY);
+		flagRegistry.register(Flags.FLY_SPEED);
 		flagRegistry.register(Flags.PLAY_SOUNDS);
 		flagRegistry.register(Flags.MYTHICMOB_EGGS);
 		flagRegistry.register(Flags.FROSTWALKER);
@@ -76,6 +78,7 @@ public interface WorldGuardCommunicator
 		sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(plugin));
 		sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(plugin));
 		sessionManager.registerHandler(FlyFlagHandler.FACTORY(plugin));
+		sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(plugin));
 		sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin));
 		sessionManager.registerHandler(GlideFlagHandler.FACTORY(plugin));
 	}
