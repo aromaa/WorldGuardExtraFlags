@@ -8,14 +8,14 @@ import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class WalkSpeedFlagHandler extends AbstractSpeedFlagHandler
+public class FlySpeedFlagHandler extends AbstractSpeedFlagHandler
 {
 	public static final Factory FACTORY(Plugin plugin)
 	{
 		return new Factory(plugin);
 	}
 	
-	public static class Factory extends HandlerWrapper.Factory<WalkSpeedFlagHandler>
+	public static class Factory extends HandlerWrapper.Factory<FlySpeedFlagHandler>
 	{
 		public Factory(Plugin plugin)
 		{
@@ -23,26 +23,26 @@ public class WalkSpeedFlagHandler extends AbstractSpeedFlagHandler
 		}
 
 		@Override
-		public WalkSpeedFlagHandler create(Session session)
+		public FlySpeedFlagHandler create(Session session)
 		{
-			return new WalkSpeedFlagHandler(this.getPlugin(), session);
+			return new FlySpeedFlagHandler(this.getPlugin(), session);
 		}
 	}
 	
-	protected WalkSpeedFlagHandler(Plugin plugin, Session session)
+	protected FlySpeedFlagHandler(Plugin plugin, Session session)
 	{
-		super(plugin, session, Flags.WALK_SPEED);
+		super(plugin, session, Flags.FLY_SPEED);
 	}
 	
 	@Override
 	protected float getSpeed(Player player)
 	{
-		return player.getWalkSpeed();
+		return player.getFlySpeed();
 	}
 	
 	@Override
 	protected void setSpeed(Player player, float speed)
 	{
-		player.setWalkSpeed(speed);
+		player.setFlySpeed(speed);
 	}
 }

@@ -32,6 +32,7 @@ public final class Flags
 	public final static SetFlag<String> CONSOLE_COMMAND_ON_EXIT = WorldGuardUtils.getCommunicator().getCustomSetFlag("console-command-on-exit", new CommandStringFlag(null));
 	
 	public final static DoubleFlag WALK_SPEED = new DoubleFlag("walk-speed");
+	public final static DoubleFlag FLY_SPEED = new DoubleFlag("fly-speed");
 	
 	public final static BooleanFlag KEEP_INVENTORY = new BooleanFlag("keep-inventory");
 	public final static BooleanFlag KEEP_EXP = new BooleanFlag("keep-exp");
