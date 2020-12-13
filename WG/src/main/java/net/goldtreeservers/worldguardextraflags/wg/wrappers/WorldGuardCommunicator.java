@@ -54,14 +54,18 @@ public interface WorldGuardCommunicator
 		flagRegistry.register(Flags.MYTHICMOB_EGGS);
 		flagRegistry.register(Flags.FROSTWALKER);
 		flagRegistry.register(Flags.NETHER_PORTALS);
-		flagRegistry.register(Flags.ALLOW_BLOCK_PLACE);
-		flagRegistry.register(Flags.DENY_BLOCK_PLACE);
-		flagRegistry.register(Flags.ALLOW_BLOCK_BREAK);
-		flagRegistry.register(Flags.DENY_BLOCK_BREAK);
 		flagRegistry.register(Flags.GLIDE);
 		flagRegistry.register(Flags.CHUNK_UNLOAD);
 		flagRegistry.register(Flags.ITEM_DURABILITY);
 		flagRegistry.register(Flags.JOIN_LOCATION);
+
+		if (this.isLegacy())
+		{
+			flagRegistry.register(Flags.ALLOW_BLOCK_PLACE);
+			flagRegistry.register(Flags.DENY_BLOCK_PLACE);
+			flagRegistry.register(Flags.ALLOW_BLOCK_BREAK);
+			flagRegistry.register(Flags.DENY_BLOCK_BREAK);
+		}
 	}
 	
 	default public void onEnable(Plugin plugin) throws Exception
@@ -82,6 +86,8 @@ public interface WorldGuardCommunicator
 		sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin));
 		sessionManager.registerHandler(GlideFlagHandler.FACTORY(plugin));
 	}
+
+	public boolean isLegacy();
 	
 	public FlagRegistry getFlagRegistry();
 	

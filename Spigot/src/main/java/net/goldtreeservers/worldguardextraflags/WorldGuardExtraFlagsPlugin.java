@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import net.goldtreeservers.worldguardextraflags.listeners.*;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
@@ -23,13 +24,6 @@ import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.fawe.FAWEHelper;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
-import net.goldtreeservers.worldguardextraflags.listeners.BlockListener;
-import net.goldtreeservers.worldguardextraflags.listeners.EntityListener;
-import net.goldtreeservers.worldguardextraflags.listeners.EntityListenerOnePointNine;
-import net.goldtreeservers.worldguardextraflags.listeners.EntityPotionEffectEventListener;
-import net.goldtreeservers.worldguardextraflags.listeners.PlayerListener;
-import net.goldtreeservers.worldguardextraflags.listeners.WorldEditListener;
-import net.goldtreeservers.worldguardextraflags.listeners.WorldListener;
 import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
@@ -143,6 +137,11 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new WorldListener(this), this);
+
+		if (this.worldGuardCommunicator.isLegacy())
+		{
+			this.getServer().getPluginManager().registerEvents(new BlockListenerWG(this), this);
+		}
 		
 		try
 		{

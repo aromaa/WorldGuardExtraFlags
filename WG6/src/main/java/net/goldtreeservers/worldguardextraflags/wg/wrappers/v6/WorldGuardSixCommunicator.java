@@ -43,6 +43,12 @@ public class WorldGuardSixCommunicator implements WorldGuardCommunicator
 	}
 
 	@Override
+	public boolean isLegacy()
+	{
+		return true;
+	}
+
+	@Override
 	public FlagRegistry getFlagRegistry()
 	{
 		return WorldGuardPlugin.inst().getFlagRegistry();
