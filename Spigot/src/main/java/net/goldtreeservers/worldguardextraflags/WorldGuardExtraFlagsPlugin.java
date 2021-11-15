@@ -1,5 +1,8 @@
 package net.goldtreeservers.worldguardextraflags;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.flags.Flag;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashSet;
@@ -7,29 +10,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
-
-import net.goldtreeservers.worldguardextraflags.listeners.*;
-import org.bstats.bukkit.Metrics;
-import org.bukkit.World;
-import org.bukkit.block.BlockState;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.world.PortalCreateEvent;
-import org.bukkit.plugin.Plugin;
-
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.Flag;
-
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.fawe.FAWEHelper;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
+import net.goldtreeservers.worldguardextraflags.listeners.*;
 import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v6.WorldGuardSixCommunicator;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v7.WorldGuardSevenCommunicator;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.World;
+import org.bukkit.block.BlockState;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.plugin.Plugin;
 
 public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlugin
 {
@@ -67,8 +64,9 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		}
 		catch (Exception e)
 		{
+      System.out.println("Could not register worldguard extra flags. This was caused by:");
+      e.printStackTrace();
 			this.getServer().getPluginManager().disablePlugin(this);
-			
 			throw new RuntimeException("Failed to load WorldGuard communicator", e);
 		}
 
@@ -138,10 +136,11 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		this.getServer().getPluginManager().registerEvents(new BlockListener(this), this);
 		this.getServer().getPluginManager().registerEvents(new WorldListener(this), this);
 
-		if (this.worldGuardCommunicator.isLegacy())
-		{
+		//if (this.worldGuardCommunicator.isLegacy())
+		//{
 			this.getServer().getPluginManager().registerEvents(new BlockListenerWG(this), this);
-		}
+		//}
+    this.getServer().getPluginManager().registerEvents(new EntityPlaceListener(this), this);
 		
 		try
 		{
@@ -246,6 +245,7 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 			}
 			catch (IllegalArgumentException | IllegalAccessException e)
 			{
+        e.printStackTrace();
 			}
 		}
 		

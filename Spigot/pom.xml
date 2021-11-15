@@ -17,7 +17,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0-SNAPSHOT</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -45,6 +45,15 @@
 					</filters>
 				</configuration>
 			</plugin>
+		 <plugin>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-compiler-plugin</artifactId>
+		  <version>2.3.2</version>
+		  <configuration>
+		   <source>16</source>
+		   <target>16</target>
+		  </configuration>
+		 </plugin>
 		</plugins>
 	</build>
 
@@ -140,7 +149,7 @@
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
-			<version>4.5.0</version>
+			<version>4.7.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

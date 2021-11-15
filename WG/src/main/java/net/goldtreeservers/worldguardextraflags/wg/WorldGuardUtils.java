@@ -1,18 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.wg;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.FlagValueCalculator;
 import com.sk89q.worldguard.protection.flags.Flag;
@@ -20,10 +7,22 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.util.NormativeOrders;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import net.goldtreeservers.worldguardextraflags.wg.wrappers.AbstractRegionContainerWrapper;
+import net.goldtreeservers.worldguardextraflags.wg.wrappers.AbstractRegionManagerWrapper;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class WorldGuardUtils
 {
@@ -85,8 +84,9 @@ public class WorldGuardUtils
 		}
 		
 		NormativeOrders.sort(checkForRegions);
-		
-		ProtectedRegion global = WorldGuardUtils.getCommunicator().getRegionContainer().get(world).getRegion(ProtectedRegion.GLOBAL_REGION);
+    AbstractRegionContainerWrapper containerWrapper = WorldGuardUtils.getCommunicator().getRegionContainer();
+    AbstractRegionManagerWrapper managerWrapper = containerWrapper.get(world);
+		ProtectedRegion global = managerWrapper.getRegion(ProtectedRegion.GLOBAL_REGION); //Throws an event Exception because the !!
 		if (global != null) //Global region can be null
 		{
 			if (WorldGuardUtils.hasBypass(player, world, global, flag)) //Lets do like this for now to reduce dublicated code
