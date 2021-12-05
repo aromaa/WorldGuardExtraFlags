@@ -190,9 +190,9 @@ public class PlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(event.getSpawnLocation());
 		
-		Object location = WorldGuardUtils.queryValueUnchecked(player, player.getWorld(), regions.getRegions(), Flags.JOIN_LOCATION);
+		Object location = WorldGuardUtils.queryValueUnchecked(player, event.getSpawnLocation().getWorld(), regions.getRegions(), Flags.JOIN_LOCATION);
 		if (location != null)
 		{
 			event.setSpawnLocation(WorldEditUtils.toLocation(location));
