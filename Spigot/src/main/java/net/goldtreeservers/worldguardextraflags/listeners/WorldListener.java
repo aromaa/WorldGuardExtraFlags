@@ -30,10 +30,7 @@ public class WorldListener implements Listener
 	{
 		World world = event.getWorld();
 		Chunk chunk = event.getChunk();
-		
-		if (!this.plugin.getWorldGuardCommunicator().doUnloadChunkFlagCheck(world, chunk))
-		{
-			event.setCancelled(true);
-		}
+
+		this.plugin.getWorldGuardCommunicator().doUnloadChunkFlagCheck(world, chunk);
 	}
 }

@@ -13,10 +13,10 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.6.1</version>
+            <version>3.10.1</version>
             <configuration>
-               <source>1.8</source>
-               <target>1.8</target>
+               <source>17</source>
+               <target>17</target>
             </configuration>
          </plugin>
       </plugins>
@@ -26,17 +26,14 @@
       <dependency>
          <groupId>org.projectlombok</groupId>
          <artifactId>lombok</artifactId>
-         <version>1.16.18</version>
+         <version>1.18.24</version>
          <scope>provided</scope>
       </dependency>
    </dependencies>
    
    <modules>
-   	<module>WG6</module>
-   	<module>Common</module>
    	<module>WG</module>
    	<module>WG7</module>
    	<module>Spigot</module>
-    <module>Spigot-1_14</module>
    </modules>
 </project>

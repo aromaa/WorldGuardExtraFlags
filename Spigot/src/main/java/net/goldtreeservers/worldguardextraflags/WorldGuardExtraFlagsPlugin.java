@@ -27,12 +27,14 @@ import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.v6.WorldGuardSixCommunicator;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.v7.WorldGuardSevenCommunicator;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlugin
+public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 {
 	@Getter private static WorldGuardExtraFlagsPlugin plugin;
+
+	@Getter private WorldGuardCommunicator worldGuardCommunicator;
 	
 	@Getter private WorldGuardPlugin worldGuardPlugin;
 	@Getter private WorldEditPlugin worldEditPlugin;
@@ -139,24 +141,8 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		{
 			
 		}
-		
-		try
-		{
-			ParameterizedType type = (ParameterizedType)PortalCreateEvent.class.getDeclaredField("blocks").getGenericType();
-			Class<?> clazz = (Class<?>)type.getActualTypeArguments()[0];
-			if (clazz == BlockState.class)
-			{
-				this.getServer().getPluginManager().registerEvents(new net.goldtreeservers.worldguardextraflags.spigot1_14.EntityListener(this), this);
-			}
-			else
-			{
-				this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
-			}
-		}
-		catch(Throwable ignored)
-		{
-			this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
-		}
+
+		this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
 
 		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this));
 		
@@ -241,19 +227,6 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		catch (Throwable ignored)
 		{
 			
-		}
-		
-		try
-		{
-			Class<?> clazz = Class.forName("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
-			if (clazz.getMethod("getFlagRegistry") != null)
-			{
-				return new WorldGuardSixCommunicator();
-			}
-		}
-		catch (Throwable ignored)
-		{
-			ignored.printStackTrace();
 		}
 		
 		return null;
