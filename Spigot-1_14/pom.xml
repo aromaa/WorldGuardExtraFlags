@@ -18,18 +18,6 @@
 			<id>sk89q-repo</id>
 			<url>https://maven.sk89q.com/repo/</url>
 		</repository>
-		<repository>
-			<id>ess-repo</id>
-			<url>http://repo.ess3.net/content/groups/essentials</url>
-		</repository>
-		<repository>
-			<id>empcraft</id>
-			<url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
-		</repository>
-		<repository>
-			<id>dmulloy2-repo</id>
-			<url>http://repo.dmulloy2.net/nexus/repository/public/</url>
-		</repository>
 	</repositories>
 
 	<dependencies>

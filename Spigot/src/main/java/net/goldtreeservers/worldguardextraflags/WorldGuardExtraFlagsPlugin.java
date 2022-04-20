@@ -22,7 +22,6 @@ import com.sk89q.worldguard.protection.flags.Flag;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
-import net.goldtreeservers.worldguardextraflags.fawe.FAWEHelper;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
@@ -39,7 +38,6 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 	@Getter private WorldEditPlugin worldEditPlugin;
 
 	@Getter private EssentialsHelper essentialsHelper;
-	@Getter private FAWEHelper faweHelper;
 	@Getter private ProtocolLibHelper protocolLibHelper;
 	
 	public WorldGuardExtraFlagsPlugin()
@@ -79,19 +77,6 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 			if (essentialsPlugin != null)
 			{
 				this.essentialsHelper = new EssentialsHelper(this, essentialsPlugin);
-			}
-		}
-		catch(Throwable ignore)
-		{
-			
-		}
-
-		try
-		{
-			Plugin fastAsyncWorldEditPlugin = this.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit");
-			if (fastAsyncWorldEditPlugin != null)
-			{
-				this.faweHelper = new FAWEHelper(this, fastAsyncWorldEditPlugin);
 			}
 		}
 		catch(Throwable ignore)
@@ -172,15 +157,8 @@ public class WorldGuardExtraFlagsPlugin extends AbstractWorldGuardExtraFlagsPlug
 		{
 			this.getServer().getPluginManager().registerEvents(new EntityListener(this), this);
 		}
-		
-		if (this.faweHelper != null)
-		{
-			this.faweHelper.onEnable();
-		}
-		else
-		{
-			this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this));
-		}
+
+		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this));
 		
 		if (this.essentialsHelper != null)
 		{

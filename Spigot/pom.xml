@@ -62,12 +62,8 @@
 			<url>https://ci.ender.zone/plugin/repository/everything/</url>
 		</repository>
 		<repository>
-			<id>empcraft</id>
-			<url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
-		</repository>
-		<repository>
 			<id>dmulloy2-repo</id>
-			<url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+			<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
 		</repository>
 		<repository>
 			<id>CodeMC</id>
@@ -129,12 +125,6 @@
 			<groupId>net.ess3</groupId>
 			<artifactId>EssentialsX</artifactId>
 			<version>2.17.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.boydti</groupId>
-			<artifactId>fawe-api</artifactId>
-			<version>18.07.27-3ed2e57-1163-20.5.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

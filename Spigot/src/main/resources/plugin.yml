@@ -8,6 +8,6 @@ author: isokissa3
 website: https://goldtreevers.net
 
 depend: [ WorldGuard ]
-softdepend: [ MythicMobs, FastAsyncWorldEdit, Essentials, ProtocolLib ]
+softdepend: [ Essentials, ProtocolLib ]
 
 main: net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin
