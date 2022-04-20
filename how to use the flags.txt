@@ -1,0 +1,13 @@
+-Create a region
+-Deop yourself
+- from the console execute the commands:
+
+In order to use block flags (for example in 'testr' region):
+region flag -w world testr block-break allow (to prevent worldguard from blocking block break by default)
+region flag -w world testr block-place allow (to prevent worldguard from blocking block place by default)
+region flag -w world testr allow-block-place [glass] (to allow placement only of a particular block, for example glass)
+region flag -w world testr deny-block-place [glass] (to deny placement of a particular block, for example glass)
+region flag -w world testr glide force(it will show you all the flags currently set on a region, you can use it for testing, if you have any doubts, thought it will force players to glide & you might wanna change it back or remove it)
+
+To use the entity flags, its very similar, but you should give the 'build' and/or place_vehicle flags, and then set the allow-entity-place or deny-entity-place flags.
+ 

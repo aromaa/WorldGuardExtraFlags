@@ -1,8 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.wg.wrappers;
 
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import com.sk89q.worldedit.extent.AbstractDelegateExtent;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.world.World;
@@ -10,7 +7,6 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.SetFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
-
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.BlockedEffectsFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.CommandOnEntryFlagHandler;
@@ -26,6 +22,8 @@ import net.goldtreeservers.worldguardextraflags.wg.handlers.PlaySoundsFlagHandle
 import net.goldtreeservers.worldguardextraflags.wg.handlers.TeleportOnEntryFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.TeleportOnExitFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.WalkSpeedFlagHandler;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public interface WorldGuardCommunicator
 {
@@ -59,13 +57,17 @@ public interface WorldGuardCommunicator
 		flagRegistry.register(Flags.ITEM_DURABILITY);
 		flagRegistry.register(Flags.JOIN_LOCATION);
 
-		if (this.isLegacy())
-		{
+		//if (this.isLegacy())
+		//{
 			flagRegistry.register(Flags.ALLOW_BLOCK_PLACE);
 			flagRegistry.register(Flags.DENY_BLOCK_PLACE);
 			flagRegistry.register(Flags.ALLOW_BLOCK_BREAK);
 			flagRegistry.register(Flags.DENY_BLOCK_BREAK);
-		}
+      
+      flagRegistry.register(Flags.ALLOW_ENTITY_PLACE);
+      flagRegistry.register(Flags.DENY_ENTITY_PLACE);
+      
+		//}
 	}
 	
 	default public void onEnable(Plugin plugin) throws Exception

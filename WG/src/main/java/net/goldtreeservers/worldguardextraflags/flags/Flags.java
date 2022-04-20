@@ -1,9 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.flags;
 
-import org.bukkit.Material;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import com.sk89q.worldguard.protection.flags.BooleanFlag;
 import com.sk89q.worldguard.protection.flags.CommandStringFlag;
 import com.sk89q.worldguard.protection.flags.DoubleFlag;
@@ -11,14 +7,18 @@ import com.sk89q.worldguard.protection.flags.LocationFlag;
 import com.sk89q.worldguard.protection.flags.SetFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.StringFlag;
-
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.BlockMaterialFlag;
+import net.goldtreeservers.worldguardextraflags.flags.helpers.EntityTypeFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.ForcedStateFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.PotionEffectFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.PotionEffectTypeFlag;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.SoundDataFlag;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public final class Flags
 {
@@ -64,6 +64,9 @@ public final class Flags
 	public final static SetFlag<Material> DENY_BLOCK_PLACE = new SetFlag<Material>("deny-block-place", new BlockMaterialFlag(null));
 	public final static SetFlag<Material> ALLOW_BLOCK_BREAK = new SetFlag<Material>("allow-block-break", new BlockMaterialFlag(null));
 	public final static SetFlag<Material> DENY_BLOCK_BREAK = new SetFlag<Material>("deny-block-break", new BlockMaterialFlag(null));
+  
+  public final static SetFlag<EntityType> ALLOW_ENTITY_PLACE = new SetFlag<EntityType>("allow-entity-place", new EntityTypeFlag(null));
+	public final static SetFlag<EntityType> DENY_ENTITY_PLACE = new SetFlag<EntityType>("deny-entity-place", new EntityTypeFlag(null));
 	
 	public final static ForcedStateFlag GLIDE = new ForcedStateFlag("glide");
 	

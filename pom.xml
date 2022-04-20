@@ -8,12 +8,20 @@
    
    <packaging>pom</packaging>
    
-      <build>
+    <!--Provide snapshot maven plugins repository-->
+    <pluginRepositories>
+      <pluginRepository>
+        <id>apache.snapshots</id>
+        <url>https://repository.apache.org/snapshots/</url>
+      </pluginRepository>
+    </pluginRepositories>
+    
+    <build>
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.6.1</version>
+            <version>3.9.0-SNAPSHOT</version>
             <configuration>
                <source>1.8</source>
                <target>1.8</target>
@@ -26,7 +34,7 @@
       <dependency>
          <groupId>org.projectlombok</groupId>
          <artifactId>lombok</artifactId>
-         <version>1.16.18</version>
+         <version>1.18.20</version>
          <scope>provided</scope>
       </dependency>
    </dependencies>
@@ -39,4 +47,11 @@
    	<module>Spigot</module>
     <module>Spigot-1_14</module>
    </modules>
+   
+    <!--Assign enviromental variables.-->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+    </properties>
 </project>
