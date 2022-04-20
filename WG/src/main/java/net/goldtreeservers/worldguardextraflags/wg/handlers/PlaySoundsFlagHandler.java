@@ -18,7 +18,6 @@ import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
-import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
@@ -92,11 +91,8 @@ public class PlaySoundsFlagHandler extends HandlerWrapper
 						public void cancel()
 						{
 							super.cancel();
-							
-							if (SupportedFeatures.isStopSoundSupported())
-							{
-								player.stopSound(sound.getSound());
-							}
+
+							player.stopSound(sound.getSound());
 						}
 					};
 	

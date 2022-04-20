@@ -33,7 +33,6 @@
    
    <modules>
    	<module>WG</module>
-   	<module>WG7</module>
    	<module>Spigot</module>
    </modules>
 </project>

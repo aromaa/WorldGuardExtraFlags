@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.essentials;
 
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import org.bukkit.plugin.Plugin;
 
 import com.earth2me.essentials.Essentials;
@@ -22,6 +24,8 @@ public class EssentialsHelper
 	
 	public void onEnable()
 	{
-		this.plugin.getServer().getPluginManager().registerEvents(new EssentialsListener(this.plugin, this.essentialsPlugin), this.plugin);
+		WorldGuardPlatform platform = WorldGuard.getInstance().getPlatform();
+
+		this.plugin.getServer().getPluginManager().registerEvents(new EssentialsListener(this.plugin, this.essentialsPlugin, platform.getRegionContainer(), platform.getSessionManager()), this.plugin);
 	}
 }

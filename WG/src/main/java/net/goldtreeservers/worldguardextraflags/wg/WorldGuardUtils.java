@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -23,17 +26,14 @@ import com.sk89q.worldguard.protection.util.NormativeOrders;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.WorldGuardCommunicator;
 
 public class WorldGuardUtils
 {
 	public static final String PREVENT_TELEPORT_LOOP_META = "WGEFP: TLP";
 	
-	@Getter @Setter private static WorldGuardCommunicator communicator;
-	
 	private static LocalPlayer wrapPlayer(Player player)
 	{
-		return WorldGuardUtils.getCommunicator().wrapPlayer(player);
+		return WorldGuardPlugin.inst().wrapPlayer(player);
 	}
 	
 	public static boolean hasBypass(Player player, World world, ProtectedRegion region, Flag<?> flag)
@@ -86,7 +86,7 @@ public class WorldGuardUtils
 		
 		NormativeOrders.sort(checkForRegions);
 		
-		ProtectedRegion global = WorldGuardUtils.getCommunicator().getRegionContainer().get(world).getRegion(ProtectedRegion.GLOBAL_REGION);
+		ProtectedRegion global = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world)).getRegion(ProtectedRegion.GLOBAL_REGION);
 		if (global != null) //Global region can be null
 		{
 			if (WorldGuardUtils.hasBypass(player, world, global, flag)) //Lets do like this for now to reduce dublicated code

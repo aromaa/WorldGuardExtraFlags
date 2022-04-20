@@ -1,4 +1,4 @@
-package net.goldtreeservers.worldguardextraflags.wg.wrappers.v7;
+package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
 import java.util.Set;
 

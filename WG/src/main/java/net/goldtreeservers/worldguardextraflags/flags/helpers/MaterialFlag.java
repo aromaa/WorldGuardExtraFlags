@@ -6,8 +6,6 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.FlagContext;
 import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 
-import net.goldtreeservers.worldguardextraflags.utils.SupportedFeatures;
-
 public class MaterialFlag extends Flag<Material>
 {
 	public MaterialFlag(String name)
@@ -39,7 +37,7 @@ public class MaterialFlag extends Flag<Material>
 	public Material unmarshal(Object o)
 	{
 		Material material = Material.matchMaterial(o.toString());
-		if (material == null && SupportedFeatures.isNewMaterial()) //Fallback to legacy on unmarshal only
+		if (material == null) //Fallback to legacy on unmarshal only
 		{
 			material = Material.matchMaterial(o.toString(), true);
 		}

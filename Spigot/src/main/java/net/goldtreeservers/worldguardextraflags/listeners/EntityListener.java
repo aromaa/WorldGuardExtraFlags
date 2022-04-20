@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
@@ -19,12 +21,14 @@ public class EntityListener implements Listener
 {
 	@Getter private final WorldGuardExtraFlagsPlugin plugin;
 
+	private final RegionContainer regionContainer;
+
 	@EventHandler(ignoreCancelled = true)
 	public void onPortalCreateEvent(PortalCreateEvent event)
 	{
 		for(BlockState block : event.getBlocks())
 		{
-			ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(block.getLocation());
+			ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(block.getLocation()));
 			if (regions.queryValue(null, Flags.NETHER_PORTALS) == State.DENY)
 			{
 				event.setCancelled(true);

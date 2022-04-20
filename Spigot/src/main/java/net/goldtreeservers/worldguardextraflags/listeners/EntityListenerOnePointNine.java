@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +21,8 @@ import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 public class EntityListenerOnePointNine implements Listener
 {
 	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+
+	private final RegionContainer regionContainer;
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityToggleGlideEvent(EntityToggleGlideEvent event)
@@ -28,7 +32,7 @@ public class EntityListenerOnePointNine implements Listener
 		{
 			Player player = (Player)entity;
 			
-			ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+			ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 
 			ForcedState state = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.GLIDE);
 			switch(state)

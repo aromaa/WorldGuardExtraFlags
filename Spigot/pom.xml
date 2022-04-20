@@ -78,12 +78,6 @@
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.goldtreeservers.worldguardextraflags</groupId>
-			<artifactId>wg7</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.spigotmc</groupId>

@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.session.SessionManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +19,8 @@ import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandl
 public class EntityPotionEffectEventListener implements Listener
 {
 	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+
+	private final SessionManager sessionManager;
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityPotionEffectEvent(EntityPotionEffectEvent event)
@@ -45,7 +49,7 @@ public class EntityPotionEffectEventListener implements Listener
 
 		try
 		{
-			Session session = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getSessionManager().get(player);
+			Session session = this.sessionManager.get(WorldGuardPlugin.inst().wrapPlayer(player));
 			
 			GiveEffectsFlagHandler giveEffectsHandler = session.getHandler(GiveEffectsFlagHandler.class);
 			if (giveEffectsHandler.isSupressRemovePotionPacket())

@@ -1,5 +1,9 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.session.SessionManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +30,9 @@ public class EssentialsListener implements Listener
 {
 	@Getter private final WorldGuardExtraFlagsPlugin plugin;
 	@Getter private final Essentials essentialsPlugin;
+
+	private final RegionContainer regionContainer;
+	private final SessionManager sessionManager;
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onGodStatusChangeEvent(GodStatusChangeEvent event)
@@ -33,12 +40,12 @@ public class EssentialsListener implements Listener
 		IUser user = event.getAffected();
 		Player player = user.getBase();
 		
-		ApplicableRegionSet regions = this.plugin.getWorldGuardCommunicator().getRegionContainer().createQuery().getApplicableRegions(player.getLocation());
+		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
 		State state = WorldGuardUtils.queryState(player, player.getWorld(), regions.getRegions(), Flags.GODMODE);
 		if (state != null)
 		{
-			if (this.plugin.getWorldGuardCommunicator().getSessionManager().get(player).getHandler(GodmodeFlagHandler.class).getIsGodmodeEnabled() != null)
+			if (this.sessionManager.get(WorldGuardPlugin.inst().wrapPlayer(player)).getHandler(GodmodeFlagHandler.class).getIsGodmodeEnabled() != null)
 			{
 				event.setCancelled(true);
 			}
@@ -53,7 +60,7 @@ public class EssentialsListener implements Listener
 		if (player.getGameMode() != GameMode.CREATIVE && !this.essentialsPlugin.getUser(player).isAuthorized("essentials.fly"))
 		{
 			//Essentials now turns off flight, fuck him
-			Boolean value = this.plugin.getWorldGuardCommunicator().getSessionManager().get(player).getHandler(FlyFlagHandler.class).getCurrentValue();
+			Boolean value = this.sessionManager.get(WorldGuardPlugin.inst().wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
 			if (value != null)
 			{
 				player.setAllowFlight(value);

@@ -1,5 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.protocollib;
 
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.entity.Player;
 
 import com.comphenix.protocol.PacketType;
@@ -30,7 +32,7 @@ public class RemoveEffectPacketListener extends PacketAdapter
 
 			try
 			{
-				Session session = WorldGuardExtraFlagsPlugin.getPlugin().getWorldGuardCommunicator().getSessionManager().get(player);
+				Session session = WorldGuard.getInstance().getPlatform().getSessionManager().get(WorldGuardPlugin.inst().wrapPlayer(player));
 				
 				GiveEffectsFlagHandler giveEffectsHandler = session.getHandler(GiveEffectsFlagHandler.class);
 				if (giveEffectsHandler.isSupressRemovePotionPacket())

@@ -8,6 +8,7 @@ import com.sk89q.worldedit.util.eventbus.Subscribe;
 
 import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
+import net.goldtreeservers.worldguardextraflags.handlers.WorldEditFlagHandler;
 
 @RequiredArgsConstructor
 public class WorldEditListener
@@ -20,7 +21,7 @@ public class WorldEditListener
 		Actor actor = event.getActor();
 		if (actor != null && actor.isPlayer())
 		{
-			event.setExtent(this.plugin.getWorldGuardCommunicator().getWorldEditFlag(event.getWorld(), event.getExtent(), (Player)actor));
+			event.setExtent(new WorldEditFlagHandler(event.getWorld(), event.getExtent(), (Player)actor));
 		}
 	}
 }
