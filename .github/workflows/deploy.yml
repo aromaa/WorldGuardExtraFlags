@@ -20,4 +20,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: WorldGuardExtraFlags Jar
-        path: "${{ github.workspace }}/Spigot/target/libs/WorldGuardExtraFlags.jar"
+        path: "${{ github.workspace }}/Spigot/target/WorldGuardExtraFlags.jar"
