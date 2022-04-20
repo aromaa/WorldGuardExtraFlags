@@ -1,70 +1,68 @@
 package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
-import java.util.Set;
-
-import org.bukkit.Location;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.World;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
+import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.ForcedStateFlag.ForcedState;
-import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class GlideFlagHandler extends HandlerWrapper
+public class GlideFlagHandler extends FlagValueChangeHandler<ForcedState>
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static final Factory FACTORY()
 	{
-		return new Factory(plugin);
+		return new Factory();
 	}
-	
-    public static class Factory extends HandlerWrapper.Factory<GlideFlagHandler>
-    {
-        public Factory(Plugin plugin)
-        {
-			super(plugin);
-		}
 
+    public static class Factory extends Handler.Factory<GlideFlagHandler>
+    {
 		@Override
         public GlideFlagHandler create(Session session)
         {
-            return new GlideFlagHandler(this.getPlugin(), session);
+            return new GlideFlagHandler(session);
         }
     }
     
     private Boolean originalGlide;
     
-	protected GlideFlagHandler(Plugin plugin, Session session)
+	protected GlideFlagHandler(Session session)
 	{
-		super(plugin, session);
+		super(session, Flags.GLIDE);
 	}
-	
+
 	@Override
-    public void initialize(Player player, Location current, ApplicableRegionSet set)
+	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, ForcedState value)
 	{
-		ForcedState state = WorldGuardUtils.queryValue(player, current.getWorld(), set.getRegions(), Flags.GLIDE);
-		
-		this.handleValue(player, state);
+		this.handleValue(player, player.getWorld(), value);
 	}
-	
+
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, ForcedState currentValue, ForcedState lastValue, MoveType moveType)
 	{
-		ForcedState state = WorldGuardUtils.queryValue(player, to.getWorld(), toSet.getRegions(), Flags.GLIDE);
-		
-		this.handleValue(player, state);
-		
+		this.handleValue(player, (World) to.getExtent(), currentValue);
 		return true;
 	}
-	
-	private void handleValue(Player player, ForcedState state)
+
+	@Override
+	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, ForcedState lastValue, MoveType moveType)
 	{
-		if (state != null)
+		this.handleValue(player, (World) to.getExtent(),null);
+		return true;
+	}
+
+	private void handleValue(LocalPlayer player, World world, ForcedState state)
+	{
+		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
+
+		if (!this.getSession().getManager().hasBypass(player, world) && state != null)
 		{
 			if (state == ForcedState.ALLOW)
 			{
@@ -73,21 +71,21 @@ public class GlideFlagHandler extends HandlerWrapper
 			
 			boolean value = (state == ForcedState.FORCE ? true : false);
 			
-			if (player.isGliding() != value)
+			if (bukkitPlayer.isGliding() != value)
 			{
 				if (this.originalGlide == null)
 				{
-					this.originalGlide = player.isGliding();
+					this.originalGlide = bukkitPlayer.isGliding();
 				}
-				
-				player.setGliding(value);
+
+				bukkitPlayer.setGliding(value);
 			}
 		}
 		else
 		{
 			if (this.originalGlide != null)
 			{
-				player.setGliding(this.originalGlide);
+				bukkitPlayer.setGliding(this.originalGlide);
 				
 				this.originalGlide = null;
 			}

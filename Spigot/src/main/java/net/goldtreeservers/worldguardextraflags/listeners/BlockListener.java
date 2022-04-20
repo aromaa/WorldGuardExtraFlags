@@ -3,7 +3,11 @@ package net.goldtreeservers.worldguardextraflags.listeners;
 import java.util.Set;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.session.SessionManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -29,9 +33,8 @@ import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 @RequiredArgsConstructor
 public class BlockListener implements Listener
 {
-	@Getter private final WorldGuardExtraFlagsPlugin plugin;
-
 	private final RegionContainer regionContainer;
+	private final SessionManager sessionManager;
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityBlockFormEvent(EntityBlockFormEvent event)
@@ -39,23 +42,23 @@ public class BlockListener implements Listener
 		BlockState newState = event.getNewState();
 		if (newState.getType() == Material.FROSTED_ICE)
 		{
-			ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(newState.getLocation()));
-
-			Entity entity = event.getEntity();
-			if (entity instanceof Player)
+			LocalPlayer localPlayer;
+			if (event.getEntity() instanceof Player player)
 			{
-				Player player = (Player)entity;
-				if (WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.FROSTWALKER) == State.DENY)
+				localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+				if (this.sessionManager.hasBypass(localPlayer, BukkitAdapter.adapt(newState.getWorld())))
 				{
-					event.setCancelled(true);
+					return;
 				}
 			}
 			else
 			{
-				if (regions.queryValue(null, Flags.FROSTWALKER) == State.DENY)
-				{
-					event.setCancelled(true);
-				}
+				localPlayer = null;
+			}
+
+			if (this.regionContainer.createQuery().queryValue(BukkitAdapter.adapt(newState.getLocation()), localPlayer, Flags.FROSTWALKER) == State.DENY)
+			{
+				event.setCancelled(true);
 			}
 		}
 	}

@@ -1,12 +1,13 @@
 package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import com.google.common.collect.Lists;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.session.handler.Handler;
+import org.bukkit.Bukkit;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -14,49 +15,42 @@ import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
-import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class CommandOnExitFlagHandler extends HandlerWrapper
+public class CommandOnExitFlagHandler extends Handler
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static final Factory FACTORY()
 	{
-		return new Factory(plugin);
+		return new Factory();
 	}
 	
-    public static class Factory extends HandlerWrapper.Factory<CommandOnExitFlagHandler>
+    public static class Factory extends Handler.Factory<CommandOnExitFlagHandler>
     {
-        public Factory(Plugin plugin)
-        {
-			super(plugin);
-		}
-
 		@Override
         public CommandOnExitFlagHandler create(Session session)
         {
-            return new CommandOnExitFlagHandler(this.getPlugin(), session);
+            return new CommandOnExitFlagHandler(session);
         }
     }
 	
 	private Collection<Set<String>> lastCommands;
 	    
-	protected CommandOnExitFlagHandler(Plugin plugin, Session session)
+	protected CommandOnExitFlagHandler(Session session)
 	{
-		super(plugin, session);
+		super(session);
 		
 		this.lastCommands = new ArrayList<>();
 	}
 	
     @Override
-    public void initialize(Player player, Location current, ApplicableRegionSet set)
+	public void initialize(LocalPlayer player, Location current, ApplicableRegionSet set)
     {
-    	this.lastCommands = WorldGuardUtils.queryAllValues(player, current.getWorld(), set.getRegions(), Flags.COMMAND_ON_EXIT);
+    	this.lastCommands = set.queryAllValues(player, Flags.COMMAND_ON_EXIT);
     }
     	
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	public boolean onCrossBoundary(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
-		Collection<Set<String>> commands = new ArrayList<Set<String>>(WorldGuardUtils.queryAllValues(player, to.getWorld(), toSet.getRegions(), Flags.COMMAND_ON_EXIT));
+		Collection<Set<String>> commands = Lists.newArrayList(toSet.queryAllValues(player, Flags.COMMAND_ON_EXIT));
 		
 		if (!commands.isEmpty())
 		{
@@ -76,8 +70,10 @@ public class CommandOnExitFlagHandler extends HandlerWrapper
 			{
 				for(String command : commands_)
 				{
-					this.getPlugin().getServer().dispatchCommand(player, command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+					Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
 				}
+
+				break;
 			}
 		}
 		

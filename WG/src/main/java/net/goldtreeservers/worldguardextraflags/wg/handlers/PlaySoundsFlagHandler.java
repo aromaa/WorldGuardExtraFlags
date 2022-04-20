@@ -6,76 +6,90 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.bukkit.Location;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
+import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
-import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class PlaySoundsFlagHandler extends HandlerWrapper
+public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>>
 {
 	public static final Factory FACTORY(Plugin plugin)
 	{
 		return new Factory(plugin);
 	}
 	
-    public static class Factory extends HandlerWrapper.Factory<PlaySoundsFlagHandler>
+    public static class Factory extends Handler.Factory<PlaySoundsFlagHandler>
     {
-        public Factory(Plugin plugin)
-        {
-			super(plugin);
+		private final Plugin plugin;
+
+		public Factory(Plugin plugin)
+		{
+			this.plugin = plugin;
 		}
 
 		@Override
         public PlaySoundsFlagHandler create(Session session)
         {
-            return new PlaySoundsFlagHandler(this.getPlugin(), session);
+            return new PlaySoundsFlagHandler(this.plugin, session);
         }
     }
 
+	private final Plugin plugin;
     private Map<String, BukkitRunnable> runnables;
 	    
 	protected PlaySoundsFlagHandler(Plugin plugin, Session session)
 	{
-		super(plugin, session);
+		super(session, Flags.PLAY_SOUNDS);
+
+		this.plugin = plugin;
 		
 		this.runnables = new HashMap<>();
 	}
 
 	@Override
-	public void initialize(Player player, Location current, ApplicableRegionSet set)
+	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, Set<SoundData> value)
 	{
-		this.check(player, set);
-    }
-	
+		this.handleValue(player, value);
+	}
+
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<SoundData> currentValue, Set<SoundData> lastValue, MoveType moveType)
 	{
-		this.check(player, toSet);
-		
+		this.handleValue(player, currentValue);
 		return true;
 	}
-	
-	public void tick(Player player, ApplicableRegionSet set)
+
+	@Override
+	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<SoundData> lastValue, MoveType moveType)
 	{
-		this.check(player, set);
+		this.handleValue(player, null);
+		return true;
+	}
+
+	@Override
+	public void tick(LocalPlayer player, ApplicableRegionSet set)
+	{
+		this.handleValue(player, set.queryValue(player, Flags.PLAY_SOUNDS));
     }
 	
-	private void check(Player player, ApplicableRegionSet set)
+	private void handleValue(LocalPlayer player, Set<SoundData> value)
 	{
-		Set<SoundData> soundData = WorldGuardUtils.queryValue(player, player.getWorld(), set.getRegions(), Flags.PLAY_SOUNDS);
-		if (soundData != null && soundData.size() > 0)
+		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
+
+		if (value != null && value.size() > 0)
 		{
-			for(SoundData sound : soundData)
+			for(SoundData sound : value)
 			{
 				if (!this.runnables.containsKey(sound.getSound()))
 				{
@@ -84,7 +98,7 @@ public class PlaySoundsFlagHandler extends HandlerWrapper
 						@Override
 						public void run()
 						{
-							player.playSound(player.getLocation(), sound.getSound(), Float.MAX_VALUE, 1);
+							bukkitPlayer.playSound(bukkitPlayer.getLocation(), sound.getSound(), Float.MAX_VALUE, 1);
 						}
 						
 						@Override
@@ -92,13 +106,13 @@ public class PlaySoundsFlagHandler extends HandlerWrapper
 						{
 							super.cancel();
 
-							player.stopSound(sound.getSound());
+							bukkitPlayer.stopSound(sound.getSound());
 						}
 					};
 	
 					this.runnables.put(sound.getSound(), runnable);
 					
-					runnable.runTaskTimer(this.getPlugin(), 0L, sound.getInterval());
+					runnable.runTaskTimer(this.plugin, 0L, sound.getInterval());
 				}
 			}
 		}
@@ -108,10 +122,10 @@ public class PlaySoundsFlagHandler extends HandlerWrapper
 		{
 			Entry<String, BukkitRunnable> runnable = runnables.next();
 			
-			if (soundData != null && soundData.size() > 0)
+			if (value != null && value.size() > 0)
 			{
 				boolean skip = false;
-				for(SoundData sound : soundData)
+				for(SoundData sound : value)
 				{
 					if (sound.getSound().equals(runnable.getKey()))
 					{

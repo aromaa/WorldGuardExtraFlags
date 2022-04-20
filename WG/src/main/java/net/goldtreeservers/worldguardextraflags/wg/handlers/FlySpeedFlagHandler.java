@@ -2,36 +2,30 @@ package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import com.sk89q.worldguard.session.Session;
 
+import com.sk89q.worldguard.session.handler.Handler;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class FlySpeedFlagHandler extends AbstractSpeedFlagHandler
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static final Factory FACTORY()
 	{
-		return new Factory(plugin);
+		return new Factory();
 	}
 	
-	public static class Factory extends HandlerWrapper.Factory<FlySpeedFlagHandler>
+	public static class Factory extends Handler.Factory<FlySpeedFlagHandler>
 	{
-		public Factory(Plugin plugin)
-		{
-			super(plugin);
-		}
-
 		@Override
 		public FlySpeedFlagHandler create(Session session)
 		{
-			return new FlySpeedFlagHandler(this.getPlugin(), session);
+			return new FlySpeedFlagHandler(session);
 		}
 	}
 	
-	protected FlySpeedFlagHandler(Plugin plugin, Session session)
+	protected FlySpeedFlagHandler(Session session)
 	{
-		super(plugin, session, Flags.FLY_SPEED);
+		super(session, Flags.FLY_SPEED);
 	}
 	
 	@Override

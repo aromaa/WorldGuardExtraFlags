@@ -1,8 +1,11 @@
 package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
-import java.util.Set;
-
-import org.bukkit.Location;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
+import com.sk89q.worldguard.session.handler.Handler;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -10,62 +13,60 @@ import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
-import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class GodmodeFlagHandler extends HandlerWrapper
+public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static final Factory FACTORY()
 	{
-		return new Factory(plugin);
+		return new Factory();
 	}
 	
-    public static class Factory extends HandlerWrapper.Factory<GodmodeFlagHandler>
+    public static class Factory extends Handler.Factory<GodmodeFlagHandler>
     {
-        public Factory(Plugin plugin)
-        {
-			super(plugin);
-		}
-
 		@Override
         public GodmodeFlagHandler create(Session session)
         {
-            return new GodmodeFlagHandler(this.getPlugin(), session);
+            return new GodmodeFlagHandler(session);
         }
     }
     
     @Getter private Boolean isGodmodeEnabled;
     private Boolean originalEssentialsGodmode;
 	    
-	protected GodmodeFlagHandler(Plugin plugin, Session session)
+	protected GodmodeFlagHandler(Session session)
 	{
-		super(plugin, session);
+		super(session, Flags.GODMODE);
 	}
-	
+
 	@Override
-	public void initialize(Player player, Location current, ApplicableRegionSet set)
+	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, State value)
 	{
-		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.GODMODE);
-		this.handleValue(player, state);
-    }
-	
+		this.handleValue(player, value);
+	}
+
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, State currentValue, State lastValue, MoveType moveType)
 	{
-		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.GODMODE);
-		this.handleValue(player, state);
-		
+		this.handleValue(player, currentValue);
+		return true;
+	}
+
+	@Override
+	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, State lastValue, MoveType moveType)
+	{
+		this.handleValue(player, null);
 		return true;
 	}
 	
-	private void handleValue(Player player, State state)
+	private void handleValue(LocalPlayer player, State state)
 	{
+		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
+
 		if (state != null)
 		{
 			this.isGodmodeEnabled = (state == State.ALLOW ? true : false);
@@ -76,7 +77,7 @@ public class GodmodeFlagHandler extends HandlerWrapper
 		}
 		
 		//For now at least
-		Plugin essentials = this.getPlugin().getServer().getPluginManager().getPlugin("Essentials");
+		Plugin essentials = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
 		if (essentials != null)
 		{
 			User user = ((Essentials)essentials).getUser(player);
@@ -106,7 +107,7 @@ public class GodmodeFlagHandler extends HandlerWrapper
 	}
 	
 	@Override
-    public State getInvincibility(Player player)
+    public State getInvincibility(LocalPlayer player)
 	{
 		if (this.isGodmodeEnabled != null)
 		{

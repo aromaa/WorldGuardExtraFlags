@@ -75,7 +75,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			flagRegistry.register(Flags.FLY);
 			flagRegistry.register(Flags.FLY_SPEED);
 			flagRegistry.register(Flags.PLAY_SOUNDS);
-			flagRegistry.register(Flags.MYTHICMOB_EGGS);
 			flagRegistry.register(Flags.FROSTWALKER);
 			flagRegistry.register(Flags.NETHER_PORTALS);
 			flagRegistry.register(Flags.GLIDE);
@@ -126,18 +125,18 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			SessionManager sessionManager = WorldGuard.getInstance().getPlatform().getSessionManager();
 			sessionManager.registerHandler(TeleportOnEntryFlagHandler.FACTORY(plugin), null);
 			sessionManager.registerHandler(TeleportOnExitFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(CommandOnEntryFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(CommandOnExitFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(ConsoleCommandOnEntryFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(ConsoleCommandOnExitFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(FlyFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(plugin), null);
+			sessionManager.registerHandler(CommandOnEntryFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(CommandOnExitFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(ConsoleCommandOnEntryFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(ConsoleCommandOnExitFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(FlyFlagHandler.FACTORY(), null);
+			sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(), null);
 			sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin), null);
-			sessionManager.registerHandler(GlideFlagHandler.FACTORY(plugin), null);
+			sessionManager.registerHandler(GlideFlagHandler.FACTORY(), null);
 		}
 		catch (Exception e)
 		{

@@ -42,7 +42,7 @@ public class EssentialsListener implements Listener
 		
 		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
 		
-		State state = WorldGuardUtils.queryState(player, player.getWorld(), regions.getRegions(), Flags.GODMODE);
+		State state = regions.queryState(WorldGuardPlugin.inst().wrapPlayer(player), Flags.GODMODE);
 		if (state != null)
 		{
 			if (this.sessionManager.get(WorldGuardPlugin.inst().wrapPlayer(player)).getHandler(GodmodeFlagHandler.class).getIsGodmodeEnabled() != null)

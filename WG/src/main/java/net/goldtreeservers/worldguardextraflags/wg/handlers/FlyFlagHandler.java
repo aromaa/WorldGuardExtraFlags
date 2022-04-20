@@ -1,88 +1,88 @@
 package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
-import java.util.Set;
-
-import org.bukkit.Location;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.World;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
+import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
 import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
-import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
-import net.goldtreeservers.worldguardextraflags.wg.wrappers.HandlerWrapper;
 
-public class FlyFlagHandler extends HandlerWrapper
+public class FlyFlagHandler extends FlagValueChangeHandler<State>
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static final Factory FACTORY()
 	{
-		return new Factory(plugin);
+		return new Factory();
 	}
 	
-    public static class Factory extends HandlerWrapper.Factory<FlyFlagHandler>
+    public static class Factory extends Handler.Factory<FlyFlagHandler>
     {
-        public Factory(Plugin plugin)
-        {
-			super(plugin);
-		}
-
 		@Override
         public FlyFlagHandler create(Session session)
         {
-            return new FlyFlagHandler(this.getPlugin(), session);
+            return new FlyFlagHandler(session);
         }
     }
 
     @Getter private Boolean currentValue;
     private Boolean originalFly;
 	    
-	protected FlyFlagHandler(Plugin plugin, Session session)
+	protected FlyFlagHandler(Session session)
 	{
-		super(plugin, session);
+		super(session, Flags.FLY);
 	}
-	
+
 	@Override
-    public void initialize(Player player, Location current, ApplicableRegionSet set)
+	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, State value)
 	{
-		State state = WorldGuardUtils.queryState(player, current.getWorld(), set.getRegions(), Flags.FLY);
-		this.handleValue(player, state);
+		this.handleValue(player, player.getWorld(), value);
 	}
-	
+
 	@Override
-	public boolean onCrossBoundary(Player player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
+	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, State currentValue, State lastValue, MoveType moveType)
 	{
-		State state = WorldGuardUtils.queryState(player, to.getWorld(), toSet.getRegions(), Flags.FLY);
-		this.handleValue(player, state);
-		
+		this.handleValue(player, (World) to.getExtent(), currentValue);
+		return true;
+	}
+
+	@Override
+	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, State lastValue, MoveType moveType)
+	{
+		this.handleValue(player, (World) to.getExtent(), null);
 		return true;
 	}
 	
-	private void handleValue(Player player, State state)
+	private void handleValue(LocalPlayer player, World world, State state)
 	{
-		if (state != null)
+		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
+
+		if (!this.getSession().getManager().hasBypass(player, world) && state != null)
 		{
 			boolean value = (state == State.ALLOW ? true : false);
 			
-			if (player.getAllowFlight() != value)
+			if (bukkitPlayer.getAllowFlight() != value)
 			{
 				if (this.originalFly == null)
 				{
-					this.originalFly = player.getAllowFlight();
+					this.originalFly = bukkitPlayer.getAllowFlight();
 				}
-				
-				player.setAllowFlight(value);
+
+				bukkitPlayer.setAllowFlight(value);
 			}
 		}
 		else
 		{
 			if (this.originalFly != null)
 			{
-				player.setAllowFlight(this.originalFly);
+				bukkitPlayer.setAllowFlight(this.originalFly);
 				
 				this.originalFly = null;
 			}

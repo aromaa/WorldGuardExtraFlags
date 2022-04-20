@@ -1,6 +1,8 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
@@ -31,7 +33,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
-import net.goldtreeservers.worldguardextraflags.we.WorldEditUtils;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.FlyFlagHandler;
 import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandler;
@@ -56,10 +57,11 @@ public class PlayerListener implements Listener
 	public void onPlayerDeathEvent(PlayerDeathEvent event)
 	{
 		Player player = event.getEntity();
+
+		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(localPlayer.getLocation());
 		
-		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
-		
-		Boolean keepInventory = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.KEEP_INVENTORY);
+		Boolean keepInventory = regions.queryValue(localPlayer, Flags.KEEP_INVENTORY);
 		if (keepInventory != null)
 		{
 			event.setKeepInventory(keepInventory);
@@ -70,7 +72,7 @@ public class PlayerListener implements Listener
 			}
 		}
 		
-		Boolean keepExp = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.KEEP_EXP);
+		Boolean keepExp = regions.queryValue(localPlayer, Flags.KEEP_EXP);
 		if (keepExp != null)
 		{
 			event.setKeepLevel(keepExp);
@@ -86,11 +88,12 @@ public class PlayerListener implements Listener
 	public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event)
 	{
 		Player player = event.getPlayer();
+
+		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(localPlayer.getLocation());
 		
-		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
-		
-		String prefix = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.CHAT_PREFIX);
-		String suffix = WorldGuardUtils.queryValue(player, player.getWorld(), regions.getRegions(), Flags.CHAT_SUFFIX);
+		String prefix = regions.queryValue(localPlayer, Flags.CHAT_PREFIX);
+		String suffix = regions.queryValue(localPlayer, Flags.CHAT_SUFFIX);
 
 		if (prefix != null)
 		{
@@ -107,13 +110,14 @@ public class PlayerListener implements Listener
 	public void onPlayerRespawnEvent(PlayerRespawnEvent event)
 	{
 		Player player = event.getPlayer();
+
+		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(localPlayer.getLocation());
 		
-		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
-		
-		Object respawnLocation = WorldGuardUtils.queryValueUnchecked(player, player.getWorld(), regions.getRegions(), Flags.RESPAWN_LOCATION);
+		Location respawnLocation = regions.queryValue(localPlayer, Flags.RESPAWN_LOCATION);
 		if (respawnLocation != null)
 		{
-			event.setRespawnLocation(WorldEditUtils.toLocation(respawnLocation));
+			event.setRespawnLocation(BukkitAdapter.adapt(respawnLocation));
 		}
 	}
 	
@@ -184,9 +188,11 @@ public class PlayerListener implements Listener
 	public void onPlayerItemDamageEvent(PlayerItemDamageEvent event)
 	{
 		Player player = event.getPlayer();
-		
-		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(player.getLocation()));
-		if (WorldGuardUtils.queryState(player, player.getWorld(), regions.getRegions(), Flags.ITEM_DURABILITY) == State.DENY)
+
+		LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(localPlayer.getLocation());
+
+		if (regions.queryState(localPlayer, Flags.ITEM_DURABILITY) == State.DENY)
 		{
 			event.setCancelled(true);
 		}
@@ -196,13 +202,13 @@ public class PlayerListener implements Listener
 	public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event)
 	{
 		Player player = event.getPlayer();
-		
+
 		ApplicableRegionSet regions = this.regionContainer.createQuery().getApplicableRegions(BukkitAdapter.adapt(event.getSpawnLocation()));
-		
-		Object location = WorldGuardUtils.queryValueUnchecked(player, event.getSpawnLocation().getWorld(), regions.getRegions(), Flags.JOIN_LOCATION);
+
+		Location location = regions.queryValue(WorldGuardPlugin.inst().wrapPlayer(player), Flags.JOIN_LOCATION);
 		if (location != null)
 		{
-			event.setSpawnLocation(WorldEditUtils.toLocation(location));
+			event.setSpawnLocation(BukkitAdapter.adapt(location));
 		}
 	}
 	
