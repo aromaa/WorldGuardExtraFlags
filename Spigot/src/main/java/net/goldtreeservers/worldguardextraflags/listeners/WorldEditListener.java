@@ -8,29 +8,32 @@ import com.sk89q.worldedit.util.eventbus.EventHandler;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 
 import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
 import lombok.RequiredArgsConstructor;
-import net.goldtreeservers.worldguardextraflags.handlers.WorldEditFlagHandler;
+import net.goldtreeservers.worldguardextraflags.we.handlers.WorldEditFlagHandler;
 
 @RequiredArgsConstructor
 public class WorldEditListener
 {
+	private final WorldGuardPlugin worldGuardPlugin;
+	private final RegionContainer regionContainer;
 	private final SessionManager sessionManager;
 	
 	@Subscribe(priority = EventHandler.Priority.VERY_EARLY)
     public void onEditSessionEvent(EditSessionEvent event)
 	{
-		Actor actor = event.getActor();
-		if (actor instanceof Player player)
+		if (event.getActor() instanceof Player player)
 		{
-			LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(((BukkitPlayer) player).getPlayer());
+			LocalPlayer localPlayer = this.worldGuardPlugin.wrapPlayer(((BukkitPlayer) player).getPlayer());
 			if (this.sessionManager.hasBypass(localPlayer, event.getWorld()))
 			{
 				return;
 			}
 
-			event.setExtent(new WorldEditFlagHandler(event.getWorld(), event.getExtent(), player));
+			event.setExtent(new WorldEditFlagHandler(event.getWorld(), event.getExtent(), localPlayer, this.regionContainer));
 		}
 	}
 }

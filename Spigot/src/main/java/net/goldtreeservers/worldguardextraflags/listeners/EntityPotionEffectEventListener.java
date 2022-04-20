@@ -18,38 +18,25 @@ import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandl
 @RequiredArgsConstructor
 public class EntityPotionEffectEventListener implements Listener
 {
-	@Getter private final WorldGuardExtraFlagsPlugin plugin;
-
+	private final WorldGuardPlugin worldGuardPlugin;
 	private final SessionManager sessionManager;
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityPotionEffectEvent(EntityPotionEffectEvent event)
 	{
-		if (event.getAction() != EntityPotionEffectEvent.Action.REMOVED)
-		{
-			return;
-		}
-		
-		if (event.getCause() != EntityPotionEffectEvent.Cause.PLUGIN)
-		{
-			return;
-		}
-		
-		Entity entity = event.getEntity();
-		if (!(entity instanceof Player))
+		if (event.getAction() != EntityPotionEffectEvent.Action.REMOVED || event.getCause() != EntityPotionEffectEvent.Cause.PLUGIN)
 		{
 			return;
 		}
 
-		Player player = (Player)entity;
-		if (!player.isValid()) //Work around, getIfPresent is broken inside WG due to using LocalPlayer as key instead of CacheKey
+		if (!(event.getEntity() instanceof Player player) || !player.isValid())
 		{
 			return;
 		}
 
 		try
 		{
-			Session session = this.sessionManager.get(WorldGuardPlugin.inst().wrapPlayer(player));
+			Session session = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player));
 			
 			GiveEffectsFlagHandler giveEffectsHandler = session.getHandler(GiveEffectsFlagHandler.class);
 			if (giveEffectsHandler.isSupressRemovePotionPacket())
@@ -59,7 +46,6 @@ public class EntityPotionEffectEventListener implements Listener
 		}
 		catch(IllegalStateException wgBug)
 		{
-			
 		}
 	}
 }

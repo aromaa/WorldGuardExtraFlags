@@ -6,6 +6,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -22,7 +23,9 @@ import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 @RequiredArgsConstructor
 public class WorldListener implements Listener
 {
-	@Getter private final WorldGuardExtraFlagsPlugin plugin;
+	private final WorldGuardExtraFlagsPlugin plugin;
+
+	private final RegionContainer regionContainer;
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldLoadEvent(WorldLoadEvent event)
@@ -43,7 +46,7 @@ public class WorldListener implements Listener
 
 	private void doUnloadChunkFlagCheck(org.bukkit.World world, Chunk chunk)
 	{
-		for (ProtectedRegion region : WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world)).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", BlockVector3.at(chunk.getX() * 16, world.getMinHeight(), chunk.getZ() * 16), BlockVector3.at(chunk.getX() * 16 + 15, world.getMaxHeight(), chunk.getZ() * 16 + 15))))
+		for (ProtectedRegion region : this.regionContainer.get(BukkitAdapter.adapt(world)).getApplicableRegions(new ProtectedCuboidRegion("UnloadChunkFlagTester", BlockVector3.at(chunk.getX() * 16, world.getMinHeight(), chunk.getZ() * 16), BlockVector3.at(chunk.getX() * 16 + 15, world.getMaxHeight(), chunk.getZ() * 16 + 15))))
 		{
 			if (region.getFlag(Flags.CHUNK_UNLOAD) == StateFlag.State.DENY)
 			{
