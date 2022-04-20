@@ -148,14 +148,14 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		WorldGuardPlatform platform = WorldGuard.getInstance().getPlatform();
 
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(this, platform.getRegionContainer(), platform.getSessionManager()), this);
-		this.getServer().getPluginManager().registerEvents(new BlockListener(this, platform.getRegionContainer()), this);
+		this.getServer().getPluginManager().registerEvents(new BlockListener(platform.getRegionContainer(), platform.getSessionManager()), this);
 		this.getServer().getPluginManager().registerEvents(new WorldListener(this), this);
 		
 		try
 		{
 			if (EntityToggleGlideEvent.class != null) //LOL, Just making it look nice xD
 			{
-				this.getServer().getPluginManager().registerEvents(new EntityListenerOnePointNine(this, platform.getRegionContainer()), this);
+				this.getServer().getPluginManager().registerEvents(new EntityListenerOnePointNine(platform.getRegionContainer(), platform.getSessionManager()), this);
 			}
 		}
 		catch(NoClassDefFoundError ignored)
@@ -163,9 +163,9 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			
 		}
 
-		this.getServer().getPluginManager().registerEvents(new EntityListener(this, platform.getRegionContainer()), this);
+		this.getServer().getPluginManager().registerEvents(new EntityListener(platform.getRegionContainer(), platform.getSessionManager()), this);
 
-		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this));
+		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(platform.getSessionManager()));
 		
 		if (this.essentialsHelper != null)
 		{
