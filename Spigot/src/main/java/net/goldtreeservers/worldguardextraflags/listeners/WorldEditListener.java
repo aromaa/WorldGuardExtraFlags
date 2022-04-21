@@ -1,19 +1,17 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
-import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.event.extent.EditSessionEvent;
-import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.util.eventbus.EventHandler;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 
 import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.we.handlers.WorldEditFlagHandler;
+import org.bukkit.Bukkit;
 
 @RequiredArgsConstructor
 public class WorldEditListener
@@ -27,7 +25,7 @@ public class WorldEditListener
 	{
 		if (event.getActor() instanceof Player player)
 		{
-			LocalPlayer localPlayer = this.worldGuardPlugin.wrapPlayer(((BukkitPlayer) player).getPlayer());
+			LocalPlayer localPlayer = this.worldGuardPlugin.wrapPlayer(Bukkit.getPlayer(player.getUniqueId()));
 			if (this.sessionManager.hasBypass(localPlayer, event.getWorld()))
 			{
 				return;
