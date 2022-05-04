@@ -25,7 +25,6 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 
 import lombok.Getter;
-import net.goldtreeservers.worldguardextraflags.essentials.EssentialsHelper;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,7 +42,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	@Getter private RegionContainer regionContainer;
 	@Getter private SessionManager sessionManager;
 
-	@Getter private EssentialsHelper essentialsHelper;
 	@Getter private ProtocolLibHelper protocolLibHelper;
 	
 	public WorldGuardExtraFlagsPlugin()
@@ -96,19 +94,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 					"WorldGuard prevented flag registration. Did you reload the plugin? This is not supported!" :
 					"Flag registration failed!", e);
 		}
-
-		//Soft dependencies, due to some compatibility issues or add flags related to a plugin
-		try
-		{
-			Plugin essentialsPlugin = WorldGuardExtraFlagsPlugin.getPlugin().getServer().getPluginManager().getPlugin("Essentials");
-			if (essentialsPlugin != null)
-			{
-				this.essentialsHelper = new EssentialsHelper(this, essentialsPlugin, this.regionContainer, this.sessionManager);
-			}
-		}
-		catch(Throwable ignore)
-		{
-		}
 		
 		try
 		{
@@ -150,11 +135,6 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new EntityListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
 
 		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager));
-		
-		if (this.essentialsHelper != null)
-		{
-			this.essentialsHelper.onEnable();
-		}
 		
 		if (this.protocolLibHelper != null)
 		{
