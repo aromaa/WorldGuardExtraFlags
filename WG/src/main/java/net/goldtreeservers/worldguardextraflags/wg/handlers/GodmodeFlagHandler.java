@@ -9,8 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.session.MoveType;
@@ -65,44 +63,13 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
 	
 	private void handleValue(LocalPlayer player, State state)
 	{
-		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
-
 		if (state != null)
 		{
-			this.isGodmodeEnabled = (state == State.ALLOW ? true : false);
+			this.isGodmodeEnabled = state == State.ALLOW;
 		}
 		else
 		{
 			this.isGodmodeEnabled = null;
-		}
-		
-		//For now at least
-		Plugin essentials = Bukkit.getServer().getPluginManager().getPlugin("Essentials");
-		if (essentials != null)
-		{
-			User user = ((Essentials)essentials).getUser(player);
-			
-			if (this.isGodmodeEnabled != null)
-			{
-				if (this.isGodmodeEnabled != user.isGodModeEnabled())
-				{
-					if (this.originalEssentialsGodmode == null)
-					{
-						this.originalEssentialsGodmode = user.isGodModeEnabled();
-					}
-					
-					user.setGodModeEnabled(this.isGodmodeEnabled);
-				}
-			}
-			else
-			{
-				if (this.originalEssentialsGodmode != null)
-				{
-					user.setGodModeEnabled(this.originalEssentialsGodmode);
-					
-					this.originalEssentialsGodmode = null;
-				}
-			}
 		}
 	}
 	
