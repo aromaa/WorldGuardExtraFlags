@@ -66,7 +66,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 
 		if (!this.getSession().getManager().hasBypass(player, world) && state != null)
 		{
-			boolean value = (state == State.ALLOW ? true : false);
+			boolean value = state == State.ALLOW;
 			
 			if (bukkitPlayer.getAllowFlight() != value)
 			{
@@ -77,6 +77,8 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 
 				bukkitPlayer.setAllowFlight(value);
 			}
+
+			this.currentValue = value;
 		}
 		else
 		{
@@ -86,6 +88,8 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 				
 				this.originalFly = null;
 			}
+
+			this.currentValue = null;
 		}
 	}
 }
