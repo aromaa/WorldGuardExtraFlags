@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.Bukkit;
@@ -47,16 +48,19 @@ public class CommandOnEntryFlagHandler extends Handler
 	{
 		Collection<Set<String>> commands = toSet.queryAllValues(player, Flags.COMMAND_ON_ENTRY);
 
-		for(Set<String> commands_ : commands)
+		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
 		{
-			if (!this.lastCommands.contains(commands_) && commands_.size() > 0)
+			for(Set<String> commands_ : commands)
 			{
-				for(String command : commands_)
+				if (!this.lastCommands.contains(commands_) && commands_.size() > 0)
 				{
-					Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+					for(String command : commands_)
+					{
+						Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+					}
+
+					break;
 				}
-				
-				break;
 			}
 		}
 		

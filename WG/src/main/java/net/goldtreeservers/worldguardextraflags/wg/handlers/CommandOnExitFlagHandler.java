@@ -5,6 +5,7 @@ import java.util.*;
 import com.google.common.collect.Lists;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.Bukkit;
@@ -63,17 +64,20 @@ public class CommandOnExitFlagHandler extends Handler
                 }
             }
 		}
-		
-		for(Set<String> commands_ : this.lastCommands)
-		{
-			if (!commands.contains(commands_) && commands_.size() > 0)
-			{
-				for(String command : commands_)
-				{
-					Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
-				}
 
-				break;
+		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
+		{
+			for(Set<String> commands_ : this.lastCommands)
+			{
+				if (!commands.contains(commands_) && commands_.size() > 0)
+				{
+					for(String command : commands_)
+					{
+						Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+					}
+
+					break;
+				}
 			}
 		}
 		
