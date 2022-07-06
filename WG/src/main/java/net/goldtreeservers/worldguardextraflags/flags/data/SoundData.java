@@ -1,23 +1,7 @@
 package net.goldtreeservers.worldguardextraflags.flags.data;
 
-public class SoundData
+import org.bukkit.SoundCategory;
+
+public record SoundData(String sound, int interval, SoundCategory source, float volume, float pitch)
 {
-	private final String sound;
-	private final int interval;
-	
-	public SoundData(String sound, int interval)
-	{
-		this.sound = sound;
-		this.interval = interval;
-	}
-	
-	public String getSound()
-	{
-		return this.sound;
-	}
-	
-	public int getInterval()
-	{
-		return this.interval;
-	}
 }

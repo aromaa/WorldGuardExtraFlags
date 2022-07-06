@@ -91,14 +91,14 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 		{
 			for(SoundData sound : value)
 			{
-				if (!this.runnables.containsKey(sound.getSound()))
+				if (!this.runnables.containsKey(sound.sound()))
 				{
 					BukkitRunnable runnable = new BukkitRunnable()
 					{
 						@Override
 						public void run()
 						{
-							bukkitPlayer.playSound(bukkitPlayer.getLocation(), sound.getSound(), Float.MAX_VALUE, 1);
+							bukkitPlayer.playSound(bukkitPlayer.getLocation(), sound.sound(), sound.source(), sound.volume(), sound.pitch());
 						}
 						
 						@Override
@@ -106,13 +106,13 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 						{
 							super.cancel();
 
-							bukkitPlayer.stopSound(sound.getSound());
+							bukkitPlayer.stopSound(sound.sound(), sound.source());
 						}
 					};
 	
-					this.runnables.put(sound.getSound(), runnable);
+					this.runnables.put(sound.sound(), runnable);
 					
-					runnable.runTaskTimer(this.plugin, 0L, sound.getInterval());
+					runnable.runTaskTimer(this.plugin, 0L, sound.interval());
 				}
 			}
 		}
@@ -127,7 +127,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 				boolean skip = false;
 				for(SoundData sound : value)
 				{
-					if (sound.getSound().equals(runnable.getKey()))
+					if (sound.sound().equals(runnable.getKey()))
 					{
 						skip = true;
 						break;
