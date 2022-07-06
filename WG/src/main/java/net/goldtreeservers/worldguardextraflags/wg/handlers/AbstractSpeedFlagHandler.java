@@ -2,6 +2,7 @@ package net.goldtreeservers.worldguardextraflags.wg.handlers;
 
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.util.Location;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DoubleFlag;
@@ -25,28 +26,28 @@ public abstract class AbstractSpeedFlagHandler extends FlagValueChangeHandler<Do
 	@Override
 	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, Double value)
 	{
-		this.handleValue(player, value);
+		this.handleValue(player, player.getWorld(), value);
 	}
 
 	@Override
 	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Double currentValue, Double lastValue, MoveType moveType)
 	{
-		this.handleValue(player, currentValue);
+		this.handleValue(player, (World) to.getExtent(), currentValue);
 		return true;
 	}
 
 	@Override
 	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Double lastValue, MoveType moveType)
 	{
-		this.handleValue(player, null);
+		this.handleValue(player, (World) to.getExtent(), null);
 		return true;
 	}
 
-	private void handleValue(LocalPlayer player, Double speed)
+	private void handleValue(LocalPlayer player, World world, Double speed)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (speed != null)
+		if (!this.getSession().getManager().hasBypass(player, world) && speed != null)
 		{
 			if (speed > 1.0)
 			{
