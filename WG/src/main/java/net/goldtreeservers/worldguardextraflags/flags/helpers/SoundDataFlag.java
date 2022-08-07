@@ -7,6 +7,8 @@ import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
 import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
 import org.bukkit.SoundCategory;
 
+import java.util.Locale;
+
 public class SoundDataFlag extends Flag<SoundData>
 {
 	public SoundDataFlag(String name)
@@ -47,7 +49,7 @@ public class SoundDataFlag extends Flag<SoundData>
 		return new SoundData(
 				splitd[0],
 				Integer.parseInt(splitd[1]),
-				splitd.length >= 3 ? SoundCategory.valueOf(splitd[2]) : SoundCategory.MASTER,
+				splitd.length >= 3 ? SoundCategory.valueOf(splitd[2].toUpperCase(Locale.ROOT)) : SoundCategory.MASTER,
 				splitd.length >= 4 ? Float.parseFloat(splitd[3]) : Float.MAX_VALUE,
 				splitd.length >= 5 ? Float.parseFloat(splitd[4]) : 1
 		);
