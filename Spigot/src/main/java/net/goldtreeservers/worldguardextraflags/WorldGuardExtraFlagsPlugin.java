@@ -175,8 +175,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 				{
 					for(int z = min.getBlockZ() >> 4; z <= max.getBlockZ() >> 4; z++)
 					{
-						world.getChunkAt(x, z).load(true);
-						world.getChunkAt(x, z).setForceLoaded(true);
+						world.getChunkAt(x, z).addPluginChunkTicket(this);
 					}
 				}
 			}

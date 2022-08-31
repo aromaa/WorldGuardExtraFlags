@@ -57,8 +57,7 @@ public class WorldListener implements Listener
 		{
 			if (region.getFlag(Flags.CHUNK_UNLOAD) == StateFlag.State.DENY)
 			{
-				chunk.setForceLoaded(true);
-				chunk.load(true);
+				chunk.addPluginChunkTicket(this.plugin);
 			}
 		}
 	}
