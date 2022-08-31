@@ -11,6 +11,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
@@ -155,7 +156,13 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 
 	public void doUnloadChunkFlagCheck(org.bukkit.World world)
 	{
-		for (ProtectedRegion region : this.regionContainer.get(BukkitAdapter.adapt(world)).getRegions().values())
+		RegionManager regionManager = this.regionContainer.get(BukkitAdapter.adapt(world));
+		if (regionManager == null)
+		{
+			return;
+		}
+
+		for (ProtectedRegion region : regionManager.getRegions().values())
 		{
 			if (region.getFlag(Flags.CHUNK_UNLOAD) == StateFlag.State.DENY)
 			{

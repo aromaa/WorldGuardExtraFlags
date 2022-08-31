@@ -21,13 +21,13 @@ public class WorldEditFlagHandler extends AbstractDelegateExtent
 
 	private final RegionManager regionManager;
 	
-	public WorldEditFlagHandler(World world, Extent extent, LocalPlayer player, RegionContainer regionContainer)
+	public WorldEditFlagHandler(World world, Extent extent, LocalPlayer player, RegionManager regionManager)
 	{
 		super(extent);
 
 		this.player = player;
 
-		this.regionManager = regionContainer.get(world);
+		this.regionManager = regionManager;
 	}
 
 	@Override
