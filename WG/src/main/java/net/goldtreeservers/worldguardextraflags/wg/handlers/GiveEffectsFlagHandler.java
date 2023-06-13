@@ -65,30 +65,30 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 	@Override
 	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, Set<PotionEffect> value)
 	{
-		this.handleValue(player, player.getWorld(), value);
+		this.handleValue(player, value);
 	}
 
 	@Override
 	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<PotionEffect> currentValue, Set<PotionEffect> lastValue, MoveType moveType)
 	{
-		this.handleValue(player, (World) to.getExtent(), currentValue);
+		this.handleValue(player, currentValue);
 		return true;
 	}
 
 	@Override
 	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<PotionEffect> lastValue, MoveType moveType)
 	{
-		this.handleValue(player, (World) to.getExtent(), null);
+		this.handleValue(player, null);
 		return true;
 	}
 	
 	@Override
 	public void tick(LocalPlayer player, ApplicableRegionSet set)
 	{
-		this.handleValue(player, player.getWorld(), set.queryValue(player, Flags.GIVE_EFFECTS));
+		this.handleValue(player, set.queryValue(player, Flags.GIVE_EFFECTS));
 	}
 	
-	private void handleValue(LocalPlayer player, World world, Set<PotionEffect> value)
+	private void handleValue(LocalPlayer player, Set<PotionEffect> value)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
@@ -182,7 +182,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 
 		LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);
 
-		this.handleValue(player, player.getWorld(), WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
+		this.handleValue(player, WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
 	}
 	
 	public void drinkPotion(Player bukkitPlayer, Collection<PotionEffect> effects)
@@ -194,6 +194,6 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 
 		LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);
 		
-		this.handleValue(player, player.getWorld(), WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
+		this.handleValue(player, WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
 	}
 }
