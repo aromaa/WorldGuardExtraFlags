@@ -51,34 +51,34 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 	@Override
 	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, Set<PotionEffectType> value)
 	{
-		this.handleValue(player, player.getWorld(), value);
+		this.handleValue(player, value);
 	}
 
 	@Override
 	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<PotionEffectType> currentValue, Set<PotionEffectType> lastValue, MoveType moveType)
 	{
-		this.handleValue(player, (World) to.getExtent(), currentValue);
+		this.handleValue(player, currentValue);
 		return true;
 	}
 
 	@Override
 	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<PotionEffectType> lastValue, MoveType moveType)
 	{
-		this.handleValue(player, (World) to.getExtent(), null);
+		this.handleValue(player, null);
 		return true;
 	}
 
 	@Override
 	public void tick(LocalPlayer player, ApplicableRegionSet set)
 	{
-		this.handleValue(player, player.getWorld(), set.queryValue(player, Flags.BLOCKED_EFFECTS));
+		this.handleValue(player, set.queryValue(player, Flags.BLOCKED_EFFECTS));
 	}
 	
-	private void handleValue(LocalPlayer player, World world, Set<PotionEffectType> value)
+	private void handleValue(LocalPlayer player, Set<PotionEffectType> value)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (!this.getSession().getManager().hasBypass(player, world) && value != null)
+		if (!player.hasPermission("WorldGuardExtraFlags.BlockedEffectsBypass") && value != null)
 		{
 			for (PotionEffectType effectType : value)
 			{

@@ -26,28 +26,28 @@ public abstract class AbstractSpeedFlagHandler extends FlagValueChangeHandler<Do
 	@Override
 	protected void onInitialValue(LocalPlayer player, ApplicableRegionSet set, Double value)
 	{
-		this.handleValue(player, player.getWorld(), value);
+		this.handleValue(player, value);
 	}
 
 	@Override
 	protected boolean onSetValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Double currentValue, Double lastValue, MoveType moveType)
 	{
-		this.handleValue(player, (World) to.getExtent(), currentValue);
+		this.handleValue(player, currentValue);
 		return true;
 	}
 
 	@Override
 	protected boolean onAbsentValue(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Double lastValue, MoveType moveType)
 	{
-		this.handleValue(player, (World) to.getExtent(), null);
+		this.handleValue(player, null);
 		return true;
 	}
 
-	private void handleValue(LocalPlayer player, World world, Double speed)
+	private void handleValue(LocalPlayer player, Double speed)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (!this.getSession().getManager().hasBypass(player, world) && speed != null)
+		if (!player.hasPermission("WorldGuardExtraFlags.AbstractSpeedBypass") && speed != null)
 		{
 			if (speed > 1.0)
 			{
