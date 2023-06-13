@@ -52,7 +52,7 @@ public class CommandOnExitFlagHandler extends Handler
 	public boolean onCrossBoundary(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
 		Collection<Set<String>> commands = Lists.newArrayList(toSet.queryAllValues(player, Flags.COMMAND_ON_EXIT));
-		
+
 		if (!commands.isEmpty())
 		{
 			for (ProtectedRegion region : toSet)
@@ -65,7 +65,7 @@ public class CommandOnExitFlagHandler extends Handler
             }
 		}
 
-		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
+		if (!player.hasPermission("WorldGuardExtraFlags.CommandOnExitBypass"))
 		{
 			for(Set<String> commands_ : this.lastCommands)
 			{

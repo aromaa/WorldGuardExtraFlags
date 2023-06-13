@@ -66,7 +66,7 @@ public class ConsoleCommandOnExitFlagHandler extends Handler
             }
 		}
 
-		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
+		if (!player.hasPermission("WorldGuardExtraFlags.ConsoleCommandOnExitBypass"))
 		{
 			for(Set<String> commands_ : this.lastCommands)
 			{

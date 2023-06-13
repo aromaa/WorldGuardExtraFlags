@@ -47,7 +47,7 @@ public abstract class AbstractSpeedFlagHandler extends FlagValueChangeHandler<Do
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (!this.getSession().getManager().hasBypass(player, world) && speed != null)
+		if (!player.hasPermission("WorldGuardExtraFlags.AbstractSpeedBypass") && speed != null)
 		{
 			if (speed > 1.0)
 			{

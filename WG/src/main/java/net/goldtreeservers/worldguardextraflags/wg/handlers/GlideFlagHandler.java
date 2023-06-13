@@ -62,7 +62,7 @@ public class GlideFlagHandler extends FlagValueChangeHandler<ForcedState>
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (!this.getSession().getManager().hasBypass(player, world) && state != null)
+		if (!player.hasPermission("WorldGuardExtraFlags.GlideBypass") && state != null)
 		{
 			if (state == ForcedState.ALLOW)
 			{

@@ -11,3 +11,45 @@ depend: [ WorldGuard ]
 softdepend: [ ProtocolLib ]
 
 main: net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin
+
+permissions:
+  WorldGuardExtraFlags.AbstractSpeedBypass:
+    description: Makes player immune to the Abstract Speed Flag
+    default: op
+  WorldGuardExtraFlags.BlockedEffectsBypass:
+    description: Makes player immune to the Blocked Effect Flag
+    default: op
+  WorldGuardExtraFlags.CommandOnEntryBypass:
+    description: Makes player immune to the Command On Entry Flag
+    default: op
+  WorldGuardExtraFlags.CommandOnExitBypass:
+    description: Makes player immune to the Command On Exit Flag
+    default: op
+  WorldGuardExtraFlags.ConsoleCommandOnEntryBypass:
+    description: Makes player immune to the Console Command On Entry Flag
+    default: op
+  WorldGuardExtraFlags.ConsoleCommandOnExitBypass:
+    description: Makes player immune to the Console Command On Exit Flag
+    default: op
+  WorldGuardExtraFlags.FlyBypass:
+    description: Makes player immune to the Fly Flag
+    default: op
+  WorldGuardExtraFlags.GiveEffectsBypass:
+    description: Makes player immune to the Fly Flag
+    default: op
+  WorldGuardExtraFlags.GlideBypass:
+    description: Makes player immune to the Glide Flag
+    default: op
+  WorldGuardExtraFlags.*:
+    description: Wildcard Permission to make players immune to all flags.
+    default: op
+    children:
+      WorldGuardExtraFlags.AbstractSpeedBypass: true
+      WorldGuardExtraFlags.BlockedEffectsBypass: true
+      WorldGuardExtraFlags.CommandOnEntryBypass: true
+      WorldGuardExtraFlags.CommandOnExitBypass: true
+      WorldGuardExtraFlags.ConsoleCommandOnEntryBypass: true
+      WorldGuardExtraFlags.ConsoleCommandOnExitBypass: true
+      WorldGuardExtraFlags.FlyBypass: true
+      WorldGuardExtraFlags.GiveEffectsBypass: true
+      WorldGuardExtraFlags.GlideBypass: true

@@ -92,7 +92,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (!this.getSession().getManager().hasBypass(player, world) && value != null)
+		if (!player.hasPermission("WorldGuardExtraFlags.GiveEffectsBypass") && value != null)
 		{
 			try
 			{

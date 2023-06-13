@@ -48,7 +48,7 @@ public class CommandOnEntryFlagHandler extends Handler
 	{
 		Collection<Set<String>> commands = toSet.queryAllValues(player, Flags.COMMAND_ON_ENTRY);
 
-		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
+		if (!player.hasPermission("WorldGuardExtraFlags.CommandOnEntryBypass"))
 		{
 			for(Set<String> commands_ : commands)
 			{

@@ -64,7 +64,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (!this.getSession().getManager().hasBypass(player, world) && state != null)
+		if (!player.hasPermission("WorldGuardExtraFlags.FlyBypass") && state != null)
 		{
 			boolean value = state == State.ALLOW;
 			
