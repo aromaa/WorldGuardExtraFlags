@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.LocalPlayer;
@@ -13,7 +14,6 @@ import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.session.MoveType;
@@ -46,7 +46,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
     }
 
 	private final Plugin plugin;
-    private Map<String, BukkitRunnable> runnables;
+    private final Map<String, UniversalRunnable> runnables;
 	    
 	protected PlaySoundsFlagHandler(Plugin plugin, Session session)
 	{
@@ -93,7 +93,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 			{
 				if (!this.runnables.containsKey(sound.sound()))
 				{
-					BukkitRunnable runnable = new BukkitRunnable()
+					UniversalRunnable runnable = new UniversalRunnable()
 					{
 						@Override
 						public void run()
@@ -117,10 +117,10 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 			}
 		}
 		
-		Iterator<Entry<String, BukkitRunnable>> runnables = this.runnables.entrySet().iterator();
+		Iterator<Entry<String, UniversalRunnable>> runnables = this.runnables.entrySet().iterator();
 		while (runnables.hasNext())
 		{
-			Entry<String, BukkitRunnable> runnable = runnables.next();
+			Entry<String, UniversalRunnable> runnable = runnables.next();
 			
 			if (value != null && value.size() > 0)
 			{

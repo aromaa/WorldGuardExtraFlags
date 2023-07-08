@@ -18,13 +18,17 @@
 			<id>sk89q-repo</id>
 			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.18.2-R0.1-SNAPSHOT</version>
+			<groupId>dev.folia</groupId>
+			<artifactId>folia-api</artifactId>
+			<version>1.20.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -51,5 +55,11 @@
 			<version>7.0.6</version>
 			<scope>provided</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.github.Anon8281</groupId>
+            <artifactId>UniversalScheduler</artifactId>
+            <version>0.1.5</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

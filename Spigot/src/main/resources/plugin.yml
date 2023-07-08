@@ -1,6 +1,8 @@
 name: WorldGuardExtraFlags
 description: Adds more flags to WorldGuard to help manage your server easily!
 
+folia-supported: true
+
 version: 4.2.2-SNAPSHOT
 api-version: 1.13
 
