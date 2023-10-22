@@ -66,13 +66,17 @@ public class ConsoleCommandOnExitFlagHandler extends Handler
             }
 		}
 
+		Collection<Set<String>> lastCommands = this.lastCommands;
+
+		this.lastCommands = commands;
+
 		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
 		{
-			for(Set<String> commands_ : this.lastCommands)
+			for (Set<String> commands_ : lastCommands)
 			{
 				if (!commands.contains(commands_))
 				{
-					for(String command : commands_)
+					for (String command : commands_)
 					{
 						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
 					}
@@ -81,8 +85,6 @@ public class ConsoleCommandOnExitFlagHandler extends Handler
 				}
 			}
 		}
-		
-		this.lastCommands = commands;
 		
 		return true;
 	}
