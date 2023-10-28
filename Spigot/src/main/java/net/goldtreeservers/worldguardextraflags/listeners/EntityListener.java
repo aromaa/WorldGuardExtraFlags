@@ -85,7 +85,7 @@ public class EntityListener implements Listener
 					event.setCancelled(true);
 
 					//Prevent the player from being allowed to glide by spamming space
-					player.teleport(player.getLocation());
+					player.teleportAsync(player.getLocation());
 
 					break;
 				}
