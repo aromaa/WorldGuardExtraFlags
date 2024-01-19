@@ -21,11 +21,11 @@ public final class Flags
 	public final static LocationFlag TELEPORT_ON_ENTRY = new LocationFlag("teleport-on-entry");
 	public final static LocationFlag TELEPORT_ON_EXIT = new LocationFlag("teleport-on-exit");
 	
-	public final static SetFlag<String> COMMAND_ON_ENTRY = new CustomSetFlag("command-on-entry", new CommandStringFlag(null));
-	public final static SetFlag<String> COMMAND_ON_EXIT = new CustomSetFlag("command-on-exit", new CommandStringFlag(null));
+	public final static SetFlag<String> COMMAND_ON_ENTRY = new CustomSetFlag("command-on-entry", new CommandStringCaseSensitiveFlag(null));
+	public final static SetFlag<String> COMMAND_ON_EXIT = new CustomSetFlag("command-on-exit", new CommandStringCaseSensitiveFlag(null));
 	
-	public final static SetFlag<String> CONSOLE_COMMAND_ON_ENTRY = new CustomSetFlag("console-command-on-entry", new CommandStringFlag(null));
-	public final static SetFlag<String> CONSOLE_COMMAND_ON_EXIT = new CustomSetFlag("console-command-on-exit", new CommandStringFlag(null));
+	public final static SetFlag<String> CONSOLE_COMMAND_ON_ENTRY = new CustomSetFlag("console-command-on-entry", new CommandStringCaseSensitiveFlag(null));
+	public final static SetFlag<String> CONSOLE_COMMAND_ON_EXIT = new CustomSetFlag("console-command-on-exit", new CommandStringCaseSensitiveFlag(null));
 	
 	public final static DoubleFlag WALK_SPEED = new DoubleFlag("walk-speed");
 	public final static DoubleFlag FLY_SPEED = new DoubleFlag("fly-speed");
