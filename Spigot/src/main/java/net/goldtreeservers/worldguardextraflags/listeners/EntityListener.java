@@ -6,6 +6,8 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
+import io.papermc.lib.PaperLib;
+import javafx.print.PaperSource;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.ForcedStateFlag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -85,7 +87,10 @@ public class EntityListener implements Listener
 					event.setCancelled(true);
 
 					//Prevent the player from being allowed to glide by spamming space
-					player.teleport(player.getLocation());
+
+					//player.teleportAsync was added with paper, so it doesn't exist on spigot/bukkit
+					//PaperLib.teleport is the universal solution
+					PaperLib.teleportAsync(player, player.getLocation());
 
 					break;
 				}

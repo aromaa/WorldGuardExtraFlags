@@ -3,11 +3,11 @@ package net.goldtreeservers.worldguardextraflags.wg;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class WorldGuardUtils
 {
@@ -27,7 +27,7 @@ public class WorldGuardUtils
 			
 			player.setMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, result);
 			
-			new BukkitRunnable()
+			new UniversalRunnable()
 			{
 				@Override
 				public void run()

@@ -1,5 +1,6 @@
 package net.goldtreeservers.worldguardextraflags.listeners;
 
+import com.github.Anon8281.universalScheduler.UniversalRunnable;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
 import com.sk89q.worldguard.LocalPlayer;
@@ -23,7 +24,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -150,7 +150,7 @@ public class PlayerListener implements Listener
 			Boolean value = wgSession.getHandler(FlyFlagHandler.class).getCurrentValue();
 			if (value != null)
 			{
-				new BukkitRunnable()
+				new UniversalRunnable()
 				{
 					@Override
 					public void run()
@@ -162,7 +162,7 @@ public class PlayerListener implements Listener
 		}
 		else
 		{
-			new BukkitRunnable()
+			new UniversalRunnable()
 			{
 				@Override
 				public void run()
