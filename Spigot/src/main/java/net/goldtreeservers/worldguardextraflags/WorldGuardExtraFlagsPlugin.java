@@ -139,7 +139,14 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		
 		if (this.protocolLibHelper != null)
 		{
-			this.protocolLibHelper.onEnable();
+			try
+			{
+				this.protocolLibHelper.onEnable();
+			}
+			catch (Throwable ignore)
+			{
+				this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this.worldGuardPlugin, this.sessionManager), this);
+			}
 		}
 		else
 		{
