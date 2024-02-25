@@ -117,18 +117,20 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 
 		this.sessionManager.registerHandler(TeleportOnEntryFlagHandler.FACTORY(plugin), null);
 		this.sessionManager.registerHandler(TeleportOnExitFlagHandler.FACTORY(plugin), null);
+
+		this.sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY(), null);
+		this.sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(), null);
+		this.sessionManager.registerHandler(FlyFlagHandler.FACTORY(), null);
+		this.sessionManager.registerHandler(GlideFlagHandler.FACTORY(), null);
+		this.sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(), null);
+		this.sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin), null);
+		this.sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY(), null);
+		this.sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(), null);
+
 		this.sessionManager.registerHandler(CommandOnEntryFlagHandler.FACTORY(), null);
 		this.sessionManager.registerHandler(CommandOnExitFlagHandler.FACTORY(), null);
 		this.sessionManager.registerHandler(ConsoleCommandOnEntryFlagHandler.FACTORY(), null);
 		this.sessionManager.registerHandler(ConsoleCommandOnExitFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(FlyFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin), null);
-		this.sessionManager.registerHandler(GlideFlagHandler.FACTORY(), null);
 
 		this.getServer().getPluginManager().registerEvents(new PlayerListener(this, this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
 		this.getServer().getPluginManager().registerEvents(new BlockListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
