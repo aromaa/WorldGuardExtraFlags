@@ -25,7 +25,7 @@ public class CustomSetFlag<T> extends SetFlag<T>
         }
         else
         {
-            Set<T> items = Sets.newHashSet();
+            Set<T> items = Sets.newLinkedHashSet();
 
             for (String str : input.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1))
             {
@@ -40,5 +40,27 @@ public class CustomSetFlag<T> extends SetFlag<T>
 
             return items;
         }
+    }
+
+    @Override
+    public Set<T> unmarshal(Object o)
+    {
+        if (!(o instanceof Iterable<?> iterable))
+        {
+            return null;
+        }
+
+        Set<T> items = Sets.newLinkedHashSet();
+
+        iterable.forEach(i ->
+        {
+            final T value = this.getType().unmarshal(i);
+            if (value != null)
+            {
+                items.add(value);
+            }
+        });
+
+        return items;
     }
 }
