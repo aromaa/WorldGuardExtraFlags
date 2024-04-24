@@ -1,5 +1,8 @@
 package net.goldtreeservers.worldguardextraflags.we.handlers;
 
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.function.pattern.Pattern;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.LocalPlayer;
 
 import com.sk89q.worldedit.WorldEditException;
@@ -17,28 +20,42 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
 public class WorldEditFlagHandler extends AbstractDelegateExtent
 {
-	private final LocalPlayer player;
+    private final LocalPlayer player;
 
-	private final RegionManager regionManager;
-	
-	public WorldEditFlagHandler(World world, Extent extent, LocalPlayer player, RegionManager regionManager)
-	{
-		super(extent);
+    private final RegionManager regionManager;
 
-		this.player = player;
+    public WorldEditFlagHandler(World world, Extent extent, LocalPlayer player, RegionManager regionManager)
+    {
+        super(extent);
 
-		this.regionManager = regionManager;
-	}
+        this.player = player;
 
-	@Override
+        this.regionManager = regionManager;
+    }
+
+    @Override
     public boolean setBlock(BlockVector3 location, BlockStateHolder block) throws WorldEditException
     {
-    	ApplicableRegionSet regions = this.regionManager.getApplicableRegions(location);
-    	if (regions.queryState(this.player, Flags.WORLDEDIT) != State.DENY)
-    	{
-    		return super.setBlock(location, block);
-    	}
-    	
-    	return false;
+        ApplicableRegionSet regions = this.regionManager.getApplicableRegions(location);
+        if (regions.queryState(this.player, Flags.WORLDEDIT) != State.DENY)
+        {
+            return super.setBlock(location, block);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int setBlocks(Region region, Pattern pattern) throws MaxChangedBlocksException
+    {
+        for (BlockVector3 position : region.clone())
+        {
+            ApplicableRegionSet regions = this.regionManager.getApplicableRegions(position);
+            if (regions.queryState(this.player, Flags.WORLDEDIT) != State.DENY)
+            {
+                return super.setBlocks(region, pattern);
+            }
+        }
+        return 0;
     }
 }
