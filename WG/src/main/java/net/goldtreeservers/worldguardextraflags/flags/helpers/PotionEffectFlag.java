@@ -1,5 +1,6 @@
 package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
+import org.bukkit.Registry;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,7 +24,7 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	@Override
 	public Object marshal(PotionEffect o)
 	{
-		return o.getType().getName() + " " + o.getAmplifier() + " " + o.hasParticles();
+		return o.getType().getKey().toString() + " " + o.getAmplifier() + " " + o.hasParticles();
 	}
 
 	@Override
@@ -34,11 +35,16 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 		{
 			throw new InvalidFlagFormat("Please use the following format: <effect name> [effect amplifier] [show particles]");
 		}
-		
-		PotionEffectType potionEffect = PotionEffectType.getByName(split[0]);
+
+		PotionEffectType potionEffect = Registry.EFFECT.match(split[0]);
 		if (potionEffect == null)
 		{
-			throw new InvalidFlagFormat("Unable to find the potion effect type! Please refer to https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionEffectType.html");
+			potionEffect = PotionEffectType.getByName(split[0]);
+		}
+
+		if (potionEffect == null)
+		{
+			throw new InvalidFlagFormat("Unable to find the potion effect type! Input valid namespaced ids.");
 		}
 		
 		return this.buildPotionEffect(split);
@@ -54,7 +60,11 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	
 	private PotionEffect buildPotionEffect(String[] split)
 	{
-		PotionEffectType potionEffect = PotionEffectType.getByName(split[0]);
+		PotionEffectType potionEffect = Registry.EFFECT.match(split[0]);
+		if (potionEffect == null)
+		{
+			potionEffect = PotionEffectType.getByName(split[0]);
+		}
 		
 		int amplifier = 0;
 		if (split.length >= 2)
