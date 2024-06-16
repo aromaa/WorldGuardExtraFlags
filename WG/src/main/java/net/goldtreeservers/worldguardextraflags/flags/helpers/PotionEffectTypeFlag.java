@@ -1,6 +1,5 @@
 package net.goldtreeservers.worldguardextraflags.flags.helpers;
 
-import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.potion.PotionEffectType;
 
@@ -41,6 +40,12 @@ public class PotionEffectTypeFlag extends Flag<PotionEffectType>
 	@Override
 	public PotionEffectType unmarshal(Object o)
 	{
-		return Registry.EFFECT.get(NamespacedKey.fromString(o.toString()));
+		PotionEffectType potionEffect = Registry.EFFECT.match(o.toString());
+		if (potionEffect == null)
+		{
+			potionEffect = PotionEffectType.getByName(o.toString());
+		}
+
+		return potionEffect;
 	}
 }
