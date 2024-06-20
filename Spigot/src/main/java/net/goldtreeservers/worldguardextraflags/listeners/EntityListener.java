@@ -7,13 +7,17 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
 import net.goldtreeservers.worldguardextraflags.flags.helpers.ForcedStateFlag;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -83,9 +87,13 @@ public class EntityListener implements Listener
 					}
 
 					event.setCancelled(true);
-
+					Location location = player.getLocation();
+					if(location.getBlock().getRelative(BlockFace.DOWN).getType().isAir()){
+						player.teleport(location.clone().subtract(0,1,0), PlayerTeleportEvent.TeleportCause.UNKNOWN);
+					}else{
+						player.teleport(location, PlayerTeleportEvent.TeleportCause.UNKNOWN);
+					}
 					//Prevent the player from being allowed to glide by spamming space
-					player.teleport(player.getLocation());
 
 					break;
 				}
