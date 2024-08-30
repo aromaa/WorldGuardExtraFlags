@@ -6,6 +6,7 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -33,7 +34,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
     }
 
     @Getter private Boolean currentValue;
-    private Boolean originalFly;
+    @Setter private Boolean originalFly;
 	    
 	protected FlyFlagHandler(Session session)
 	{

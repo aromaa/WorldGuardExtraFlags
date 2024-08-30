@@ -167,7 +167,7 @@ public class PlayerListener implements Listener
 					@Override
 					public void run()
 					{
-						PlayerListener.this.checkFlyStatus(player);
+						PlayerListener.this.checkFlyStatus(player, player.getAllowFlight());
 					}
 				}.runTask(WorldGuardExtraFlagsPlugin.getPlugin());
 			}
@@ -179,18 +179,25 @@ public class PlayerListener implements Listener
 				@Override
 				public void run()
 				{
-					PlayerListener.this.checkFlyStatus(player);
+					PlayerListener.this.checkFlyStatus(player, null);
 				}
 			}.runTask(WorldGuardExtraFlagsPlugin.getPlugin());
 		}
 	}
 	
-	private void checkFlyStatus(Player player)
+	private void checkFlyStatus(Player player, Boolean originalValueOverwrite)
 	{
-		Boolean value = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
-		if (value != null)
+		FlyFlagHandler flyFlagHandler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class);
+
+		Boolean currentValue = flyFlagHandler.getCurrentValue();
+		if (currentValue != null)
 		{
-			player.setAllowFlight(value);
+			player.setAllowFlight(currentValue);
+		}
+
+		if (originalValueOverwrite != null)
+		{
+			flyFlagHandler.setOriginalFly(originalValueOverwrite);
 		}
 	}
 
