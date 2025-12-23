@@ -12,7 +12,7 @@
 	<artifactId>Spigot</artifactId>
 
 	<build>
-		<finalName>WorldGuardExtraFlags</finalName>
+		<finalName>WorldGuardExtraFlags-v${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
