@@ -10,6 +10,8 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -76,9 +78,47 @@ public class ConsoleCommandOnExitFlagHandler extends Handler
 			{
 				if (!commands.contains(commands_))
 				{
-					for (String command : commands_)
+					final Plugin plugin = Bukkit.getPluginManager().getPlugin("WorldGuardExtraFlags");
+					if (plugin == null || !plugin.isEnabled())
 					{
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+						break;
+					}
+
+					final Set<String> commandsToRun = commands_;
+					final String playerName = player.getName();
+
+					Runnable commandTask = () ->
+					{
+						ConsoleCommandSender console = Bukkit.getConsoleSender();
+						for (String command : commandsToRun)
+						{
+							try
+							{
+								if (command == null || command.trim().isEmpty()) continue;
+
+								String cmdToRun = command.replace("%username%", playerName).trim();
+								if (cmdToRun.startsWith("/"))
+								{
+									cmdToRun = cmdToRun.substring(1);
+								}
+
+								Bukkit.dispatchCommand(console, cmdToRun);
+							}
+							catch (Throwable t)
+							{
+								plugin.getLogger().warning("Error executing console command '" + command + "' for player " + playerName);
+								t.printStackTrace();
+							}
+						}
+					};
+
+					if (Bukkit.isPrimaryThread())
+					{
+						commandTask.run();
+					}
+					else
+					{
+						Bukkit.getScheduler().runTask(plugin, commandTask);
 					}
 
 					break;

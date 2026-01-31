@@ -9,6 +9,9 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.session.handler.Handler;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -49,13 +52,68 @@ public class ConsoleCommandOnEntryFlagHandler extends Handler
 
 		if (!this.getSession().getManager().hasBypass(player, (World) to.getExtent()))
 		{
-			for(Set<String> commands_ : commands)
+			for (Set<String> commands_ : commands)
 			{
 				if (!this.lastCommands.contains(commands_))
 				{
-					for(String command : commands_)
+					Plugin plugin;
+					try
 					{
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+						plugin = JavaPlugin.getProvidingPlugin(this.getClass());
+					}
+					catch (IllegalArgumentException | IllegalStateException e)
+					{
+						plugin = Bukkit.getPluginManager().getPlugin("WorldGuardExtraFlags");
+					}
+
+					if (plugin == null)
+					{
+						Bukkit.getLogger().severe("[WGEF-DEBUG] CRITICAL: Plugin instance is NULL! Commands cannot run.");
+						break;
+					}
+
+					if (!plugin.isEnabled())
+					{
+						Bukkit.getLogger().warning("[WGEF-DEBUG] Plugin is disabled, skipping commands.");
+						break;
+					}
+
+					final Set<String> commandsToRun = commands_;
+					final String playerName = player.getName();
+					final Plugin pluginFinal = plugin;
+
+					Runnable commandTask = () ->
+					{
+						ConsoleCommandSender console = Bukkit.getConsoleSender();
+						for (String command : commandsToRun)
+						{
+							try
+							{
+								if (command == null || command.trim().isEmpty()) continue;
+
+								String cmdToRun = command.replace("%username%", playerName).trim();
+								if (cmdToRun.startsWith("/"))
+								{
+									cmdToRun = cmdToRun.substring(1);
+								}
+
+								Bukkit.dispatchCommand(console, cmdToRun);
+							}
+							catch (Throwable t)
+							{
+								pluginFinal.getLogger().warning("[WGEF-Error] Failed to execute command '" + command + "' for " + playerName);
+								t.printStackTrace();
+							}
+						}
+					};
+
+					if (Bukkit.isPrimaryThread())
+					{
+						commandTask.run();
+					}
+					else
+					{
+						Bukkit.getScheduler().runTask(pluginFinal, commandTask);
 					}
 
 					break;
