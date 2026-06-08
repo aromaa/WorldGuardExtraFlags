@@ -25,7 +25,6 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flag;
 
-import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.protocollib.ProtocolLibHelper;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,17 +32,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 {
 	private static final Set<Flag<?>> FLAGS = WorldGuardExtraFlagsPlugin.getPluginFlags();
-	@Getter private static WorldGuardExtraFlagsPlugin plugin;
+	private static WorldGuardExtraFlagsPlugin plugin;
 
-	@Getter private WorldEditPlugin worldEditPlugin;
+	private WorldEditPlugin worldEditPlugin;
 
-	@Getter private WorldGuardPlugin worldGuardPlugin;
-	@Getter private WorldGuard worldGuard;
+	private WorldGuardPlugin worldGuardPlugin;
+	private WorldGuard worldGuard;
 
-	@Getter private RegionContainer regionContainer;
-	@Getter private SessionManager sessionManager;
+	private RegionContainer regionContainer;
 
-	@Getter private ProtocolLibHelper protocolLibHelper;
+    private ProtocolLibHelper protocolLibHelper;
 	
 	public WorldGuardExtraFlagsPlugin()
 	{
@@ -86,6 +84,12 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			flagRegistry.register(Flags.CHUNK_UNLOAD);
 			flagRegistry.register(Flags.ITEM_DURABILITY);
 			flagRegistry.register(Flags.JOIN_LOCATION);
+			flagRegistry.register(Flags.ALLOWED_BLOCK_DROPS);
+			flagRegistry.register(Flags.BLOCKED_BLOCK_DROPS);
+			flagRegistry.register(Flags.ALLOW_BLOCK_PLACE);
+			flagRegistry.register(Flags.DENY_BLOCK_PLACE);
+			flagRegistry.register(Flags.ALLOW_BLOCK_BREAK);
+			flagRegistry.register(Flags.DENY_BLOCK_BREAK);
 		}
 		catch (Exception e)
 		{
@@ -101,7 +105,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			Plugin protocolLibPlugin = this.getServer().getPluginManager().getPlugin("ProtocolLib");
 			if (protocolLibPlugin != null)
 			{
-				this.protocolLibHelper = new ProtocolLibHelper(this, protocolLibPlugin);
+				this.protocolLibHelper = new ProtocolLibHelper();
 			}
 		}
 		catch(Throwable ignore)
@@ -113,31 +117,31 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	public void onEnable()
 	{
 		this.regionContainer = this.worldGuard.getPlatform().getRegionContainer();
-		this.sessionManager = this.worldGuard.getPlatform().getSessionManager();
+        SessionManager sessionManager = this.worldGuard.getPlatform().getSessionManager();
 
-		this.sessionManager.registerHandler(TeleportOnEntryFlagHandler.FACTORY(plugin), null);
-		this.sessionManager.registerHandler(TeleportOnExitFlagHandler.FACTORY(plugin), null);
+		sessionManager.registerHandler(TeleportOnEntryFlagHandler.FACTORY(plugin), null);
+		sessionManager.registerHandler(TeleportOnExitFlagHandler.FACTORY(plugin), null);
 
-		this.sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(FlyFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(GlideFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin), null);
-		this.sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(WalkSpeedFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(FlySpeedFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(FlyFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(GlideFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(GodmodeFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(PlaySoundsFlagHandler.FACTORY(plugin), null);
+		sessionManager.registerHandler(BlockedEffectsFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(GiveEffectsFlagHandler.FACTORY(), null);
 
-		this.sessionManager.registerHandler(CommandOnEntryFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(CommandOnExitFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(ConsoleCommandOnEntryFlagHandler.FACTORY(), null);
-		this.sessionManager.registerHandler(ConsoleCommandOnExitFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(CommandOnEntryFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(CommandOnExitFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(ConsoleCommandOnEntryFlagHandler.FACTORY(), null);
+		sessionManager.registerHandler(ConsoleCommandOnExitFlagHandler.FACTORY(), null);
 
-		this.getServer().getPluginManager().registerEvents(new PlayerListener(this, this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
-		this.getServer().getPluginManager().registerEvents(new BlockListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
+		this.getServer().getPluginManager().registerEvents(new PlayerListener(this, this.worldGuardPlugin, this.regionContainer, sessionManager), this);
+		this.getServer().getPluginManager().registerEvents(new BlockListener(this.worldGuardPlugin, this.regionContainer, sessionManager), this);
 		this.getServer().getPluginManager().registerEvents(new WorldListener(this, this.regionContainer), this);
-		this.getServer().getPluginManager().registerEvents(new EntityListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
+		this.getServer().getPluginManager().registerEvents(new EntityListener(this.worldGuardPlugin, this.regionContainer, sessionManager), this);
 
-		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager));
+		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this.worldGuardPlugin, this.regionContainer, sessionManager));
 		
 		if (this.protocolLibHelper != null)
 		{
@@ -147,12 +151,12 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			}
 			catch (Throwable ignore)
 			{
-				this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this.worldGuardPlugin, this.sessionManager), this);
+				this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this.worldGuardPlugin, sessionManager), this);
 			}
 		}
 		else
 		{
-			this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this.worldGuardPlugin, this.sessionManager), this);
+			this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this.worldGuardPlugin, sessionManager), this);
 		}
 		
 		for(World world : this.getServer().getWorlds())
@@ -201,9 +205,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			Map<Flag<?>, Boolean> valueMap = WorldGuardExtraFlagsPlugin.FLAGS.stream().collect(Collectors.toMap(v -> v, v -> false));
 
 			WorldGuard.getInstance().getPlatform().getRegionContainer().getLoaded().forEach(m ->
-			{
-				m.getRegions().values().forEach(r -> r.getFlags().keySet().forEach(f -> valueMap.computeIfPresent(f, (k, v) -> true)));
-			});
+                    m.getRegions().values().forEach(r -> r.getFlags().keySet().forEach(f -> valueMap.computeIfPresent(f, (k, v) -> true))));
 
 			return valueMap.entrySet().stream().collect(Collectors.toMap(v -> v.getKey().getName(), v -> v.getValue() ? 1 : 0));
 		}));
@@ -225,5 +227,9 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		}
 		
 		return flags;
+	}
+
+	public static WorldGuardExtraFlagsPlugin getPlugin() {
+		return plugin;
 	}
 }

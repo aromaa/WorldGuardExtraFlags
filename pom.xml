@@ -4,7 +4,7 @@
    <groupId>net.goldtreeservers</groupId>
    <artifactId>worldguardextraflags</artifactId>
    <name>WorldGuardExtraFlags</name>
-   <version>4.2.5-SNAPSHOT</version>
+   <version>4.2.6-SNAPSHOT</version>
    
    <packaging>pom</packaging>
    
@@ -21,15 +21,6 @@
          </plugin>
       </plugins>
    </build>
-   
-   <dependencies>
-      <dependency>
-         <groupId>org.projectlombok</groupId>
-         <artifactId>lombok</artifactId>
-         <version>1.18.32</version>
-         <scope>provided</scope>
-      </dependency>
-   </dependencies>
    
    <modules>
    	<module>WG</module>

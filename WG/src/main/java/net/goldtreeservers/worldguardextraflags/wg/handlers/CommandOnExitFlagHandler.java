@@ -19,7 +19,7 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
 public class CommandOnExitFlagHandler extends Handler
 {
-	public static final Factory FACTORY()
+	public static Factory FACTORY()
 	{
 		return new Factory();
 	}
@@ -73,7 +73,7 @@ public class CommandOnExitFlagHandler extends Handler
 		{
 			for (Set<String> commands_ : lastCommands)
 			{
-				if (!commands.contains(commands_) && commands_.size() > 0)
+				if (!commands.contains(commands_) && !commands_.isEmpty())
 				{
 					for (String command : commands_)
 					{

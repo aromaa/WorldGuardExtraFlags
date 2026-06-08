@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class FlySpeedFlagHandler extends AbstractSpeedFlagHandler
 {
-	public static final Factory FACTORY()
+	public static Factory FACTORY()
 	{
 		return new Factory();
 	}

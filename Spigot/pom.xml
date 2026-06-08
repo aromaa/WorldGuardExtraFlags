@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>net.goldtreeservers</groupId>
 		<artifactId>worldguardextraflags</artifactId>
-		<version>4.2.5-SNAPSHOT</version>
+		<version>4.2.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>net.goldtreeservers.worldguardextraflags</groupId>
 	<artifactId>Spigot</artifactId>
 
 	<build>
-		<finalName>WorldGuardExtraFlags</finalName>
+		<finalName>WorldGuardExtraFlags-v${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -59,7 +59,7 @@
 		</repository>
 		<repository>
 			<id>dmulloy2-repo</id>
-			<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
+			<url>https://repo.dmulloy2.net/repository/public/</url>
 		</repository>
 		<repository>
 			<id>CodeMC</id>
@@ -108,7 +108,7 @@
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
-			<version>4.5.0</version>
+			<version>5.3.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

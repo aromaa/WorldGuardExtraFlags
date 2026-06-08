@@ -24,7 +24,7 @@ import net.goldtreeservers.worldguardextraflags.flags.data.SoundData;
 
 public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>>
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static Factory FACTORY(Plugin plugin)
 	{
 		return new Factory(plugin);
 	}
@@ -46,7 +46,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
     }
 
 	private final Plugin plugin;
-    private Map<String, BukkitRunnable> runnables;
+    private final Map<String, BukkitRunnable> runnables;
 	    
 	protected PlaySoundsFlagHandler(Plugin plugin, Session session)
 	{
@@ -87,7 +87,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
 
-		if (value != null && value.size() > 0)
+		if (value != null && !value.isEmpty())
 		{
 			for(SoundData sound : value)
 			{
@@ -122,7 +122,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 		{
 			Entry<String, BukkitRunnable> runnable = runnables.next();
 			
-			if (value != null && value.size() > 0)
+			if (value != null && !value.isEmpty())
 			{
 				boolean skip = false;
 				for(SoundData sound : value)

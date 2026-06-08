@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 
 public class TeleportOnEntryFlagHandler extends FlagValueChangeHandler<Location>
 {
-	public static final Factory FACTORY(Plugin plugin)
+	public static Factory FACTORY(Plugin plugin)
 	{
 		return new Factory(plugin);
 	}

@@ -10,7 +10,7 @@ import net.goldtreeservers.worldguardextraflags.flags.helpers.ForcedStateFlag.Fo
 
 public class ForcedStateFlag extends Flag<ForcedState>
 {
-	public static enum ForcedState
+	public enum ForcedState
 	{
 		ALLOW,
 		DENY,
@@ -97,18 +97,13 @@ public class ForcedStateFlag extends Flag<ForcedState>
 	public ForcedState unmarshal(Object o)
 	{
         String str = o.toString();
-        
-        switch(str)
-        {
-	        case "ALLOW":
-	        	return ForcedState.ALLOW;
-	        case "FORCE":
-	        	return ForcedState.FORCE;
-	        case "DENY":
-	        	return ForcedState.DENY;
-        	default:
-        		return null;
-        }
+
+        return switch (str) {
+            case "ALLOW" -> ForcedState.ALLOW;
+            case "FORCE" -> ForcedState.FORCE;
+            case "DENY" -> ForcedState.DENY;
+            default -> null;
+        };
 	}
 
 	@Override

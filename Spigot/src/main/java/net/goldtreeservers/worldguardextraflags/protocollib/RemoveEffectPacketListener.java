@@ -35,6 +35,7 @@ public class RemoveEffectPacketListener extends PacketAdapter
 				Session session = WorldGuard.getInstance().getPlatform().getSessionManager().get(WorldGuardPlugin.inst().wrapPlayer(player));
 				
 				GiveEffectsFlagHandler giveEffectsHandler = session.getHandler(GiveEffectsFlagHandler.class);
+				if (giveEffectsHandler == null) return;
 				if (giveEffectsHandler.isSupressRemovePotionPacket())
 				{
 					event.setCancelled(true);

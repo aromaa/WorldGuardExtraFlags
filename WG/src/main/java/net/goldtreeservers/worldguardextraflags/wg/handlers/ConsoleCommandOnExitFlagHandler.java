@@ -20,7 +20,7 @@ import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
 public class ConsoleCommandOnExitFlagHandler extends Handler
 {
-	public static final Factory FACTORY()
+	public static Factory FACTORY()
 	{
 		return new Factory();
 	}

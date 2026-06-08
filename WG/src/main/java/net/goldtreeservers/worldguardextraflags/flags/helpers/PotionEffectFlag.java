@@ -24,7 +24,7 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	@Override
 	public Object marshal(PotionEffect o)
 	{
-		return o.getType().getKey().toString() + " " + o.getAmplifier() + " " + o.hasParticles();
+		return o.getType().getKey() + " " + o.getAmplifier() + " " + o.hasParticles();
 	}
 
 	@Override
