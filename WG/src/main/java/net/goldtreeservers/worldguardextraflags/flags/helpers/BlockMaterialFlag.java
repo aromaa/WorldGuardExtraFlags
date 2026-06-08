@@ -18,7 +18,7 @@ public class BlockMaterialFlag extends MaterialFlag
 		Material material = super.parseInput(context);
 		if (!material.isBlock())
 		{
-			throw new InvalidFlagFormat("This material isn't seen as 'placable block', use alternative id");
+			throw new InvalidFlagFormat("This material isn't seen as 'placeable block', use alternative id");
 		}
 		
 		return material;
