@@ -114,7 +114,7 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 					int timeLeft = removedEffect.getTimeLeftInTicks();
 					if (timeLeft > 0)
 					{
-						bukkitPlayer.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
+						bukkitPlayer.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.amplifier(), removedEffect.ambient(), removedEffect.particles()), true);
 					}
 				}
 
