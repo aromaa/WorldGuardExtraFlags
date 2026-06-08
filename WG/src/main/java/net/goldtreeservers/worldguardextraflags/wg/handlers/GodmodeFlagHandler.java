@@ -10,7 +10,6 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
-import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
 public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
@@ -29,7 +28,7 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
         }
     }
     
-    @Getter private Boolean isGodmodeEnabled;
+    private Boolean isGodmodeEnabled;
     private Boolean originalEssentialsGodmode;
 	    
 	protected GodmodeFlagHandler(Session session)

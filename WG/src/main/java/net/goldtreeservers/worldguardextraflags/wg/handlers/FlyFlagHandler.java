@@ -6,7 +6,6 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.session.handler.FlagValueChangeHandler;
 import com.sk89q.worldguard.session.handler.Handler;
-import lombok.Setter;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -14,7 +13,6 @@ import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
-import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
 public class FlyFlagHandler extends FlagValueChangeHandler<State>
@@ -33,8 +31,8 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
         }
     }
 
-    @Getter private Boolean currentValue;
-    @Setter private Boolean originalFly;
+    private Boolean currentValue;
+    private Boolean originalFly;
 	    
 	protected FlyFlagHandler(Session session)
 	{
@@ -92,5 +90,13 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 
 			this.currentValue = null;
 		}
+	}
+
+	public Boolean getCurrentValue() {
+		return currentValue;
+	}
+
+	public void setOriginalFly(Boolean originalFly) {
+		this.originalFly = originalFly;
 	}
 }

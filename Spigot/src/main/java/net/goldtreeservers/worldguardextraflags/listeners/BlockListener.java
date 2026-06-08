@@ -22,17 +22,21 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
-import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
 import java.util.Set;
 
-@RequiredArgsConstructor
 public class BlockListener implements Listener
 {
 	private final WorldGuardPlugin worldGuardPlugin;
 	private final RegionContainer regionContainer;
 	private final SessionManager sessionManager;
+
+	public BlockListener(WorldGuardPlugin worldGuardPlugin, RegionContainer regionContainer, SessionManager sessionManager) {
+		this.worldGuardPlugin = worldGuardPlugin;
+		this.regionContainer = regionContainer;
+		this.sessionManager = sessionManager;
+	}
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityBlockFormEvent(EntityBlockFormEvent event)

@@ -6,7 +6,6 @@ import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.AbstractDelegateExtent;
 import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
@@ -20,7 +19,7 @@ public class WorldEditFlagHandler extends AbstractDelegateExtent
 
 	private final RegionManager regionManager;
 	
-	public WorldEditFlagHandler(World world, Extent extent, LocalPlayer player, RegionManager regionManager)
+	public WorldEditFlagHandler(Extent extent, LocalPlayer player, RegionManager regionManager)
 	{
 		super(extent);
 

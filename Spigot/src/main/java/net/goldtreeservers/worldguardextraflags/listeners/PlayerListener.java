@@ -30,7 +30,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.session.Session;
 
-import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.wg.WorldGuardUtils;
@@ -40,7 +39,6 @@ import net.goldtreeservers.worldguardextraflags.wg.handlers.GiveEffectsFlagHandl
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 public class PlayerListener implements Listener
 {
 	private final WorldGuardExtraFlagsPlugin plugin;
@@ -48,6 +46,13 @@ public class PlayerListener implements Listener
 	private final WorldGuardPlugin worldGuardPlugin;
 	private final RegionContainer regionContainer;
 	private final SessionManager sessionManager;
+
+	public PlayerListener(WorldGuardExtraFlagsPlugin plugin, WorldGuardPlugin worldGuardPlugin, RegionContainer regionContainer, SessionManager sessionManager) {
+		this.plugin = plugin;
+		this.worldGuardPlugin = worldGuardPlugin;
+		this.regionContainer = regionContainer;
+		this.sessionManager = sessionManager;
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerTeleportEvent(PlayerTeleportEvent event)
@@ -138,14 +143,18 @@ public class PlayerListener implements Listener
 
 			effects.addAll(potionMeta.getCustomEffects());
 
-			this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(GiveEffectsFlagHandler.class).drinkPotion(player, effects);
+			var handler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(GiveEffectsFlagHandler.class);
+			if (handler == null) return;
+			handler.drinkPotion(player, effects);
 		}
 		else
 		{
 			Material material = event.getItem().getType();
 			if (material == Material.MILK_BUCKET)
 			{
-				this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(GiveEffectsFlagHandler.class).drinkMilk(player);
+				var handler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(GiveEffectsFlagHandler.class);
+				if (handler == null) return;
+				handler.drinkMilk(player);
 			}
 		}
 	}
@@ -158,7 +167,10 @@ public class PlayerListener implements Listener
 		Session wgSession = this.sessionManager.getIfPresent(this.worldGuardPlugin.wrapPlayer(player));
 		if (wgSession != null)
 		{
-			Boolean value = wgSession.getHandler(FlyFlagHandler.class).getCurrentValue();
+			var flyFlagHandler = wgSession.getHandler(FlyFlagHandler.class);
+			if (flyFlagHandler == null) return;
+
+			Boolean value = flyFlagHandler.getCurrentValue();
 			if (value != null)
 			{
 				new BukkitRunnable()
@@ -186,7 +198,8 @@ public class PlayerListener implements Listener
 	
 	private void checkFlyStatus(Player player, Boolean originalValueOverwrite)
 	{
-		FlyFlagHandler flyFlagHandler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class);
+		var flyFlagHandler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class);
+		if (flyFlagHandler == null) return;
 
 		Boolean currentValue = flyFlagHandler.getCurrentValue();
 		if (currentValue != null)
@@ -229,8 +242,9 @@ public class PlayerListener implements Listener
 	public void onPlayerJoinEvent(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-		
-		Boolean value = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
+		var flyFlagHandler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class);
+		if (flyFlagHandler == null) return;
+		Boolean value = flyFlagHandler.getCurrentValue();
 		if (value != null)
 		{
 			player.setAllowFlight(value);
@@ -244,7 +258,9 @@ public class PlayerListener implements Listener
 
 		//Some plugins toggle flight off on world change based on permissions,
 		//so we need to make sure to force the flight status.
-		Boolean value = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class).getCurrentValue();
+		var flyFlagHandler = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player)).getHandler(FlyFlagHandler.class);
+		if (flyFlagHandler == null) return;
+		Boolean value = flyFlagHandler.getCurrentValue();
 		if (value != null)
 		{
 			player.setAllowFlight(value);

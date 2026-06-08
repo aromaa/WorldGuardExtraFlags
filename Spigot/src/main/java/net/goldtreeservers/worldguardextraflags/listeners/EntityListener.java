@@ -16,15 +16,19 @@ import org.bukkit.event.world.PortalCreateEvent;
 
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 
-import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 
-@RequiredArgsConstructor
 public class EntityListener implements Listener
 {
 	private final WorldGuardPlugin worldGuardPlugin;
 	private final RegionContainer regionContainer;
 	private final SessionManager sessionManager;
+
+	public EntityListener(WorldGuardPlugin worldGuardPlugin, RegionContainer regionContainer, SessionManager sessionManager) {
+		this.worldGuardPlugin = worldGuardPlugin;
+		this.regionContainer = regionContainer;
+		this.sessionManager = sessionManager;
+	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void onPortalCreateEvent(PortalCreateEvent event)
@@ -66,6 +70,7 @@ public class EntityListener implements Listener
 			}
 
 			ForcedStateFlag.ForcedState state = this.regionContainer.createQuery().queryValue(localPlayer.getLocation(), localPlayer, Flags.GLIDE);
+			if (state == null) return;
             switch (state) {
                 case DENY -> {
                     if (!event.isGliding()) {

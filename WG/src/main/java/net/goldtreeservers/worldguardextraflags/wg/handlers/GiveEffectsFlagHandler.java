@@ -25,7 +25,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.session.MoveType;
 import com.sk89q.worldguard.session.Session;
 
-import lombok.Getter;
 import net.goldtreeservers.worldguardextraflags.flags.Flags;
 import net.goldtreeservers.worldguardextraflags.flags.data.PotionEffectDetails;
 
@@ -48,7 +47,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 	private final Map<PotionEffectType, PotionEffectDetails> removedEffects;
     private final Set<PotionEffectType> givenEffects;
     
-    @Getter private boolean supressRemovePotionPacket;
+    private boolean supressRemovePotionPacket;
     
 	protected GiveEffectsFlagHandler(Session session)
 	{
@@ -191,5 +190,9 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 		LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);
 		
 		this.handleValue(player, player.getWorld(), WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
+	}
+
+	public boolean isSupressRemovePotionPacket() {
+		return supressRemovePotionPacket;
 	}
 }

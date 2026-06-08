@@ -16,15 +16,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
-import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.WorldGuardExtraFlagsPlugin;
 
-@RequiredArgsConstructor
 public class WorldListener implements Listener
 {
 	private final WorldGuardExtraFlagsPlugin plugin;
 
 	private final RegionContainer regionContainer;
+
+	public WorldListener(WorldGuardExtraFlagsPlugin plugin, RegionContainer regionContainer)
+	{
+		this.plugin = plugin;
+		this.regionContainer = regionContainer;
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldLoadEvent(WorldLoadEvent event)

@@ -11,17 +11,21 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.session.SessionManager;
-import lombok.RequiredArgsConstructor;
 import net.goldtreeservers.worldguardextraflags.we.handlers.WorldEditFlagHandler;
 import org.bukkit.Bukkit;
 
-@RequiredArgsConstructor
 public class WorldEditListener
 {
 	private final WorldGuardPlugin worldGuardPlugin;
 	private final RegionContainer regionContainer;
 	private final SessionManager sessionManager;
-	
+
+	public WorldEditListener(WorldGuardPlugin worldGuardPlugin, RegionContainer regionContainer, SessionManager sessionManager) {
+		this.worldGuardPlugin = worldGuardPlugin;
+		this.regionContainer = regionContainer;
+		this.sessionManager = sessionManager;
+	}
+
 	@Subscribe(priority = EventHandler.Priority.VERY_EARLY)
     public void onEditSessionEvent(EditSessionEvent event)
 	{
@@ -41,7 +45,7 @@ public class WorldEditListener
 				return;
 			}
 
-			event.setExtent(new WorldEditFlagHandler(world, event.getExtent(), localPlayer, regionManager));
+			event.setExtent(new WorldEditFlagHandler(event.getExtent(), localPlayer, regionManager));
 		}
 	}
 }
