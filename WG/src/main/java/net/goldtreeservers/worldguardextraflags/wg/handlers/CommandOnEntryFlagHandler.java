@@ -56,7 +56,7 @@ public class CommandOnEntryFlagHandler extends Handler
 				{
 					for(String command : commands_)
 					{
-						Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName())); //TODO: Make this better
+						Bukkit.getServer().dispatchCommand(((BukkitPlayer) player).getPlayer(), command.substring(1).replace("%username%", player.getName()).replace("%uuid%", player.getUniqueId().toString())); //TODO: Make this better
 					}
 
 					break;
