@@ -13,7 +13,7 @@ public class FlySpeedFlagHandler extends AbstractSpeedFlagHandler
 	{
 		return new Factory();
 	}
-	
+
 	public static class Factory extends Handler.Factory<FlySpeedFlagHandler>
 	{
 		@Override
@@ -22,18 +22,18 @@ public class FlySpeedFlagHandler extends AbstractSpeedFlagHandler
 			return new FlySpeedFlagHandler(session);
 		}
 	}
-	
+
 	protected FlySpeedFlagHandler(Session session)
 	{
 		super(session, Flags.FLY_SPEED);
 	}
-	
+
 	@Override
 	protected float getSpeed(Player player)
 	{
 		return player.getFlySpeed();
 	}
-	
+
 	@Override
 	protected void setSpeed(Player player, float speed)
 	{

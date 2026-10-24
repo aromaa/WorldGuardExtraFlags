@@ -29,7 +29,7 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<BlockedEffectsFlagHandler>
     {
 		@Override
@@ -38,13 +38,13 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
             return new BlockedEffectsFlagHandler(session);
         }
     }
-	
+
 	private HashMap<PotionEffectType, PotionEffectDetails> removedEffects;
-    
+
 	protected BlockedEffectsFlagHandler(Session session)
 	{
 		super(session, Flags.BLOCKED_EFFECTS);
-		
+
 		this.removedEffects = new HashMap<>();
 	}
 
@@ -73,7 +73,7 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 	{
 		this.handleValue(player, player.getWorld(), set.queryValue(player, Flags.BLOCKED_EFFECTS));
 	}
-	
+
 	private void handleValue(LocalPlayer player, World world, Set<PotionEffectType> value)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
@@ -91,7 +91,7 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 						break;
 					}
 				}
-				
+
 				if (effect != null)
 				{
 					this.removedEffects.put(effect.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect.getAmplifier(), effect.isAmbient(), effect.hasParticles()));
@@ -100,12 +100,12 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 				}
 			}
 		}
-		
+
 		Iterator<Entry<PotionEffectType, PotionEffectDetails>>  potionEffects_ = this.removedEffects.entrySet().iterator();
 		while (potionEffects_.hasNext())
 		{
 			Entry<PotionEffectType, PotionEffectDetails> potionEffect = potionEffects_.next();
-			
+
 			if (value == null || !value.contains(potionEffect.getKey()))
 			{
 				PotionEffectDetails removedEffect = potionEffect.getValue();
@@ -117,7 +117,7 @@ public class BlockedEffectsFlagHandler extends FlagValueChangeHandler<Set<Potion
 						bukkitPlayer.addPotionEffect(new PotionEffect(potionEffect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
 					}
 				}
-				
+
 				potionEffects_.remove();
 			}
 		}

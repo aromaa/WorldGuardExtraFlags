@@ -20,7 +20,7 @@ public class WorldEditFlagHandler extends AbstractDelegateExtent
 	private final LocalPlayer player;
 
 	private final RegionManager regionManager;
-	
+
 	public WorldEditFlagHandler(World world, Extent extent, LocalPlayer player, RegionManager regionManager)
 	{
 		super(extent);
@@ -38,7 +38,7 @@ public class WorldEditFlagHandler extends AbstractDelegateExtent
     	{
     		return super.setBlock(location, block);
     	}
-    	
+
     	return false;
     }
 }

@@ -41,7 +41,7 @@ public class MaterialFlag extends Flag<Material>
 		{
 			material = Material.matchMaterial(o.toString(), true);
 		}
-		
+
 		return material;
 	}
 }

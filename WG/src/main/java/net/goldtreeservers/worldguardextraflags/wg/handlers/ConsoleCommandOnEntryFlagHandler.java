@@ -24,7 +24,7 @@ public class ConsoleCommandOnEntryFlagHandler extends Handler
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<ConsoleCommandOnEntryFlagHandler>
     {
 		@Override
@@ -33,13 +33,13 @@ public class ConsoleCommandOnEntryFlagHandler extends Handler
             return new ConsoleCommandOnEntryFlagHandler(session);
         }
     }
-    
+
 	private Collection<Set<String>> lastCommands;
-	    
+
 	protected ConsoleCommandOnEntryFlagHandler(Session session)
 	{
 		super(session);
-		
+
 		this.lastCommands = new ArrayList<>();
 	}
 
@@ -63,9 +63,9 @@ public class ConsoleCommandOnEntryFlagHandler extends Handler
 				}
 			}
 		}
-		
+
 		this.lastCommands = new ArrayList(commands);
-		
+
 		if (!this.lastCommands.isEmpty())
 		{
 			for (ProtectedRegion region : toSet)
@@ -77,7 +77,7 @@ public class ConsoleCommandOnEntryFlagHandler extends Handler
                 }
             }
 		}
-		
+
 		return true;
 	}
 }

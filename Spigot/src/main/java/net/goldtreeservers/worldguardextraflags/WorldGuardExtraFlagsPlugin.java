@@ -44,12 +44,12 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 	@Getter private SessionManager sessionManager;
 
 	@Getter private ProtocolLibHelper protocolLibHelper;
-	
+
 	public WorldGuardExtraFlagsPlugin()
 	{
 		WorldGuardExtraFlagsPlugin.plugin = this;
 	}
-	
+
 	@Override
 	public void onLoad()
 	{
@@ -95,7 +95,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 					"WorldGuard prevented flag registration. Did you reload the plugin? This is not supported!" :
 					"Flag registration failed!", e);
 		}
-		
+
 		try
 		{
 			Plugin protocolLibPlugin = this.getServer().getPluginManager().getPlugin("ProtocolLib");
@@ -108,7 +108,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		{
 		}
 	}
-	
+
 	@Override
 	public void onEnable()
 	{
@@ -138,7 +138,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new EntityListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager), this);
 
 		this.worldEditPlugin.getWorldEdit().getEventBus().register(new WorldEditListener(this.worldGuardPlugin, this.regionContainer, this.sessionManager));
-		
+
 		if (this.protocolLibHelper != null)
 		{
 			try
@@ -154,12 +154,12 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 		{
 			this.getServer().getPluginManager().registerEvents(new EntityPotionEffectEventListener(this.worldGuardPlugin, this.sessionManager), this);
 		}
-		
+
 		for(World world : this.getServer().getWorlds())
 		{
 			this.doUnloadChunkFlagCheck(world);
 		}
-		
+
 		this.setupMetrics();
 	}
 
@@ -190,11 +190,11 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			}
 		}
 	}
-	
+
 	private void setupMetrics()
 	{
 		final int bStatsPluginId = 7301;
-		
+
         Metrics metrics = new Metrics(this, bStatsPluginId);
         metrics.addCustomChart(new Metrics.AdvancedPie("flags_used", () ->
 		{
@@ -208,11 +208,11 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			return valueMap.entrySet().stream().collect(Collectors.toMap(v -> v.getKey().getName(), v -> v.getValue() ? 1 : 0));
 		}));
 	}
-	
+
 	private static Set<Flag<?>> getPluginFlags()
 	{
 		Set<Flag<?>> flags = new HashSet<>();
-		
+
 		for (Field field : Flags.class.getFields())
 		{
 			try
@@ -223,7 +223,7 @@ public class WorldGuardExtraFlagsPlugin extends JavaPlugin
 			{
 			}
 		}
-		
+
 		return flags;
 	}
 }

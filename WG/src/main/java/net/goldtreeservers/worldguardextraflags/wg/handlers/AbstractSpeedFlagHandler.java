@@ -14,12 +14,12 @@ import org.bukkit.entity.Player;
 public abstract class AbstractSpeedFlagHandler extends FlagValueChangeHandler<Double>
 {
 	private Float originalSpeed;
-	
+
 	protected AbstractSpeedFlagHandler(Session session, DoubleFlag flag)
 	{
 		super(session, flag);
 	}
-	
+
 	protected abstract float getSpeed(Player player);
 	protected abstract void setSpeed(Player player, float speed);
 
@@ -57,14 +57,14 @@ public abstract class AbstractSpeedFlagHandler extends FlagValueChangeHandler<Do
 			{
 				speed = -1.0;
 			}
-			
+
 			if (this.getSpeed(bukkitPlayer) != speed.floatValue())
 			{
 				if (this.originalSpeed == null)
 				{
 					this.originalSpeed = this.getSpeed(bukkitPlayer);
 				}
-				
+
 				this.setSpeed(bukkitPlayer, speed.floatValue());
 			}
 		}
@@ -73,7 +73,7 @@ public abstract class AbstractSpeedFlagHandler extends FlagValueChangeHandler<Do
 			if (this.originalSpeed != null)
 			{
 				this.setSpeed(bukkitPlayer, this.originalSpeed);
-				
+
 				this.originalSpeed = null;
 			}
 		}

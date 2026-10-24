@@ -15,7 +15,7 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	//This avoid the effect running out indication
 	//Also we add extra 19 ticks (almost a second) to avoid the timer constantly going from 15s to 14s and back (Its annoying)
 	private static final int POTION_EFFECT_DURATION = 20 * 15 + 19;
-	
+
 	public PotionEffectFlag(String name)
 	{
 		super(name);
@@ -46,7 +46,7 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 		{
 			throw new InvalidFlagFormat("Unable to find the potion effect type! Input valid namespaced ids.");
 		}
-		
+
 		return this.buildPotionEffect(split);
 	}
 
@@ -54,10 +54,10 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 	public PotionEffect unmarshal(Object o)
 	{
 		String[] split = o.toString().split(" ");
-		
+
 		return this.buildPotionEffect(split);
 	}
-	
+
 	private PotionEffect buildPotionEffect(String[] split)
 	{
 		PotionEffectType potionEffect = Registry.EFFECT.match(split[0]);
@@ -65,19 +65,19 @@ public class PotionEffectFlag extends Flag<PotionEffect>
 		{
 			potionEffect = PotionEffectType.getByName(split[0]);
 		}
-		
+
 		int amplifier = 0;
 		if (split.length >= 2)
 		{
 			amplifier = Integer.parseInt(split[1]);
 		}
-		
+
 		boolean showParticles = false;
 		if (split.length >= 3)
 		{
 			showParticles = Boolean.parseBoolean(split[2]);
 		}
-		
+
 		return new PotionEffect(potionEffect, PotionEffectFlag.POTION_EFFECT_DURATION, amplifier, true, showParticles);
 	}
 }

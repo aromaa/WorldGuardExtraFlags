@@ -20,7 +20,7 @@ public class EntityPotionEffectEventListener implements Listener
 {
 	private final WorldGuardPlugin worldGuardPlugin;
 	private final SessionManager sessionManager;
-	
+
 	@EventHandler(ignoreCancelled = true)
 	public void onEntityPotionEffectEvent(EntityPotionEffectEvent event)
 	{
@@ -37,7 +37,7 @@ public class EntityPotionEffectEventListener implements Listener
 		try
 		{
 			Session session = this.sessionManager.get(this.worldGuardPlugin.wrapPlayer(player));
-			
+
 			GiveEffectsFlagHandler giveEffectsHandler = session.getHandler(GiveEffectsFlagHandler.class);
 			if (giveEffectsHandler.isSupressRemovePotionPacket())
 			{

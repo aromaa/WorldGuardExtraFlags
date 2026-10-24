@@ -21,7 +21,7 @@ public class WorldEditListener
 	private final WorldGuardPlugin worldGuardPlugin;
 	private final RegionContainer regionContainer;
 	private final SessionManager sessionManager;
-	
+
 	@Subscribe(priority = EventHandler.Priority.VERY_EARLY)
     public void onEditSessionEvent(EditSessionEvent event)
 	{

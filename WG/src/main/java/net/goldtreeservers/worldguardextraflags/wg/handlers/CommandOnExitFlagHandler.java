@@ -24,7 +24,7 @@ public class CommandOnExitFlagHandler extends Handler
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<CommandOnExitFlagHandler>
     {
 		@Override
@@ -33,27 +33,27 @@ public class CommandOnExitFlagHandler extends Handler
             return new CommandOnExitFlagHandler(session);
         }
     }
-	
+
 	private Collection<Set<String>> lastCommands;
-	    
+
 	protected CommandOnExitFlagHandler(Session session)
 	{
 		super(session);
-		
+
 		this.lastCommands = new ArrayList<>();
 	}
-	
+
     @Override
 	public void initialize(LocalPlayer player, Location current, ApplicableRegionSet set)
     {
     	this.lastCommands = set.queryAllValues(player, Flags.COMMAND_ON_EXIT);
     }
-    	
+
 	@Override
 	public boolean onCrossBoundary(LocalPlayer player, Location from, Location to, ApplicableRegionSet toSet, Set<ProtectedRegion> entered, Set<ProtectedRegion> exited, MoveType moveType)
 	{
 		Collection<Set<String>> commands = Lists.newArrayList(toSet.queryAllValues(player, Flags.COMMAND_ON_EXIT));
-		
+
 		if (!commands.isEmpty())
 		{
 			for (ProtectedRegion region : toSet)
@@ -85,7 +85,7 @@ public class CommandOnExitFlagHandler extends Handler
 				}
 			}
 		}
-		
+
 		return true;
 	}
 }

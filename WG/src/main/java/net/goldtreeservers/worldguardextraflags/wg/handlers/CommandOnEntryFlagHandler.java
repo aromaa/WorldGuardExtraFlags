@@ -25,7 +25,7 @@ public class CommandOnEntryFlagHandler extends Handler
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<CommandOnEntryFlagHandler>
     {
 		@Override
@@ -34,13 +34,13 @@ public class CommandOnEntryFlagHandler extends Handler
             return new CommandOnEntryFlagHandler(session);
         }
     }
-	
+
 	private Collection<Set<String>> lastCommands;
-	    
+
 	protected CommandOnEntryFlagHandler(Session session)
 	{
 		super(session);
-		
+
 		this.lastCommands = new ArrayList<>();
 	}
 
@@ -64,9 +64,9 @@ public class CommandOnEntryFlagHandler extends Handler
 				}
 			}
 		}
-		
+
 		this.lastCommands = new ArrayList(commands);
-		
+
 		if (!this.lastCommands.isEmpty())
 		{
 			for (ProtectedRegion region : toSet)
@@ -78,7 +78,7 @@ public class CommandOnEntryFlagHandler extends Handler
                 }
             }
 		}
-		
+
 		return true;
 	}
 }

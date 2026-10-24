@@ -18,7 +18,7 @@ public class RemoveEffectPacketListener extends PacketAdapter
 	{
 		super(WorldGuardExtraFlagsPlugin.getPlugin(), PacketType.Play.Server.REMOVE_ENTITY_EFFECT);
 	}
-	
+
 	@Override
 	public void onPacketSending(PacketEvent event)
 	{
@@ -33,7 +33,7 @@ public class RemoveEffectPacketListener extends PacketAdapter
 			try
 			{
 				Session session = WorldGuard.getInstance().getPlatform().getSessionManager().get(WorldGuardPlugin.inst().wrapPlayer(player));
-				
+
 				GiveEffectsFlagHandler giveEffectsHandler = session.getHandler(GiveEffectsFlagHandler.class);
 				if (giveEffectsHandler.isSupressRemovePotionPacket())
 				{
@@ -42,7 +42,7 @@ public class RemoveEffectPacketListener extends PacketAdapter
 			}
 			catch(IllegalStateException wgBug)
 			{
-				
+
 			}
 		}
 	}

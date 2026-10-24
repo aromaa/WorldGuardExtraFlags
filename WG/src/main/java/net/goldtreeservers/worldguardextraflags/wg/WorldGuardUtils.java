@@ -12,7 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class WorldGuardUtils
 {
 	public static final String PREVENT_TELEPORT_LOOP_META = "WGEFP: TLP";
-	
+
 	@SuppressWarnings("unchecked")
 	public static boolean hasNoTeleportLoop(Plugin plugin, Player player, Object location)
 	{
@@ -20,13 +20,13 @@ public class WorldGuardUtils
 				.filter((p) -> p.getOwningPlugin().equals(plugin))
 				.findFirst()
 				.orElse(null);
-		
+
 		if (result == null)
 		{
 			result = new FixedMetadataValue(plugin, new HashSet<>());
-			
+
 			player.setMetadata(WorldGuardUtils.PREVENT_TELEPORT_LOOP_META, result);
-			
+
 			new BukkitRunnable()
 			{
 				@Override
@@ -36,13 +36,13 @@ public class WorldGuardUtils
 				}
 			}.runTask(plugin);
 		}
-		
+
 		Set<Object> set = (Set<Object>)result.value();
 		if (set.add(location))
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 }

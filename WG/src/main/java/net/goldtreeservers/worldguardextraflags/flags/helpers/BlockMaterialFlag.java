@@ -20,7 +20,7 @@ public class BlockMaterialFlag extends MaterialFlag
 		{
 			throw new InvalidFlagFormat("This material isn't seen as 'placable block', use alternative id");
 		}
-		
+
 		return material;
 	}
 }

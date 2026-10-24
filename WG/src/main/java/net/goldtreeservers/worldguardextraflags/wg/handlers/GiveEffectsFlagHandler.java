@@ -39,7 +39,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<GiveEffectsFlagHandler>
     {
 		@Override
@@ -51,13 +51,13 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 
 	private Map<PotionEffectType, PotionEffectDetails> removedEffects;
     private Set<PotionEffectType> givenEffects;
-    
+
     @Getter private boolean supressRemovePotionPacket;
-    
+
 	protected GiveEffectsFlagHandler(Session session)
 	{
 		super(session, Flags.GIVE_EFFECTS);
-		
+
 		this.removedEffects = new HashMap<>();
 		this.givenEffects = new HashSet<>();
 	}
@@ -81,13 +81,13 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 		this.handleValue(player, (World) to.getExtent(), null);
 		return true;
 	}
-	
+
 	@Override
 	public void tick(LocalPlayer player, ApplicableRegionSet set)
 	{
 		this.handleValue(player, player.getWorld(), set.queryValue(player, Flags.GIVE_EFFECTS));
 	}
-	
+
 	private void handleValue(LocalPlayer player, World world, Set<PotionEffect> value)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
@@ -107,9 +107,9 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 							break;
 						}
 					}
-					
+
 					this.supressRemovePotionPacket = effect_ != null && effect_.getAmplifier() == effect.getAmplifier();
-	
+
 					if (this.givenEffects.add(effect.getType()) && effect_ != null)
 					{
 						this.removedEffects.put(effect_.getType(), new PotionEffectDetails(System.nanoTime() + (long)(effect_.getDuration() / 20D * TimeUnit.SECONDS.toNanos(1L)), effect_.getAmplifier(), effect_.isAmbient(), effect_.hasParticles()));
@@ -125,12 +125,12 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 				this.supressRemovePotionPacket = false;
 			}
 		}
-		
+
 		Iterator<PotionEffectType> effectTypes = this.givenEffects.iterator();
 		while (effectTypes.hasNext())
 		{
 			PotionEffectType type = effectTypes.next();
-			
+
 			if (value != null && value.size() > 0)
 			{
 				boolean skip = false;
@@ -142,7 +142,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 						break;
 					}
 				}
-				
+
 				if (skip)
 				{
 					continue;
@@ -150,10 +150,10 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 			}
 
 			bukkitPlayer.removePotionEffect(type);
-			
+
 			effectTypes.remove();
 		}
-		
+
 		Iterator<Entry<PotionEffectType, PotionEffectDetails>> potionEffects_ = this.removedEffects.entrySet().iterator();
 		while (potionEffects_.hasNext())
 		{
@@ -164,18 +164,18 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 				if (removedEffect != null)
 				{
 					int timeLeft = removedEffect.getTimeLeftInTicks();
-					
+
 					if (timeLeft > 0)
 					{
 						bukkitPlayer.addPotionEffect(new PotionEffect(effect.getKey(), timeLeft, removedEffect.getAmplifier(), removedEffect.isAmbient(), removedEffect.isParticles()), true);
 					}
 				}
-				
+
 				potionEffects_.remove();
 			}
 		}
 	}
-	
+
 	public void drinkMilk(Player bukkitPlayer)
 	{
 		this.removedEffects.clear();
@@ -184,7 +184,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 
 		this.handleValue(player, player.getWorld(), WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
 	}
-	
+
 	public void drinkPotion(Player bukkitPlayer, Collection<PotionEffect> effects)
 	{
 		for(PotionEffect effect : effects)
@@ -193,7 +193,7 @@ public class GiveEffectsFlagHandler extends FlagValueChangeHandler<Set<PotionEff
 		}
 
 		LocalPlayer player = WorldGuardPlugin.inst().wrapPlayer(bukkitPlayer);
-		
+
 		this.handleValue(player, player.getWorld(), WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().getApplicableRegions(player.getLocation()).queryValue(player, Flags.GIVE_EFFECTS));
 	}
 }

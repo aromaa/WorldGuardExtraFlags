@@ -11,7 +11,7 @@ public class ProtocolLibHelper
 {
 	@Getter private final WorldGuardExtraFlagsPlugin plugin;
 	@Getter private final Plugin protocolLibPlugin;
-	
+
 	public ProtocolLibHelper(WorldGuardExtraFlagsPlugin plugin, Plugin protocolLibPlugin)
 	{
 		this.plugin = plugin;

@@ -16,7 +16,7 @@ public class ForcedStateFlag extends Flag<ForcedState>
 		DENY,
 		FORCE
 	}
-	
+
 	public ForcedStateFlag(String name)
 	{
 		super(name);
@@ -27,19 +27,19 @@ public class ForcedStateFlag extends Flag<ForcedState>
     {
         return ForcedState.ALLOW;
     }
-    
+
     @Override
     public boolean hasConflictStrategy()
     {
         return true;
     }
-    
+
     @Override
     public ForcedState chooseValue(Collection<ForcedState> values)
     {
     	//Order is the following: Deny > Force > Allow
     	ForcedState result = null;
-    	
+
         if (!values.isEmpty())
         {
         	for (ForcedState state : values)
@@ -61,7 +61,7 @@ public class ForcedStateFlag extends Flag<ForcedState>
         		}
         	}
         }
-        
+
     	return result;
     }
 
@@ -97,7 +97,7 @@ public class ForcedStateFlag extends Flag<ForcedState>
 	public ForcedState unmarshal(Object o)
 	{
         String str = o.toString();
-        
+
         switch(str)
         {
 	        case "ALLOW":
@@ -118,7 +118,7 @@ public class ForcedStateFlag extends Flag<ForcedState>
 		{
 			return null;
 		}
-		
+
 		return o.toString();
 	}
 }

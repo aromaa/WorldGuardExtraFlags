@@ -23,7 +23,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<FlyFlagHandler>
     {
 		@Override
@@ -35,7 +35,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 
     @Getter private Boolean currentValue;
     @Setter private Boolean originalFly;
-	    
+
 	protected FlyFlagHandler(Session session)
 	{
 		super(session, Flags.FLY);
@@ -60,7 +60,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 		this.handleValue(player, (World) to.getExtent(), null);
 		return true;
 	}
-	
+
 	private void handleValue(LocalPlayer player, World world, State state)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
@@ -68,7 +68,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 		if (!this.getSession().getManager().hasBypass(player, world) && state != null)
 		{
 			boolean value = state == State.ALLOW;
-			
+
 			if (bukkitPlayer.getAllowFlight() != value)
 			{
 				if (this.originalFly == null)
@@ -86,7 +86,7 @@ public class FlyFlagHandler extends FlagValueChangeHandler<State>
 			if (this.originalFly != null)
 			{
 				bukkitPlayer.setAllowFlight(this.originalFly);
-				
+
 				this.originalFly = null;
 			}
 

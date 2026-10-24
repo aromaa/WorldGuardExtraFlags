@@ -14,7 +14,7 @@ public class CustomSetFlag<T> extends SetFlag<T>
 	{
 		super(name, subFlag);
 	}
-	
+
 	@Override
     public Set<T> parseInput(FlagContext context) throws InvalidFlagFormat
 	{

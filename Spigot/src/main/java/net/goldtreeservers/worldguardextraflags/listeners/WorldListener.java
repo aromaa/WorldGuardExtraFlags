@@ -27,12 +27,12 @@ public class WorldListener implements Listener
 	private final WorldGuardExtraFlagsPlugin plugin;
 
 	private final RegionContainer regionContainer;
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onWorldLoadEvent(WorldLoadEvent event)
 	{
 		World world = event.getWorld();
-		
+
 		this.plugin.doUnloadChunkFlagCheck(world);
 	}
 

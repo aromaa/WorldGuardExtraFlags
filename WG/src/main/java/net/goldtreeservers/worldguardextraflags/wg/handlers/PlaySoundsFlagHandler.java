@@ -28,7 +28,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 	{
 		return new Factory(plugin);
 	}
-	
+
     public static class Factory extends Handler.Factory<PlaySoundsFlagHandler>
     {
 		private final Plugin plugin;
@@ -47,13 +47,13 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 
 	private final Plugin plugin;
     private Map<String, BukkitRunnable> runnables;
-	    
+
 	protected PlaySoundsFlagHandler(Plugin plugin, Session session)
 	{
 		super(session, Flags.PLAY_SOUNDS);
 
 		this.plugin = plugin;
-		
+
 		this.runnables = new HashMap<>();
 	}
 
@@ -82,7 +82,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 	{
 		this.handleValue(player, set.queryValue(player, Flags.PLAY_SOUNDS));
     }
-	
+
 	private void handleValue(LocalPlayer player, Set<SoundData> value)
 	{
 		Player bukkitPlayer = ((BukkitPlayer) player).getPlayer();
@@ -100,7 +100,7 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 						{
 							bukkitPlayer.playSound(bukkitPlayer.getLocation(), sound.sound(), sound.source(), sound.volume(), sound.pitch());
 						}
-						
+
 						@Override
 						public void cancel()
 						{
@@ -109,19 +109,19 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 							bukkitPlayer.stopSound(sound.sound(), sound.source());
 						}
 					};
-	
+
 					this.runnables.put(sound.sound(), runnable);
-					
+
 					runnable.runTaskTimer(this.plugin, 0L, sound.interval());
 				}
 			}
 		}
-		
+
 		Iterator<Entry<String, BukkitRunnable>> runnables = this.runnables.entrySet().iterator();
 		while (runnables.hasNext())
 		{
 			Entry<String, BukkitRunnable> runnable = runnables.next();
-			
+
 			if (value != null && value.size() > 0)
 			{
 				boolean skip = false;
@@ -133,15 +133,15 @@ public class PlaySoundsFlagHandler extends FlagValueChangeHandler<Set<SoundData>
 						break;
 					}
 				}
-				
+
 				if (skip)
 				{
 					continue;
 				}
 			}
-			
+
 			runnable.getValue().cancel();
-			
+
 			runnables.remove();
 		}
 	}

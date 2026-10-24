@@ -13,7 +13,7 @@ public class WalkSpeedFlagHandler extends AbstractSpeedFlagHandler
 	{
 		return new Factory();
 	}
-	
+
 	public static class Factory extends Handler.Factory<WalkSpeedFlagHandler>
 	{
 		@Override
@@ -22,18 +22,18 @@ public class WalkSpeedFlagHandler extends AbstractSpeedFlagHandler
 			return new WalkSpeedFlagHandler(session);
 		}
 	}
-	
+
 	protected WalkSpeedFlagHandler(Session session)
 	{
 		super(session, Flags.WALK_SPEED);
 	}
-	
+
 	@Override
 	protected float getSpeed(Player player)
 	{
 		return player.getWalkSpeed();
 	}
-	
+
 	@Override
 	protected void setSpeed(Player player, float speed)
 	{

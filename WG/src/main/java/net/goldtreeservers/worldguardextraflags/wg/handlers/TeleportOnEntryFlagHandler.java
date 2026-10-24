@@ -21,7 +21,7 @@ public class TeleportOnEntryFlagHandler extends FlagValueChangeHandler<Location>
 	{
 		return new Factory(plugin);
 	}
-	
+
     public static class Factory extends Handler.Factory<TeleportOnEntryFlagHandler>
     {
 		private final Plugin plugin;
@@ -39,7 +39,7 @@ public class TeleportOnEntryFlagHandler extends FlagValueChangeHandler<Location>
     }
 
 	private final Plugin plugin;
-	    
+
 	protected TeleportOnEntryFlagHandler(Plugin plugin, Session session)
 	{
 		super(session, Flags.TELEPORT_ON_ENTRY);

@@ -5,9 +5,8 @@
    <artifactId>worldguardextraflags</artifactId>
    <name>WorldGuardExtraFlags</name>
    <version>4.2.5-SNAPSHOT</version>
-   
+
    <packaging>pom</packaging>
-   
       <build>
       <plugins>
          <plugin>
@@ -28,7 +27,7 @@
          </plugin>
       </plugins>
    </build>
-   
+
    <dependencies>
       <dependency>
          <groupId>org.projectlombok</groupId>
@@ -37,7 +36,7 @@
          <scope>provided</scope>
       </dependency>
    </dependencies>
-   
+
    <modules>
    	<module>WG</module>
    	<module>Spigot</module>

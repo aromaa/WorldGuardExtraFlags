@@ -30,9 +30,9 @@ public class GlideFlagHandler extends FlagValueChangeHandler<ForcedState>
             return new GlideFlagHandler(session);
         }
     }
-    
+
     private Boolean originalGlide;
-    
+
 	protected GlideFlagHandler(Session session)
 	{
 		super(session, Flags.GLIDE);
@@ -68,9 +68,9 @@ public class GlideFlagHandler extends FlagValueChangeHandler<ForcedState>
 			{
 				return;
 			}
-			
+
 			boolean value = (state == ForcedState.FORCE ? true : false);
-			
+
 			if (bukkitPlayer.isGliding() != value)
 			{
 				if (this.originalGlide == null)
@@ -86,7 +86,7 @@ public class GlideFlagHandler extends FlagValueChangeHandler<ForcedState>
 			if (this.originalGlide != null)
 			{
 				bukkitPlayer.setGliding(this.originalGlide);
-				
+
 				this.originalGlide = null;
 			}
 		}

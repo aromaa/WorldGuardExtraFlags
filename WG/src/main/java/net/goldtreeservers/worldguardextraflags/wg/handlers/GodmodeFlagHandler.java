@@ -23,7 +23,7 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
 	{
 		return new Factory();
 	}
-	
+
     public static class Factory extends Handler.Factory<GodmodeFlagHandler>
     {
 		@Override
@@ -32,10 +32,10 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
             return new GodmodeFlagHandler(session);
         }
     }
-    
+
     @Getter private Boolean isGodmodeEnabled;
     private Boolean originalEssentialsGodmode;
-	    
+
 	protected GodmodeFlagHandler(Session session)
 	{
 		super(session, Flags.GODMODE);
@@ -60,7 +60,7 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
 		this.handleValue(player, null);
 		return true;
 	}
-	
+
 	private void handleValue(LocalPlayer player, State state)
 	{
 		if (state != null)
@@ -72,7 +72,7 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
 			this.isGodmodeEnabled = null;
 		}
 	}
-	
+
 	@Override
     public State getInvincibility(LocalPlayer player)
 	{
@@ -80,7 +80,7 @@ public class GodmodeFlagHandler extends FlagValueChangeHandler<State>
 		{
 			return this.isGodmodeEnabled ? State.ALLOW : State.DENY;
 		}
-		
+
 		return null;
 	}
 }
